@@ -44,7 +44,7 @@ export default new Vuex.Store({
 		}
 	},
 	actions: {
-		searchTaxa (context) {
+		searchTaxa (context) {Vue
 			Vue.axios.get('leaf_spectra/search/taxa', {
 				params: {
 					taxa: context.state.search_box.search_value
@@ -69,7 +69,7 @@ export default new Vuex.Store({
 		},
 		getManySpectra (context) {
 			const gets = context.state.current_spectra.spectra_ids.map(sp => Vue.axios.get('leaf_spectra/reflectance/'+sp.fulcrum_id));
-			Vue.axios.all(gets).then(responses => {
+			Promise.all(gets).then(responses => {
 				context.commit('save_spectra',responses);
 			})			
 		}
