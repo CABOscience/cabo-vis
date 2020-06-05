@@ -9,7 +9,7 @@ Vue.use(Vuex);
 Vue.use(VueAxios, axios);
 
 Vue.axios.defaults.baseURL = "http://localhost:3001/api/v1/";
-Vue.axios.defaults.headers.common['Authorization'] = 'Bearer '+process.env.CABO_API_TOKEN;
+Vue.axios.defaults.headers.common['Authorization'] = 'Bearer '+process.env.CABO_API_KEY;
 
 
 export default new Vuex.Store({
