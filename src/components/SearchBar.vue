@@ -14,7 +14,6 @@ export default {
 	data: function() {
 		return {
 			searchValue : '', 
-			announce: ''
 		}
 	},
 	computed: {
