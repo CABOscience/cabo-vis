@@ -5,6 +5,11 @@ module.exports = {
     }*/
   publicPath: process.env.NODE_ENV === 'production'
     ? '/vis/'
-    : '/vis/'
+    : '/vis/',
+  configureWebpack: {
+  	output: {
+	    filename: '[name].[hash].bundle.js'
+  	}
+  }
 
 }
