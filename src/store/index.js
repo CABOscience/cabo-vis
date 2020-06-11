@@ -28,7 +28,7 @@ export default new Vuex.Store({
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
 			this.dispatch('getManySpectra');
-			state.announce = spectra_ids.length + ' plants founds.'
+			state.search_announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
 			state.current_spectra.spectra=spectra;

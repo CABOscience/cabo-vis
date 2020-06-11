@@ -18,25 +18,13 @@ export default {
 		}
 	},
 	computed: {
-		/*search: {
+		announce: {
 			get () {
-				return this.$store.state.search_box.search_value
-			},
-			set (value) {
-				if(value!==''){
-					this.$store.commit('save_search', value)
-				}
-			}	
-		}*/
+				return this.$store.state.search_announce
+			}
+		}
 	},
 	mounted: {
-		this.$store.subscribe((mutation,state) => {
-			switch(mutation.type) {
-				case 'save_search_spectra_ids':
-					this.announce=state.announce;
-				break;
-			} 
-		})
 	},
 	methods: {
 		search: function(){
