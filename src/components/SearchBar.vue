@@ -19,11 +19,9 @@ export default {
 	computed: {
 		announce: {
 			get () {
-				return this.$store.state.search_announce
+				return this.$store.state.search_box.announce
 			}
 		}
-	},
-	mounted: {
 	},
 	methods: {
 		search: function(){

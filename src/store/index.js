@@ -16,7 +16,8 @@ Vue.axios.defaults.headers.common['Authorization'] = 'Bearer 2e9f97ef84b1069a188
 export default new Vuex.Store({
 	state: {
 		search_box: {
-			search_value: ''
+			search_value: '',
+			announce: '',
 		},
 		current_spectra: {
 			spectra_ids: [],
@@ -28,7 +29,7 @@ export default new Vuex.Store({
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
 			this.dispatch('getManySpectra');
-			state.search_announce = spectra_ids.length + ' plants founds.'
+			state.search_box.announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
 			state.current_spectra.spectra=spectra;
