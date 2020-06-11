@@ -17,8 +17,9 @@ export default {
 	mounted: function() {
 		this.$store.subscribe((mutation,state) => {
 			switch(mutation.type) {
-			case 'plot_spectra':
+			case 'plot_spectras':
 				this.leafSpectra(state.current_spectra.spectra);
+				//TEST
 			break;
 			case 'clear_spectra':
 				this.clearSpectra();
