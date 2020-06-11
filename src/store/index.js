@@ -30,7 +30,7 @@ export default new Vuex.Store({
 			state.current_spectra.spectra_ids.shift()
 		},
 		save_spectra(state, spectra) {
-			state.current_spectra.spectra.push(spectra);
+			state.current_spectra.spectra=spectra;
 		},
 		save_search(state, search) {
 			state.search_box.search_value = search;
