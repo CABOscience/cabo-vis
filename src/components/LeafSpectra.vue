@@ -29,7 +29,7 @@ export default {
 	},
 	methods: {
 		leafSpectra(data) {
-			const spectra = data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+			const spectra = data.spectra_processeds[0].slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 				var margin = {top: 50, right: 50, bottom: 50, left: 50}
 					, width = window.innerWidth - margin.left - margin.right // Use the window's width 
 					, height = window.innerHeight - margin.top - margin.bottom; // Use the window's height
@@ -56,15 +56,18 @@ export default {
 					.attr("class", "y axis")
 					.call(d3.axisLeft(y)); // Create an axis component with d3.axisLeft
 
-				const line = d3.line()
-					.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-					.y(function(d) { return y(d.r_t_average); })
-				svg.append("path")
-					.datum(spectra)
-					.attr("fill","none")
-					.attr("stroke", "steelblue")
-					.attr("stroke-width", 1.5)
-					.attr("d", line)
+					const line = d3.line()
+						.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
+						.y(function(d) { return y(d.r_t_average); })
+
+				data.spectra_processeds.forEach(function(key,spectr) {
+					svg.append("path")
+						.datum(spectr)
+						.attr("fill","none")
+						.attr("stroke", "steelblue")
+						.attr("stroke-width", 1.5)
+						.attr("d", line)				
+				})
 		},
 		clearSpectra() {
 			d3.select("#spectra > *").remove()
