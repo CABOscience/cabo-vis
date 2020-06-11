@@ -2,7 +2,9 @@
   <div id="app">
     <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
     <SearchBar />
+    <div id="spectra">
     <LeafSpectra></LeafSpectra>
+    </div>
   </div>
 </template>
 
@@ -40,5 +42,9 @@ export default {
 .main-logo{
   max-width:50%;
   margin:auto;
+}
+#spectra{
+  max-width:75%;
+  max-height:300px;
 }
 </style>

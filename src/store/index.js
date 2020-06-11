@@ -46,6 +46,7 @@ export default new Vuex.Store({
 	},
 	actions: {
 		searchTaxa (context) {
+			context.commit('clear_spectra');
 			Vue.axios.get('leaf_spectra/search/taxa', {
 				params: {
 					taxa: context.state.search_box.search_value
