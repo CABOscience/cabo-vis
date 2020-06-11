@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="search-box">
   <input type="search" class="search-bar" placeholder="Enter species name" v-model="searchValue" />
   <button class="search-button" v-on:click="search">Search</button>
   <div class="search-announce" v-html="announce"></div>
@@ -35,6 +35,10 @@ export default {
 }
 </script>
 <style scoped>
+.search-box{
+	max-width:50%;
+	margin:auto;
+}
 .search-bar{
 	width:500px;
 	height:2.5em;
@@ -47,5 +51,10 @@ export default {
 
 .search-button{
 	float:left;
+}
+
+.search-announce{
+	margin:auto;
+	display:block;
 }
 </style>
