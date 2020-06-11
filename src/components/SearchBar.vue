@@ -2,6 +2,7 @@
 <div>
   <input type="search" class="search-bar" placeholder="Enter species name" v-model="searchValue" />
   <button class="search-button" v-on:click="search">Search</button>
+  <div class="search-announce" v-html="announce"></div>
 </div>
 </template>
 
@@ -12,7 +13,8 @@ export default {
 	name: "search",
 	data: function() {
 		return {
-			searchValue : ''
+			searchValue : '', 
+			announce: ''
 		}
 	},
 	computed: {
@@ -27,14 +29,15 @@ export default {
 			}	
 		}*/
 	},
-	/*watch: {
-		search: function () {
-			var self=this
-			_.debounce(function() {
-				self.$store.commit('save_search', self.search);
-			}, 1000)();
-		},
-	},*/
+	mounted: {
+		this.$store.subscribe((mutation,state) => {
+			switch(mutation.type) {
+				case 'save_search_spectra_ids':
+					this.announce=state.announce;
+				break;
+			} 
+		})
+	},
 	methods: {
 		search: function(){
 			this.$store.commit('save_search', this.searchValue);
@@ -54,5 +57,10 @@ export default {
 	display:block;
 	border:2px solid #aaaaaa;
 	border-radius: 5px;
+	float:left;
+}
+
+.search-button{
+	float:left;
 }
 </style>
