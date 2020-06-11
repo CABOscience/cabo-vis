@@ -17,9 +17,8 @@ export default {
 	mounted: function() {
 		this.$store.subscribe((mutation,state) => {
 			switch(mutation.type) {
-			case 'plot_spectras':
+			case 'save_spectra':
 				this.leafSpectra(state.current_spectra.spectra);
-				//TEST
 			break;
 			case 'clear_spectra':
 				this.clearSpectra();
@@ -29,7 +28,7 @@ export default {
 	},
 	methods: {
 		leafSpectra(data) {
-			const spectra = data.spectra_processeds[0].slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+			const spectra = data[0].data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 				var margin = {top: 50, right: 50, bottom: 50, left: 50}
 					, width = window.innerWidth - margin.left - margin.right // Use the window's width 
 					, height = window.innerHeight - margin.top - margin.bottom; // Use the window's height
@@ -60,9 +59,10 @@ export default {
 						.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
 						.y(function(d) { return y(d.r_t_average); })
 
-				data.spectra_processeds.forEach(function(key,spectr) {
+				data.forEach(function(key,spectr) {
+					this.spectra = spectr.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 					svg.append("path")
-						.datum(spectr)
+						.datum(this.spectra)
 						.attr("fill","none")
 						.attr("stroke", "steelblue")
 						.attr("stroke-width", 1.5)
