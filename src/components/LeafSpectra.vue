@@ -59,10 +59,10 @@ export default {
 						.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
 						.y(function(d) { return y(d.r_t_average); })
 
-				data.forEach(function(key,spectr) {
-					this.spectra = spectr.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+				data.forEach(function(spectr) {
+					const thiss = spectr.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 					svg.append("path")
-						.datum(this.spectra)
+						.datum(thiss)
 						.attr("fill","none")
 						.attr("stroke", "steelblue")
 						.attr("stroke-width", 1.5)
