@@ -1,7 +1,7 @@
 <template>
 <div class="search-box">
   <input type="search" class="search-bar" placeholder="Enter species name" v-model="searchValue" />
-  <button class="search-button" v-on:click="search">Search</button>
+  <button class="search-button btn btn-primary" v-on:click="search">Search</button>
   <div class="search-announce" v-html="announce"></div>
 </div>
 </template>

@@ -30,8 +30,8 @@ export default {
 		leafSpectra(data) {
 			const spectra = data[0].data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 				var margin = {top: 50, right: 50, bottom: 50, left: 50}
-					, width = window.innerWidth - margin.left - margin.right // Use the window's width 
-					, height = window.innerHeight - margin.top - margin.bottom; // Use the window's height
+					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
+					, height = 0.25*window.innerWidth - margin.top - margin.bottom; // Use the window's height
 				const svg = d3.select("#spectra").append('svg')
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
@@ -43,7 +43,7 @@ export default {
 
 				var y = d3.scaleLinear()
 					.domain([0, d3.max(spectra, function(d) { return +d.r_t_average; })]) // input 
-					.range([height, 0]); // output 
+					.range([height, 0+(height*0.15)]); // output 
 				// 3. Call the x axis in a group tag
 				svg.append("g")
 					.attr("class", "x axis")
@@ -66,6 +66,7 @@ export default {
 						.attr("fill","none")
 						.attr("stroke", "steelblue")
 						.attr("stroke-width", 1.5)
+						.attr("stroke-opacity",0.5)
 						.attr("d", line)				
 				})
 		},
@@ -80,7 +81,6 @@ export default {
 #spectra{
 	overflow: visible;
 	padding:50px;
-	width:75%;
 }
 .overlay {
   fill: none;
