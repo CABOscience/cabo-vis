@@ -8,8 +8,6 @@ import * as d3 from 'd3'
 
 export default {
 	name: "LeafSpectra",
-	created() {
-	},
 	data: function() {
 		return {
 		}
@@ -81,9 +79,14 @@ export default {
 #spectra{
 	overflow: visible;
 	padding:50px;
+	width:100%;
 }
 .overlay {
   fill: none;
   pointer-events: all;
+}
+svg {
+	margin:auto;
+	display:block;
 }
 </style>

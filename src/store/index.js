@@ -71,10 +71,10 @@ export default new Vuex.Store({
 			});
 		},
 		getManySpectra (context) {
-			const gets = context.state.current_spectra.spectra_ids.map(sp => Vue.axios.get('leaf_spectra/reflectance/'+sp.fulcrum_id));
+			const gets = context.state.current_spectra.spectra_ids.map(sp => Vue.axios.get('leaf_spectra/reflectance/'+sp.fulcrum_id).catch(function(error){console.log(error);}));
 			Vue.axios.all(gets).then(responses => {
 				context.commit('save_spectra',responses);
-			})			
+			})
 		}
 	}
 });
