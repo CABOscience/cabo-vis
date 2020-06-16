@@ -85,7 +85,7 @@ export default new Vuex.Store({
 			    type: 'reflectance'
 			  },
 			  paramsSerializer: params => {
-			    return qs.stringify(params)
+			    return qs.stringify(params, {arrayFormat: 'brackets'})
 			  }
 			}).then(responses => {
 				context.commit('save_spectra',responses);
