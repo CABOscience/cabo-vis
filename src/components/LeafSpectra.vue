@@ -26,8 +26,9 @@ export default {
 	},
 	methods: {
 		leafSpectra(data) {
-			const spectra = data[0].data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
-				var margin = {top: 50, right: 50, bottom: 50, left: 50}
+			//const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+			const spectra = data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+			var margin = {top: 50, right: 50, bottom: 50, left: 50}
 					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
 					, height = 0.25*window.innerWidth - margin.top - margin.bottom; // Use the window's height
 				const svg = d3.select("#spectra").append('svg')

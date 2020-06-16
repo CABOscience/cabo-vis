@@ -87,8 +87,8 @@ export default new Vuex.Store({
 			  paramsSerializer: params => {
 			    return qs.stringify(params, {arrayFormat: 'brackets'})
 			  }
-			}).then(responses => {
-				context.commit('save_spectra',responses);
+			}).then(result => {
+				context.commit('save_spectra',result.data);
 			})
 		}
 
