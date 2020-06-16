@@ -4,6 +4,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import qs from 'qs';
 
 Vue.use(Vuex);
 Vue.use(VueAxios, axios);
@@ -28,7 +29,7 @@ export default new Vuex.Store({
 	mutations: {
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
-			this.dispatch('getManySpectra');
+			this.dispatch('getManySpectraMean');
 			state.search_box.announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
@@ -75,6 +76,21 @@ export default new Vuex.Store({
 			Vue.axios.all(gets).then(responses => {
 				context.commit('save_spectra',responses);
 			})
+		},
+		getManySpectraMean (context) {
+			const ids = context.state.current_spectra.spectra_ids.map(sp => sp.fulcrum_id);
+			Vue.axios.get('/leaf_spectra_mean/search/', {
+			  params: {
+			    ids: ids,
+			    type: 'reflectance'
+			  },
+			  paramsSerializer: params => {
+			    return qs.stringify(params)
+			  }
+			}).then(responses => {
+				context.commit('save_spectra',responses);
+			})
 		}
+
 	}
 });
