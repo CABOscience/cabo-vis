@@ -78,7 +78,7 @@ export default new Vuex.Store({
 			})
 		},
 		getManySpectraMean (context) {
-			const ids = context.state.current_spectra.spectra_ids.map(sp => sp.fulcrum_id);
+			const ids = context.state.current_spectra.spectra_ids.map(sp => "'"+sp.fulcrum_id+"'");
 			Vue.axios.get('/leaf_spectra_mean/search/', {
 			  params: {
 			    ids: ids,
