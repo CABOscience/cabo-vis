@@ -23,7 +23,8 @@ export default new Vuex.Store({
 		current_spectra: {
 			spectra_ids: [],
 			spectra: [],
-		}
+		},
+		sidebar: true,
 	},
 	getters: {},
 	mutations: {
@@ -33,6 +34,7 @@ export default new Vuex.Store({
 			state.search_box.announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
+			state.sidebar=false;
 			state.current_spectra.spectra=spectra;
 		},
 		save_search(state, search) {
@@ -44,6 +46,9 @@ export default new Vuex.Store({
 			state.current_spectra.spectra=[];
 		},
 		plot_spectra(){
+		},
+		toggle_sidebar(state, search){
+			state.sidebar=!state.sidebar;
 		}
 	},
 	actions: {
