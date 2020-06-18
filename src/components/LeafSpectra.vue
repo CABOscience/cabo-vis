@@ -71,7 +71,9 @@ export default {
 				})
 		},
 		meanLeafSpectra(data) {
-			const spectra = data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+			const data = data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+			const reflectance = data.filter(s => s.reflectance_transmittance=='reflectance');
+			const transmittance = data.filter(s => s.reflectance_transmittance=='transmittance')
 			var margin = {top: 50, right: 50, bottom: 50, left: 50}
 					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
 					, height = 0.25*window.innerWidth - margin.top - margin.bottom; // Use the window's height
@@ -81,11 +83,11 @@ export default {
 					.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				const x = d3.scaleLinear()
-					.domain([d3.min(spectra, function(d) { return +d.wavelength; }), d3.max(spectra, function(d) { return +d.wavelength; })])
+					.domain([d3.min(reflectance, function(d) { return +d.wavelength; }), d3.max(reflectance, function(d) { return +d.wavelength; })])
 				.range([0, width])
 
 				var y = d3.scaleLinear()
-					.domain([0, d3.max(spectra, function(d) { return +d.max; })]) // input 
+					.domain([0, d3.max(reflectance, function(d) { return +d.max; })]) // input 
 					.range([height, 0+(height*0.15)]); // output 
 				// 3. Call the x axis in a group tag
 				svg.append("g")
@@ -98,42 +100,65 @@ export default {
 					.attr("class", "y axis")
 					.call(d3.axisLeft(y)); // Create an axis component with d3.axisLeft
 
-					const line = d3.line()
-						.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-						.y(function(d) { return y(d.avg); })
+				const line = d3.line()
+					.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
+					.y(function(d) { return y(d.avg); })
 
-                                        const lineMin = d3.line()
-                                                .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-                                                .y(function(d) { return y(d.min); })
+                const lineMin = d3.line()
+                        .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
+                        .y(function(d) { return y(d.min); })
 
-                                        const lineMax = d3.line()
-                                                .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-                                                .y(function(d) { return y(d.max); })
+                const lineMax = d3.line()
+                        .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
+                        .y(function(d) { return y(d.max); })
 
 
 				svg.append("path")
-					.datum(spectra)
+					.datum(reflectance)
 					.attr("fill","none")
 					.attr("stroke", "steelblue")
 					.attr("stroke-width", 2.5)
 					.attr("stroke-opacity",1)
 					.attr("d", line)				
 
-                                svg.append("path")
-                                        .datum(spectra)
-                                        .attr("fill","none")
-                                        .attr("stroke", "gray")
-                                        .attr("stroke-width", 1)
-                                        .attr("stroke-opacity",0.3)
-                                        .attr("d", lineMin)
-                                svg.append("path")
-                                        .datum(spectra)
-                                        .attr("fill","none")
-                                        .attr("stroke", "gray")
-                                        .attr("stroke-width", 1)
-                                        .attr("stroke-opacity",0.3)
-                                        .attr("d", lineMax)
+                svg.append("path")
+                        .datum(reflectance)
+                        .attr("fill","none")
+                        .attr("stroke", "steelblue")
+                        .attr("stroke-width", 1)
+                        .attr("stroke-opacity",0.3)
+                        .attr("d", lineMin)
+                svg.append("path")
+                        .datum(reflectance)
+                        .attr("fill","none")
+                        .attr("stroke", "steelblue")
+                        .attr("stroke-width", 1)
+                        .attr("stroke-opacity",0.3)
+                        .attr("d", lineMax)
 
+
+				svg.append("path")
+					.datum(transmittance)
+					.attr("fill","none")
+					.attr("stroke", "orange")
+					.attr("stroke-width", 2.5)
+					.attr("stroke-opacity",1)
+					.attr("d", line)				
+
+                svg.append("path")
+                        .datum(transmittance)
+                        .attr("fill","none")
+                        .attr("stroke", "orange")
+                        .attr("stroke-width", 1)
+                        .attr("stroke-opacity",0.3)
+                        .attr("d", lineMin)
+                svg.append("path")
+                        .datum(transmittance)
+                        .attr("fill","none")
+                        .attr("stroke", "orange")
+                        .attr("stroke-width", 1)
+                        .attr("stroke-opacity",0.3)
+                        .attr("d", lineMax)
 
 
 		},
