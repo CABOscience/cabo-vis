@@ -71,7 +71,7 @@ export default {
 				})
 		},
 		meanLeafSpectra(data) {
-			const data = data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
+			data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 			const reflectance = data.filter(s => s.reflectance_transmittance=='reflectance');
 			const transmittance = data.filter(s => s.reflectance_transmittance=='transmittance')
 			var margin = {top: 50, right: 50, bottom: 50, left: 50}
