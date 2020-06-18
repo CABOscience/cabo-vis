@@ -4,7 +4,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-import qs from 'qs';
+//import qs from 'qs';
 
 Vue.use(Vuex);
 Vue.use(VueAxios, axios);
@@ -30,7 +30,11 @@ export default new Vuex.Store({
 	mutations: {
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
-			this.dispatch('getManySpectraMean');
+			if(spectra_ids.length!=0){
+				this.dispatch('getManySpectraMean');
+			}else{
+				this.dispatch('clearSpectra');
+			}
 			state.search_box.announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
@@ -64,8 +68,9 @@ export default new Vuex.Store({
 				throw new Error(`API ${error}`);
 			});
 		},
-		clearTaxa (context){
+		clearSpectra (context){
 			context.commit('clear_spectra');
+			context.commit('save_spectra',[])
 		},
 		getOneSpectra (context) {
 			Vue.axios.get('leaf_spectra/reflectance/'+context.state.current_spectra.spectra_ids[0].fulcrum_id).then(result => {
@@ -84,17 +89,20 @@ export default new Vuex.Store({
 		},
 		getManySpectraMean (context) {
 			const ids = context.state.current_spectra.spectra_ids.map(sp => "'"+sp.fulcrum_id+"'");
-			Vue.axios.get('/leaf_spectra_mean/search/', {
-			  params: {
+			Vue.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+			Vue.axios.post('/leaf_spectra_mean/search/', {
+			  //params: {
 			    ids: ids,
-			    type: 'reflectance'
-			  },
-			  paramsSerializer: params => {
-			    return qs.stringify(params, {arrayFormat: 'brackets'})
-			  }
+			    type: 'reflectance',
+			  //},
+			  //paramsSerializer: params => {
+			  //  return qs.stringify(params, {arrayFormat: 'brackets'})
+			  //}
 			}).then(result => {
 				context.commit('save_spectra',result.data);
-			})
+			}).catch(error => {
+				context.commit('save_spectra',[])
+			});
 		}
 
 	}
