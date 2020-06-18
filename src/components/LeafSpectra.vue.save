@@ -16,9 +16,7 @@ export default {
 		this.$store.subscribe((mutation,state) => {
 			switch(mutation.type) {
 			case 'save_spectra':
-				if(state.current_spectra.spectra.length!==0){
-					this.meanLeafSpectra(state.current_spectra.spectra);
-				}
+				this.meanLeafSpectra(state.current_spectra.spectra);
 			break;
 			case 'clear_spectra':
 				this.clearSpectra();
@@ -102,39 +100,12 @@ export default {
 						.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
 						.y(function(d) { return y(d.avg); })
 
-                                        const lineMin = d3.line()
-                                                .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-                                                .y(function(d) { return y(d.min); })
-
-                                        const lineMax = d3.line()
-                                                .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-                                                .y(function(d) { return y(d.max); })
-
-
 				svg.append("path")
 					.datum(spectra)
 					.attr("fill","none")
 					.attr("stroke", "steelblue")
-					.attr("stroke-width", 2.5)
-					.attr("stroke-opacity",1)
-					.attr("d", line)				
-
-                                svg.append("path")
-                                        .datum(spectra)
-                                        .attr("fill","none")
-                                        .attr("stroke", "gray")
-                                        .attr("stroke-width", 1)
-                                        .attr("stroke-opacity",0.3)
-                                        .attr("d", lineMin)
-                                svg.append("path")
-                                        .datum(spectra)
-                                        .attr("fill","none")
-                                        .attr("stroke", "gray")
-                                        .attr("stroke-width", 1)
-                                        .attr("stroke-opacity",0.3)
-                                        .attr("d", lineMax)
-
-
+					.attr("stroke-width", 1.5)
+					.attr("stroke-opacity",0.5)
 
 		},
 		clearSpectra() {
