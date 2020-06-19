@@ -173,11 +173,9 @@ export default {
                         .attr("stroke-width", 1)
                         .attr("stroke-opacity",0.3)
                         .attr("d", lineMax)
-
-
 		},
 		clearSpectra() {
-			d3.select("#spectra > *").remove()
+			d3.select("#spectra-container > *").remove()
 		},
 	}
 }
