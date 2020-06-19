@@ -4,26 +4,15 @@
     <nav id="sidebar" v-bind:class="{ active: isActive }">
 
         <ul class="list-unstyled components">
-            <p>Dummy Heading</p>
+            <p>Results</p>
             <li class="active">
-                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                <ul class="collapse list-unstyled" id="homeSubmenu">
-                    <li>
-                        <a href="#">Home 1</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 2</a>
-                    </li>
-                    <li>
-                        <a href="#">Home 3</a>
-                    </li>
-                </ul>
+                <a href="#homeSubmenu">Mean spectra</a>
             </li>
             <li>
-                <a href="#">About</a>
+                <a href="#">Sites</a>
             </li>
             <li>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Plants</a>
                 <ul class="collapse list-unstyled" id="pageSubmenu">
                     <li>
                         <a href="#">Page 1</a>
@@ -37,10 +26,10 @@
                 </ul>
             </li>
             <li>
-                <a href="#">Portfolio</a>
+                <a href="#">Individual spectra</a>
             </li>
             <li>
-                <a href="#">Contact</a>
+                <a href="#">Leaf analysis</a>
             </li>
         </ul>
 

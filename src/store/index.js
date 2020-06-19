@@ -19,29 +19,36 @@ export default new Vuex.Store({
 		search_box: {
 			search_value: '',
 			announce: '',
+			showLoader: false,
 		},
 		current_spectra: {
 			spectra_ids: [],
 			spectra: [],
 		},
 		sidebar: true,
+		showMap: false,
+		showSpectra: false,
 	},
 	getters: {},
 	mutations: {
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
 			if(spectra_ids.length!=0){
+				state.showMap = true;
 				this.dispatch('getManySpectraMean');
 			}else{
 				this.dispatch('clearSpectra');
+				state.showMap = false;
 			}
 			state.search_box.announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
+			state.search_box.showLoader=false;
 			state.sidebar=false;
 			state.current_spectra.spectra=spectra;
 		},
 		save_search(state, search) {
+			state.search_box.showLoader= true;
 			state.search_box.search_value = search;
 			this.dispatch('searchTaxa');
 		},

@@ -1,5 +1,5 @@
 <template>
-<div id="spectra">
+<div id="spectra-container" class="row" v-show="showSpectra">
 </div>
 </template>
 
@@ -10,6 +10,7 @@ export default {
 	name: "LeafSpectra",
 	data: function() {
 		return {
+			showSpectra: false
 		}
 	},
 	mounted: function() {
@@ -17,6 +18,7 @@ export default {
 			switch(mutation.type) {
 			case 'save_spectra':
 				if(state.current_spectra.spectra.length!==0){
+					this.showSpectra=true;
 					this.meanLeafSpectra(state.current_spectra.spectra);
 				}
 			break;
@@ -26,13 +28,20 @@ export default {
 			} 
 		})
 	},
+	/*computed: {
+		showSpectra: {
+			get() {
+				return this.$store.state.showSpectra
+			}
+		}
+	},*/
 	methods: {
 		leafSpectra(data) {
 			const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 			var margin = {top: 50, right: 50, bottom: 50, left: 50}
 					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
-					, height = 0.25*window.innerWidth - margin.top - margin.bottom; // Use the window's height
-				const svg = d3.select("#spectra").append('svg')
+					, height = 0.35*window.innerWidth - margin.top - margin.bottom; // Use the window's height
+				const svg = d3.select("#spectra-container").append('svg')
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
@@ -74,10 +83,15 @@ export default {
 			data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 			const reflectance = data.filter(s => s.reflectance_transmittance=='reflectance');
 			const transmittance = data.filter(s => s.reflectance_transmittance=='transmittance')
+			transmittance.forEach(s => {
+				s.avg=1-s.avg;
+				s.max=1-s.max;
+				s.min=1-s.min;
+			})
 			var margin = {top: 50, right: 50, bottom: 50, left: 50}
 					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
 					, height = 0.25*window.innerWidth - margin.top - margin.bottom; // Use the window's height
-				const svg = d3.select("#spectra").append('svg')
+				const svg = d3.select("#spectra-container").append('svg')
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
@@ -87,7 +101,7 @@ export default {
 				.range([0, width])
 
 				var y = d3.scaleLinear()
-					.domain([0, d3.max(reflectance, function(d) { return +d.max; })]) // input 
+					.domain([0, d3.max(reflectance, function(d) { return +2*d.max; })]) // input 
 					.range([height, 0+(height*0.15)]); // output 
 				// 3. Call the x axis in a group tag
 				svg.append("g")
@@ -175,12 +189,9 @@ export default {
 	padding:50px;
 	width:100%;
 }
-.overlay {
-  fill: none;
-  pointer-events: all;
-}
 svg {
 	margin:auto;
 	display:block;
 }
+
 </style>

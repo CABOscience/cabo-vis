@@ -1,22 +1,14 @@
 <template>
   <div id="app">
-      <div class="wrapper">
         <SideBar />
            <div id="content" v-bind:class="{ active: isActive }">
-              <nav class="navbar navbar-expand-lg navbar-light bg-light" style="display:none">
-                  <div class="container">
-                      <button type="button" id="sidebarCollapse" class="btn btn-info" v-on:click="toggleSideBar">
-                          <i class="fas fa-align-left"></i>
-                          <span>Toggle Sidebar</span>
-                      </button>
-                  </div>
-              </nav>
-            <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
-            <SearchBar />
-            <LeafSpectra></LeafSpectra>
+              <div id="logo">
+                <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
+              </div>
+              <SearchBar></SearchBar>
+              <LeafSpectra></LeafSpectra>
+              <SpectraMap></SpectraMap>
           </div>
-        </div>
-    </div>
   </div>
 </template>
 
@@ -24,6 +16,7 @@
 import LeafSpectra from "./components/LeafSpectra.vue"
 import SearchBar from "./components/SearchBar.vue"
 import SideBar from "./components/SideBar.vue"
+import SpectraMap from "./components/SpectraMap.vue"
 //import * as d3 from 'd3'
 
 export default {
@@ -32,6 +25,7 @@ export default {
     LeafSpectra, 
     SearchBar,
     SideBar,
+    SpectraMap,
   }, 
   data: function() {
     return {
@@ -84,7 +78,11 @@ export default {
 #content.active {
     width: 100%;
 }
-
+#spectra-container, #map-container {
+  border: 4px solid #dddddd;
+  border-radius: 10px; 
+  margin:20px;
+}
 @media (max-width: 768px) {
     #sidebar {
         margin-left: -250px;
