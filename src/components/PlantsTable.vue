@@ -91,7 +91,15 @@
 						let ro = {}
 						ro.scientific_name = m.scientific_name
 						ro.site_id = m.site_id
-						ro.plant_photos = 'https://data.caboscience.org/vis/photos/plants/'+m.plant_photos+'.jpg';
+						if(m.plant_photos!==null){
+							if(m.plant_photos.indexOf(',')!==-1){
+								ro.plant_photos = 'https://data.caboscience.org/vis/photos/plants/'+m.plant_photos.substr(0,m.plant_photos.indexOf(','))+'.jpg';
+							}else{
+								ro.plant_photos = 'https://data.caboscience.org/vis/photos/plants/'+m.plant_photos+'.jpg';
+							}
+						}else{
+							ro.plant_photos = false;
+						}
 						return ro
 					})
 				}

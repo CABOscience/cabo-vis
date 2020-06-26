@@ -100,8 +100,11 @@ export default {
 					.domain([d3.min(reflectance, function(d) { return +d.wavelength; }), d3.max(reflectance, function(d) { return +d.wavelength; })])
 				.range([0, width])
 
-				var y = d3.scaleLinear()
+				const y_r = d3.scaleLinear()
 					.domain([0, d3.max(reflectance, function(d) { return +2*d.max; })]) // input 
+					.range([height, 0+(height*0.15)]); // output 
+				const y_t = d3.scaleLinear()
+					.domain([d3.max(transmittance, function(d) { return +2*d.max; }),0]) // input 
 					.range([height, 0+(height*0.15)]); // output 
 				// 3. Call the x axis in a group tag
 				svg.append("g")
@@ -112,19 +115,24 @@ export default {
 				// 4. Call the y axis in a group tag
 				svg.append("g")
 					.attr("class", "y axis")
-					.call(d3.axisLeft(y)); // Create an axis component with d3.axisLeft
+					.call(d3.axisLeft(y_r)); // Create an axis component with d3.axisLeft
+
+				svg.append("g")
+					.attr("class", "y axis")
+					.attr("transform", "translate( " + width + ", 0 )")
+					.call(d3.axisRight(y_t)); // Create an axis component with d3.axisRight
 
 				const line = d3.line()
 					.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-					.y(function(d) { return y(d.avg); })
+					.y(function(d) { return y_r(d.avg); })
 
                 const lineMin = d3.line()
                         .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-                        .y(function(d) { return y(d.min); })
+                        .y(function(d) { return y_r(d.min); })
 
                 const lineMax = d3.line()
                         .x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-                        .y(function(d) { return y(d.max); })
+                        .y(function(d) { return y_r(d.max); })
 
 
 				svg.append("path")
