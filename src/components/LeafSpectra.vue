@@ -88,9 +88,9 @@ export default {
 				s.max=1-s.max;
 				s.min=1-s.min;
 			})
-			var margin = {top: 50, right: 50, bottom: 50, left: 50}
+			var margin = {top: 0, right: 50, bottom: 50, left: 50}
 					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
-					, height = 0.25*window.innerWidth - margin.top - margin.bottom; // Use the window's height
+					, height = 0.3*window.innerWidth - margin.top - margin.bottom; // Use the window's height
 				const svg = d3.select("#spectra-container").append('svg')
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)

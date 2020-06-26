@@ -64,7 +64,7 @@
 			},
 			showMap: {
 				get() {
-					return this.$store.state.showMap	
+					return this.$store.state.showAll	
 				}
 			}
 		},

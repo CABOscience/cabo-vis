@@ -5,9 +5,10 @@
               <div id="logo">
                 <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
               </div>
-              <SearchBar></SearchBar>
-              <LeafSpectra></LeafSpectra>
-              <SpectraMap></SpectraMap>
+              <a name="search"></a><SearchBar></SearchBar>
+              <a name="spectra"></a><LeafSpectra></LeafSpectra>
+              <a name="map"></a><SpectraMap></SpectraMap>
+              <a name="plants"></a><PlantsTable></PlantsTable>
           </div>
   </div>
 </template>
@@ -17,6 +18,7 @@ import LeafSpectra from "./components/LeafSpectra.vue"
 import SearchBar from "./components/SearchBar.vue"
 import SideBar from "./components/SideBar.vue"
 import SpectraMap from "./components/SpectraMap.vue"
+import PlantsTable from "./components/PlantsTable.vue"
 //import * as d3 from 'd3'
 
 export default {
@@ -26,6 +28,7 @@ export default {
     SearchBar,
     SideBar,
     SpectraMap,
+    PlantsTable
   }, 
   data: function() {
     return {
@@ -78,10 +81,10 @@ export default {
 #content.active {
     width: 100%;
 }
-#spectra-container, #map-container {
+#spectra-container, #map-container, #plants-container {
   border: 4px solid #dddddd;
   border-radius: 10px; 
-  margin:20px;
+  margin:100px 20px;
 }
 @media (max-width: 768px) {
     #sidebar {

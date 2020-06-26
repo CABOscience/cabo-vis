@@ -25,8 +25,10 @@ export default new Vuex.Store({
 			spectra_ids: [],
 			spectra: [],
 		},
+		plants_sample_ids : [],
+		plants : [],
 		sidebar: true,
-		showMap: false,
+		showAll: false,
 		showSpectra: false,
 	},
 	getters: {},
@@ -34,18 +36,22 @@ export default new Vuex.Store({
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
 			if(spectra_ids.length!=0){
-				state.showMap = true;
 				this.dispatch('getManySpectraMean');
+				this.dispatch('getManyPlants');
 			}else{
 				this.dispatch('clearSpectra');
-				state.showMap = false;
+				state.showAll = false;
 			}
 			state.search_box.announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
 			state.search_box.showLoader=false;
+			state.showAll = true;
 			state.sidebar=false;
 			state.current_spectra.spectra=spectra;
+		},
+		save_plants(state, plants) {
+			state.plants=plants;
 		},
 		save_search(state, search) {
 			state.search_box.showLoader= true;
@@ -91,7 +97,19 @@ export default new Vuex.Store({
 		getManySpectra (context) {
 			const gets = context.state.current_spectra.spectra_ids.map(sp => Vue.axios.get('leaf_spectra/reflectance/'+sp.fulcrum_id).catch(function(error){console.log(error);}));
 			Vue.axios.all(gets).then(responses => {
-				context.commit('save_spectra',responses);
+				resp=responses.map(m => { return m.data })
+				context.commit('save_spectra',resp);
+			})
+		},
+		getManyPlants (context) {
+			const gets = context.state.current_spectra.spectra_ids.map(sp => Vue.axios.get('plants_samples',{
+				params: {
+					sample_id: sp.sample_id
+				}
+			}).catch(function(error){console.log(error);}));
+			Vue.axios.all(gets).then(responses => {
+				const resp=responses.map(m => m.data[0])
+				context.commit('save_plants',resp);
 			})
 		},
 		getManySpectraMean (context) {
