@@ -94,8 +94,7 @@
 		    species_selected(which) {
 		    	this.$store.state.species_selected=which
 				this.$store.state.current_spectra.reBox = true
-		        this.$store.commit('clear_spectra')
-		        this.$store.commit('save_spectra', false)
+		        this.$store.commit('species_select')
 		    }
 		}
 	}

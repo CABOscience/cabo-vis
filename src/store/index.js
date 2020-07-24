@@ -34,6 +34,7 @@ export default new Vuex.Store({
 		showAll: false,
 		showLoader: false,
 		showSpectra: false,
+		showSpectraGraph: false,
 	},
 	getters: {},
 	mutations: {
@@ -71,6 +72,7 @@ export default new Vuex.Store({
 			state.showLoader=false;
 			state.showAll=true;
 			state.sidebar=false;
+			//state.showSpectraGraph=true
 			if(spectra!=false){
 				state.current_spectra.spectra=spectra;
 			}
@@ -78,9 +80,15 @@ export default new Vuex.Store({
 		save_plants(state, plants) {
 			state.plants=plants;
 		},
+		species_select(state) {
+			if(state.showLoader!=true){
+				this.dispatch('saveSpectra');
+			}
+		},
 		save_search(state, search) {
 			state.showSpectra=true
-			state.showLoader=true;
+			state.showSpectraGraph=false
+			state.showLoader=true
 			state.search_box.search_value = search;
 			this.dispatch('clearSpectra');
 			this.dispatch('searchTaxa');

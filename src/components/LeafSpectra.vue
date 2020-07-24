@@ -1,6 +1,6 @@
 <template>
 <div id="spectra-container" class="row" v-show="showSpectra">
-<div id="spectra-graph" class="row"></div>
+<div id="spectra-graph" class="row" v-show="showSpectraGraph"></div>
   	<div v-if="showLoader" class="loader">
 		<svg class="loader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; display: block;" width="200px" height="200px" viewBox="0 0 100 10">
 		<circle cx="18" cy="63.8778" r="4" fill="#008bae">
@@ -45,6 +45,11 @@ export default {
 			get() {
 				return this.$store.state.showSpectra
 			}
+		},
+		showSpectraGraph: {
+			get() {
+				return this.$store.state.showSpectraGraph
+			}
 		}
 	},
 	mounted: function() {
@@ -65,6 +70,7 @@ export default {
 						if(state.species_selected.indexOf(s.data[0].scientific_name)!==-1){
 							const color=self.colors[species_list.indexOf(s.data[0].scientific_name)]
 							self.meanLeafSpectra(s.data,state.current_spectra.which,color);
+							state.showSpectraGraph=true
 						}
 					})
 					//self.meanLeafSpectra(state.current_spectra.spectra[0].data,state.current_spectra.which,this.colors[0]);
