@@ -80,15 +80,6 @@
 			}
 		},
 		mounted: function() {
-			this.$store.subscribe((mutation,state) => {
-				switch(mutation.type) {
-				case 'save_spectra':
-					if(state.current_spectra.spectra.length!==0){
-						this.meanLeafSpectra(state.current_spectra.spectra);
-					}
-				break;
-				} 
-			})
 		}
 	}
 </script>

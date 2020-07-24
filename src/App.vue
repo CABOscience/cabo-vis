@@ -6,6 +6,7 @@
                 <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
               </div>
               <a name="search"></a><SearchBar></SearchBar>
+              <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
               <a name="spectra"></a><LeafSpectra></LeafSpectra>
               <a name="map"></a><SpectraMap></SpectraMap>
               <a name="plants"></a><PlantsTable></PlantsTable>
@@ -16,6 +17,7 @@
 <script>
 import LeafSpectra from "./components/LeafSpectra.vue"
 import SearchBar from "./components/SearchBar.vue"
+import SpeciesSelect from "./components/SpeciesSelect.vue"
 import SideBar from "./components/SideBar.vue"
 import SpectraMap from "./components/SpectraMap.vue"
 import PlantsTable from "./components/PlantsTable.vue"
@@ -26,6 +28,7 @@ export default {
   components: {
     LeafSpectra, 
     SearchBar,
+    SpeciesSelect,
     SideBar,
     SpectraMap,
     PlantsTable

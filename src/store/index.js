@@ -19,24 +19,48 @@ export default new Vuex.Store({
 		search_box: {
 			search_value: '',
 			announce: '',
-			showLoader: false,
 		},
 		current_spectra: {
 			spectra_ids: [],
 			spectra: [],
+			which: 'reflectance',
+			reBox: true,
 		},
 		plants_sample_ids : [],
 		plants : [],
+		species_options: [],
+		species_selected: [],
 		sidebar: true,
 		showAll: false,
+		showLoader: false,
 		showSpectra: false,
 	},
 	getters: {},
 	mutations: {
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
+			let tt=0
+			if(state.species_options.length !== 0) {
+				state.species_options=state.species_options.filter(function(value, index, self){
+					return state.species_selected.indexOf(value.scientific_name) !== -1;
+				})
+			}
+			state.species_options=state.species_options.concat(spectra_ids.map(t => {
+				return t.scientific_name
+			}).filter(function(value, index, self) {
+				return self.indexOf(value) === index;				
+			}).map(function(t){
+				let o = {}
+				o.scientific_name=t
+				o.key=tt++
+				return o
+			}))
 			if(spectra_ids.length!=0){
-				this.dispatch('getManySpectraMean');
+				state.species_selected=state.species_options.map(t => {
+					return t.scientific_name
+				})
+				state.showSpectra=true
+				this.dispatch('getManySpectraMeanTaxa');
 				this.dispatch('getManyPlants');
 			}else{
 				this.dispatch('clearSpectra');
@@ -45,22 +69,33 @@ export default new Vuex.Store({
 			state.search_box.announce = spectra_ids.length + ' plants founds.'
 		},
 		save_spectra(state, spectra) {
-			state.search_box.showLoader=false;
-			state.showAll = true;
+			state.showLoader=false;
+			state.showAll=true;
 			state.sidebar=false;
-			state.current_spectra.spectra=spectra;
+			if(spectra!=false){
+				state.current_spectra.spectra=spectra;
+			}
 		},
 		save_plants(state, plants) {
 			state.plants=plants;
 		},
 		save_search(state, search) {
-			state.search_box.showLoader= true;
+			state.showSpectra=true
+			state.showLoader=true;
 			state.search_box.search_value = search;
 			this.dispatch('searchTaxa');
 		},
+		reflectance_transmittance(state, which) {
+			state.current_spectra.which = which;
+			//this.dispatch('saveSpectra',state.current_spectra.spectra, false);
+		},
+		species_selected(state, which) {
+			state.species_selected = which;
+			this.dispatch('saveSpectra',state.current_spectra.spectra, false);
+		},
 		clear_spectra(state){
-			state.current_spectra.spectra_ids=[];
-			state.current_spectra.spectra=[];
+			/*state.current_spectra.spectra_ids=[];
+			state.current_spectra.spectra=[];*/
 		},
 		plot_spectra(){
 		},
@@ -83,7 +118,7 @@ export default new Vuex.Store({
 		},
 		clearSpectra (context){
 			context.commit('clear_spectra');
-			context.commit('save_spectra',[])
+			context.commit('save_spectra',[], false)
 		},
 		getOneSpectra (context) {
 			Vue.axios.get('leaf_spectra/reflectance/'+context.state.current_spectra.spectra_ids[0].fulcrum_id).then(result => {
@@ -126,9 +161,31 @@ export default new Vuex.Store({
 			}).then(result => {
 				context.commit('save_spectra',result.data);
 			}).catch(error => {
-				context.commit('save_spectra',[])
+				//context.commit('save_spectra',[], false)
 			});
+		},
+		getManySpectraMeanTaxa (context) {
+			/*const species = context.state.species_selected;
+			Vue.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+			Vue.axios.post('/leaf_spectra_mean/search/', {
+			    species: species,
+			}).then(result => {
+				context.commit('save_spectra',result.data);
+			}).catch(error => {
+				//context.commit('save_spectra',[], false)
+			});*/
+			const gets = context.state.species_selected.map(sp => Vue.axios.get('leaf_spectra_mean/search/',{
+				params: {
+					species: sp
+				}
+			}).catch(function(error){console.log(error);}));
+			Vue.axios.all(gets).then(responses => {
+				//const resp=responses.map(m => m.data[0])
+				context.commit('save_spectra',responses);
+			})
+		},
+		saveSpectra(context){
+			context.commit('save_spectra',false)
 		}
-
 	}
 });
