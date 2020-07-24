@@ -49,13 +49,14 @@ export default new Vuex.Store({
 			state.species_options=state.species_options.concat(spectra_ids.map(t => {
 				return t.scientific_name
 			}).filter(function(value, index, self) {
-				return self.indexOf(value) === index;				
+				return self.indexOf(value) === index && state.species_selected.indexOf(value)=== -1 ;				
 			}).map(function(t){
 				let o = {}
 				o.scientific_name=t
 				o.key=tt++
 				return o
 			}))
+
 			if(spectra_ids.length!=0){
 				state.species_selected=state.species_options.map(t => {
 					return t.scientific_name
@@ -72,7 +73,6 @@ export default new Vuex.Store({
 			state.showLoader=false;
 			state.showAll=true;
 			state.sidebar=false;
-			//state.showSpectraGraph=true
 			if(spectra!=false){
 				state.current_spectra.spectra=spectra;
 			}
