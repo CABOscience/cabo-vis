@@ -1,7 +1,7 @@
 <template>
 <div id="spectra-container" class="row" v-show="showSpectra">
 <div id="spectra-graph" class="row"></div>
-  	<div v-show="showLoader" class="loader">
+  	<div v-if="showLoader" class="loader">
 		<svg class="loader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; display: block;" width="200px" height="200px" viewBox="0 0 100 10">
 		<circle cx="18" cy="63.8778" r="4" fill="#008bae">
 		  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="0s" repeatCount="indefinite"></animate>
@@ -326,10 +326,15 @@ export default {
 	padding:50px;
 	width:100%;
 }
-svg {
+#spectra-graph svg {
 	margin:auto;
 	display:block;
 }
+#spectra-graph{
+	margin:auto;
+	display:block;
+}
+
 div.tooltip {	
     position: absolute;			
     text-align: center;			

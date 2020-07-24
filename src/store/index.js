@@ -59,7 +59,6 @@ export default new Vuex.Store({
 				state.species_selected=state.species_options.map(t => {
 					return t.scientific_name
 				})
-				state.showSpectra=true
 				this.dispatch('getManySpectraMeanTaxa');
 				this.dispatch('getManyPlants');
 			}else{
@@ -83,6 +82,7 @@ export default new Vuex.Store({
 			state.showSpectra=true
 			state.showLoader=true;
 			state.search_box.search_value = search;
+			this.dispatch('clearSpectra');
 			this.dispatch('searchTaxa');
 		},
 		reflectance_transmittance(state, which) {
@@ -91,7 +91,7 @@ export default new Vuex.Store({
 		},
 		species_selected(state, which) {
 			state.species_selected = which;
-			this.dispatch('saveSpectra',state.current_spectra.spectra, false);
+			//this.dispatch('saveSpectra',state.current_spectra.spectra, false);
 		},
 		clear_spectra(state){
 			/*state.current_spectra.spectra_ids=[];
@@ -106,19 +106,24 @@ export default new Vuex.Store({
 	actions: {
 		searchTaxa (context) {
 			context.commit('clear_spectra');
-			Vue.axios.get('leaf_spectra/search/taxa', {
-				params: {
-					taxa: context.state.search_box.search_value
-				}}
-			).then(result => {
-				context.commit('save_search_spectra_ids', result.data);
-			}).catch(error => {
-				throw new Error(`API ${error}`);
-			});
+			if(context.state.search_box.search_value !== '' && context.state.search_box.search_value !== ' '){
+				Vue.axios.get('leaf_spectra/search/taxa', {
+					params: {
+						taxa: context.state.search_box.search_value
+					}}
+				).then(result => {
+					context.commit('save_search_spectra_ids', result.data);
+				}).catch(error => {
+					throw new Error(`API ${error}`);
+				});
+			}else{
+				context.commit('save_search_spectra_ids', []);
+				this.dispatch('clearSpectraData');
+			}
 		},
 		clearSpectra (context){
 			context.commit('clear_spectra');
-			context.commit('save_spectra',[], false)
+			//context.commit('save_spectra',[], false)
 		},
 		getOneSpectra (context) {
 			Vue.axios.get('leaf_spectra/reflectance/'+context.state.current_spectra.spectra_ids[0].fulcrum_id).then(result => {
@@ -165,15 +170,7 @@ export default new Vuex.Store({
 			});
 		},
 		getManySpectraMeanTaxa (context) {
-			/*const species = context.state.species_selected;
-			Vue.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-			Vue.axios.post('/leaf_spectra_mean/search/', {
-			    species: species,
-			}).then(result => {
-				context.commit('save_spectra',result.data);
-			}).catch(error => {
-				//context.commit('save_spectra',[], false)
-			});*/
+
 			const gets = context.state.species_selected.map(sp => Vue.axios.get('leaf_spectra_mean/search/',{
 				params: {
 					species: sp
@@ -186,6 +183,10 @@ export default new Vuex.Store({
 		},
 		saveSpectra(context){
 			context.commit('save_spectra',false)
-		}
+		},
+		clearSpectraData(context){
+			context.state.current_spectra.spectra_ids=[]
+			context.state.current_spectra.spectra=[]
+		},
 	}
 });
