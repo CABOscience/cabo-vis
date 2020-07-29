@@ -134,11 +134,15 @@ export default {
 			this.box.margin = {top: 0, right: 50, bottom: 50, left: 50}
 			this.box.width = 0.7*window.innerWidth - this.box.margin.left - this.box.margin.right // Use the window's width 
 			this.box.height = 0.3*window.innerWidth - this.box.margin.top - this.box.margin.bottom; // Use the window's height
+			const self=this
 			this.box.svg = d3.select("#spectra-graph").append('svg')
 				.attr("width", this.box.width + this.box.margin.left + this.box.margin.right)
 				.attr("height", this.box.height + this.box.margin.top + this.box.margin.bottom)
 				.append("g")
-				.attr("transform", "translate(" + this.box.margin.left + "," + this.box.margin.top + ")");
+				.attr("transform", "translate(" + this.box.margin.left + "," + this.box.margin.top + ")")
+			    .call(d3.zoom().on("zoom", function () {
+			       self.box.svg.attr("transform", d3.event.transform)
+			    }));
 			this.box.x = d3.scaleLinear()
 				.domain([345, 2500])
 				.range([0, this.box.width])
