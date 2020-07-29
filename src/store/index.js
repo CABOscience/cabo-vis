@@ -67,7 +67,7 @@ export default new Vuex.Store({
 				this.dispatch('clearSpectra');
 				state.showAll = false;
 			}
-			state.search_box.announce = spectra_ids.length + ' plants founds.'
+			state.search_box.announce = spectra_ids.length + ' plants found.'
 		},
 		save_spectra(state, spectra) {
 			state.showLoader=false;
