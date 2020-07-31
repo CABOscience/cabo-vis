@@ -25,6 +25,7 @@ export default new Vuex.Store({
 			spectra: [],
 			which: 'reflectance',
 			reBox: true,
+			showRange: "true",
 		},
 		plants_sample_ids : [],
 		plants : [],

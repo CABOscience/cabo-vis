@@ -12,14 +12,18 @@
       </b-form-checkbox>
 	</b-form-checkbox-group>
     </b-form-group>
-	<b-form-group>
+	<b-form-group class="switches">
     <b-form-checkbox v-model="reflectance" name="check-button" value="true" unchecked-value="false" switch>
       Reflectance
     </b-form-checkbox>
     <b-form-checkbox variant="secondary" v-model="transmittance" name="check-button" value="true" unchecked-value="false" class="switch-transmittance" switch>
       Transmittance
     </b-form-checkbox>
+    <b-form-checkbox v-model="range" name="check-button" value="true" unchecked-value="false" switch>
+      Ranges
+    </b-form-checkbox>
 	</b-form-group>
+
  </div>
 </template>
 
@@ -33,6 +37,7 @@
 				count_sp: 0,
 				test: 'test',
 				selected_sp:[],
+				range: true
 			}
 	    },
 		computed: {
@@ -57,6 +62,11 @@
 					}else{
 						return 'none'
 					}
+				}
+			},
+			show_range: {
+				get() {
+					return this.range
 				}
 			},
 			species_selected: {
@@ -89,6 +99,12 @@
 		    	this.$store.state.current_spectra.reBox = true
 		        this.$store.commit('clear_spectra')
 		        this.$store.commit('reflectance_transmittance',which)
+		        this.$store.commit('save_spectra', false)
+		    },
+		    show_range(show_range) {
+		    	this.$store.state.current_spectra.reBox = true
+		    	this.$store.state.current_spectra.showRange = show_range
+		        this.$store.commit('clear_spectra')
 		        this.$store.commit('save_spectra', false)
 		    },
 		    species_selected(which) {
@@ -244,6 +260,12 @@
 .switch-transmittance .custom-control-input:checked ~ .custom-control-label::before {
 	background-color:#ffa500 !important;
 	border-color:#ffa500  !important;
+}
+
+.switches{
+	max-width:200px;
+	text-align:left;
+	margin:auto;
 }
 
 </style>

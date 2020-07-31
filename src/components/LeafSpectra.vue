@@ -69,6 +69,7 @@ export default {
 					this.speciesSelected=state.species_selected
 					this.dataSpectra=state.current_spectra.spectra
 					this.which=state.current_spectra.which
+					this.showRange=state.current_spectra.showRange
 					this.animate=true
 					state.showSpectraGraph=true
 					this.callSpectra();
@@ -86,12 +87,17 @@ export default {
 	methods: {
 		callSpectra(){
 			const self=this
+			let i=1
 			this.dataSpectra.forEach(s => {
 				if(self.speciesSelected.indexOf(s.data[0].scientific_name)!==-1){
 					const color=self.colors[self.species_list.indexOf(s.data[0].scientific_name)]
 					self.meanLeafSpectra(s.data,color);
 				}
-			})
+				if(i==self.dataSpectra.length){
+					this.animate=false
+				}
+				i++
+			})			
 		},
 		leafSpectra(data) {
 			const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
@@ -260,34 +266,35 @@ export default {
 					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
 					.y(function(d) { return self.box.y_r(d.avg); })
 
-	            const lineMin = d3.line()
-	                    .x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-	                    .y(function(d) { return self.box.y_r(d.min); })
+	            if(this.showRange == "true"){
+					const lineMin = d3.line()
+						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
+						.y(function(d) { return self.box.y_r(d.min); })
 
-	            const lineMax = d3.line()
-	                    .x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-	                    .y(function(d) { return self.box.y_r(d.max); })
+					const lineMax = d3.line()
+						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
+						.y(function(d) { return self.box.y_r(d.max); })
 
+					line_box.append("path")
+						.datum(reflectance)
+						.attr("fill","none")
+						.attr("class", "spectra_r")
+						.attr("stroke", color)
+						.attr("spectra","r_min")
+						.attr("stroke-width", 1)
+						.attr("stroke-opacity",0.3)
+						.attr("d", lineMin)
 
-	            line_box.append("path")
-	                    .datum(reflectance)
-	                    .attr("fill","none")
-	                    .attr("class", "spectra_r")
-	                    .attr("stroke", color)
-	                    .attr("spectra","r_min")
-	                    .attr("stroke-width", 1)
-	                    .attr("stroke-opacity",0.3)
-	                    .attr("d", lineMin)
-	            line_box.append("path")
-	                    .datum(reflectance)
-	                    .attr("fill","none")
-	                    .attr("class", "spectra_r")
-	                    .attr("spectra","r_max")
-	                    .attr("stroke", color)
-	                    .attr("stroke-width", 1)
-	                    .attr("stroke-opacity",0.3)
-	                    .attr("d", lineMax)
-
+					line_box.append("path")
+						.datum(reflectance)
+						.attr("fill","none")
+						.attr("class", "spectra_r")
+						.attr("spectra","r_max")
+						.attr("stroke", color)
+						.attr("stroke-width", 1)
+						.attr("stroke-opacity",0.3)
+						.attr("d", lineMax)
+				}
 				const lineyr=line_box.append("path")
 					.datum(reflectance)
 					.attr("fill","none")
@@ -326,45 +333,51 @@ export default {
 					s.max=1-s.max;
 					s.min=1-s.min;
 				})*/
-				const tline = d3.line()
-					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-					.y(function(d) { return self.box.y_t(d.avg); })
 
-	            const tlineMin = d3.line()
-	                    .x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-	                    .y(function(d) { return self.box.y_t(d.min); })
+				if(this.showRange == "true") {
+					const tlineMin = d3.line()
+						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
+						.y(function(d) { return self.box.y_t(d.min); })
 
-	            const tlineMax = d3.line()
-	                    .x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-	                    .y(function(d) { return self.box.y_t(d.max); })
+					const tlineMax = d3.line()
+						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
+						.y(function(d) { return self.box.y_t(d.max); })
 
-				const lineyt=line_box.append("path")
-					.datum(transmittance)
-					.attr("fill","none")
-					.attr("class", "spectra_t")
-					.attr("spectra","t_max")
-					.attr("stroke", color)
-					.attr("stroke-width", 2.5)
-					.attr("stroke-opacity",1)
-					.attr("d", tline)				
-                line_box.append("path")
-                        .datum(transmittance)
-                        .attr("fill","none")
-                        .attr("class", "spectra_t")
-                        .attr("spectra","t_min")
-                        .attr("stroke", color)
-                        .attr("stroke-width", 1)
-                        .attr("stroke-opacity",0.3)
-                        .attr("d", tlineMin)
-                line_box.append("path")
+					line_box.append("path")
+						.datum(transmittance)
+						.attr("fill","none")
+						.attr("class", "spectra_t")
+						.attr("spectra","t_min")
+						.attr("stroke", color)
+						.attr("stroke-width", 1)
+						.attr("stroke-opacity",0.3)
+						.attr("d", tlineMin)
+               		line_box.append("path")
                         .datum(transmittance)
                         .attr("class", "spectra_t")
-                        .attr("spectra","t")
+                        .attr("spectra","t_max")
                         .attr("fill","none")
                         .attr("stroke", color)
                         .attr("stroke-width", 1)
                         .attr("stroke-opacity",0.3)
                         .attr("d", tlineMax)
+
+                }
+
+				const tline = d3.line()
+					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
+					.y(function(d) { return self.box.y_t(d.avg); })
+
+				const lineyt=line_box.append("path")
+					.datum(transmittance)
+					.attr("fill","none")
+					.attr("class", "spectra_t")
+					.attr("spectra","t")
+					.attr("stroke", color)
+					.attr("stroke-width", 2.5)
+					.attr("stroke-opacity",1)
+					.attr("d", tline)
+
 				if(this.animate==true){
 					lineyt.attr("stroke-dasharray", 1.5*this.box.width + " " + 1.5*this.box.width)
 					.attr("stroke-dashoffset", 1.5*this.box.width).transition()
@@ -375,7 +388,6 @@ export default {
 
 
 			}
-			this.animate=false
 		},
 		clearSpectra() {
 			d3.selectAll("#spectra-graph > *").remove()
