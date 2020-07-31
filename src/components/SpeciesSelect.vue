@@ -129,65 +129,65 @@
 #checkbox-group .btn-1, #checkbox-group .btn-1.focus{
 	background-color:white;
 	color:#444444;
-	border-color:#0756a1;
+	border-color:#65318c;
 }
 
 #checkbox-group .btn-1.active{
-	background-color:#0756a1 !important;
+	background-color:#65318c !important;
 	color:white;
 }
 
 #checkbox-group .btn-1:hover{
-	background-color:#0756a1dd !important;
+	background-color:#65318cdd !important;
 	color:white;
 }
 
 #checkbox-group .btn-2, #checkbox-group .btn-2.focus{
 	background-color:white;
 	color:#444444;
-	border-color:#65318c;
+	border-color:#8bc442;
 }
 
 #checkbox-group .btn-2.active, #checkbox-group .btn-2:hover{
-	background-color:#65318c !important;
+	background-color:#8bc442 !important;
 	color:white;
 }
 
 #checkbox-group .btn-2:hover{
-	background-color:#65318cdd !important;
+	background-color:#8bc442dd !important;
 	color:white;
 }
 
 #checkbox-group .btn-3, #checkbox-group .btn-3.focus{
 	background-color:white;
 	color:#444444;
-	border-color:#b92587;
+	border-color:#e7262b;
 }
 
 #checkbox-group .btn-3.active{
-	background-color:#b92587 !important;
+	background-color:#e7262b !important;
 	color:white;
 }
 
 #checkbox-group .btn-3:hover{
-	background-color:#b92587dd !important;
+	background-color:#e7262bdd !important;
 	color:white;
 }
 
 #checkbox-group .btn-4, #checkbox-group .btn-4.focus{
 	background-color:white;
 	color:#444444;
-	border-color:#e7262b;
+	border-color:#f59121;
 }
 
 #checkbox-group .btn-4.active{
-	background-color:#e7262b !important;
+	background-color:#f59121 !important;
 	color:white;
 }
 
 
 #checkbox-group .btn-4:hover{
-	background-color:#e7262bdd !important;
+	background-color:#f59121dd !important;
 	color:white;
 }
 
@@ -195,32 +195,32 @@
 #checkbox-group .btn-5, #checkbox-group .btn-5.focus{
 	background-color:white;
 	color:#444444;
-	border-color:#f59121;
+	border-color:#b92587;
 }
 
 #checkbox-group .btn-5.active{
-	background-color:#f59121 !important;
+	background-color:#b92587 !important;
 	color:white;
 }
 
 #checkbox-group .btn-5:hover{
-	background-color:#f59121dd !important;
+	background-color:#b92587dd !important;
 	color:white;
 }
 
 #checkbox-group .btn-6, #checkbox-group .btn-6.focus{
 	background-color:white;
 	color:#444444;
-	border-color:#f9ed2b;
+	border-color:#278e45;
 }
 
 #checkbox-group .btn-6.active{
-	background-color:#f9ed2b !important;
+	background-color:#278e45 !important;
 	color:white;
 }
 
 #checkbox-group .btn-6:hover{
-	background-color:#f9ed2bdd !important;
+	background-color:#278e45dd !important;
 	color:white;
 }
 
@@ -228,16 +228,16 @@
 #checkbox-group .btn-7, #checkbox-group .btn-7.focus{
 	background-color:white;
 	color:#444444;
-	border-color:#8bc442;
+	border-color:#0756a1;
 }
 
 #checkbox-group .btn-7.active{
-	background-color:#8bc442 !important;
+	background-color:#0756a1 !important;
 	color:white;
 }
 
 #checkbox-group .btn-7:hover{
-	background-color:#8bc442dd !important;
+	background-color:#0756a1dd !important;
 	color:white;
 }
 
@@ -247,3 +247,5 @@
 }
 
 </style>
+
+colors: ['#008bae','#f9ed2b','#e7262b','#65318c','#b92587','#f59121','#0756a1','#8bc442']

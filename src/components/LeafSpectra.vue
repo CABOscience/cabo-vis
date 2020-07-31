@@ -32,7 +32,7 @@ export default {
 	name: "LeafSpectra",
 	data: function() {
 		return {
-			colors: ['#008bae','#0756a1','#65318c','#b92587','#e7262b','#f59121','#f9ed2b','#8bc442']
+			colors: ['#008bae','#65318c','#8bc442','#e7262b','#f59121','#b92587','#278e45','#0756a1']
 		}
 	},
 	computed: {
@@ -63,17 +63,15 @@ export default {
 						this.drawBox(state.current_spectra.which);
 					}
 					this.clearBox();
-					const species_list=state.species_options.map(t => {
+					this.species_list=state.species_options.map(t => {
 						return t.scientific_name
 					})
-					state.current_spectra.spectra.forEach(s => {
-						if(state.species_selected.indexOf(s.data[0].scientific_name)!==-1){
-							const color=self.colors[species_list.indexOf(s.data[0].scientific_name)]
-							self.meanLeafSpectra(s.data,state.current_spectra.which,color);
-							state.showSpectraGraph=true
-						}
-					})
-					//self.meanLeafSpectra(state.current_spectra.spectra[0].data,state.current_spectra.which,this.colors[0]);
+					this.speciesSelected=state.species_selected
+					this.dataSpectra=state.current_spectra.spectra
+					this.which=state.current_spectra.which
+					this.animate=true
+					state.showSpectraGraph=true
+					this.callSpectra();
 				}else if(state.current_spectra.which=='none'){
 					this.clearBox();
 				}
@@ -86,6 +84,15 @@ export default {
 	},
 
 	methods: {
+		callSpectra(){
+			const self=this
+			this.dataSpectra.forEach(s => {
+				if(self.speciesSelected.indexOf(s.data[0].scientific_name)!==-1){
+					const color=self.colors[self.species_list.indexOf(s.data[0].scientific_name)]
+					self.meanLeafSpectra(s.data,color);
+				}
+			})
+		},
 		leafSpectra(data) {
 			const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 			var margin = {top: 50, right: 50, bottom: 50, left: 50}
@@ -140,42 +147,39 @@ export default {
 				.attr("height", this.box.height + this.box.margin.top + this.box.margin.bottom)
 				.append("g")
 				.attr("transform", "translate(" + this.box.margin.left + "," + this.box.margin.top + ")")
-			    .call(d3.zoom().on("zoom", function () {
-			       self.box.svg.attr("transform", d3.event.transform)
-			    }));
 			this.box.x = d3.scaleLinear()
 				.domain([345, 2500])
 				.range([0, this.box.width])
 
 			// 3. Call the x axis in a group tag
-			this.box.svg.append("g")
+			this.box.xAxis=this.box.svg.append("g")
 				.attr("class", "x axis")
 				.attr("transform", "translate(0," + this.box.height + ")")
 				.call(d3.axisBottom(this.box.x)); // Create an axis component with d3.axisBottom
 
-			this.box.y_r = d3.scaleLinear()
-				.domain([0, 1]) // input 
-				.range([this.box.height, this.box.height*0.15]); // output 
-
 			if(which=='both' || which=='reflectance'){
-				this.box.svg.append("g")
+				this.box.y_r = d3.scaleLinear()
+					.domain([0, 1]) // input 
+					.range([this.box.height, this.box.height*0.15]); // output 
+
+				this.box.yAxisR=this.box.svg.append("g")
 					.attr("class", "y axis")
 					.call(d3.axisLeft(this.box.y_r)); // Create an axis component with d3.axisLeft
 				// text label for the y axis
 				this.box.svg.append("text")
-				  .attr("transform", "rotate(-90)")
-				  .attr("y", 0 - this.box.margin.left)
-				  .attr("x",-50 - (this.box.height / 2))
-				  .attr("dy", "1em")
-				  .style("text-anchor", "middle")
-				  .text("Reflectance");  
+					.attr("transform", "rotate(-90)")
+					.attr("y", 0 - this.box.margin.left)
+					.attr("x",-50 - (this.box.height / 2))
+					.attr("dy", "1em")
+					.style("text-anchor", "middle")
+					.text("Reflectance");  
 			}
 			if(which=='both' || which=='transmittance'){
 				this.box.y_t = d3.scaleLinear()
 					.domain([1,0]) // input 
 					.range([this.box.height, 0+(this.box.height*0.15)]); // output 
 
-				this.box.svg.append("g")
+				this.box.yAxisT=this.box.svg.append("g")
 					.attr("class", "y axis")
 					.attr("transform", "translate( " + this.box.width + ", 0 )")
 					.call(d3.axisRight(this.box.y_t)); 
@@ -187,20 +191,70 @@ export default {
 				  .attr("transform", "rotate(90)")
 				  .text("Transmittance");
 			}
+
+			//clip box to crop when zooming
+			this.box.clip = this.box.svg.append("defs").append("SVG:clipPath")
+				.attr("id", "clip")
+				.append("SVG:rect")
+				.attr("width", this.box.width )
+				.attr("height", this.box.height - this.box.margin.bottom)
+				.attr("x", 0)
+				.attr("y", this.box.margin.bottom);
+
+			this.box.zoom = d3.zoom()
+				.scaleExtent([0.9, 5]) // This controls how much you can unzoom (x1) and zoom (x5)
+				.translateExtent([[0, 0], [this.box.width, this.box.height - this.box.margin.bottom]])  
+				.extent([[0, 0], [this.box.width, this.box.height - this.box.margin.bottom]])
+				.on("zoom", this.updateChart);
+
 			// Define the div for the tooltip
 			this.box.tooltip = d3.select("body").append("div")	
 			    .attr("class", "tooltip")				
 			    .style("opacity", 0);
+
+			//Invisible box to control zoome
 			//return box
 		},
-		meanLeafSpectra(data,which,color) {
+		updateChart() {
+
+		  // recover the new scale
+		  this.box.x = d3.event.transform.rescaleX(this.box.x);
+		  this.box.xAxis.call(d3.axisBottom(this.box.x))
+		  if(this.which=='reflectance' || this.which=='both'){
+		  	this.box.y_r = d3.event.transform.rescaleY(this.box.y_r); 	
+		  	this.box.yAxisR.call(d3.axisLeft(this.box.y_r))		  	
+		  }
+		  if(this.which=='transmittance' || this.which=='both'){
+		  	this.box.y_t= d3.event.transform.rescaleY(this.box.y_t);
+		  	this.box.yAxisT.call(d3.axisRight(this.box.y_t))	
+		  }
+		  //this.box.y_t = d3.event.transform.rescaleY(this.box.y_t);
+
+		  // update axes with these new boundaries
+		  //this.box.yAxisT.call(d3.axisLeft(newYT))
+		  this.clearBox()
+		  this.callSpectra()
+
+		},
+		meanLeafSpectra(data,color) {
 
 			data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 			const self=this
 
+			// Create the scatter variable: where both the circles and the brush take place
+			const line_box = this.box.svg.append('g')
+			  .attr("clip-path", "url(#clip)")
+
+			this.box.svg.append("rect")
+				.attr("width", this.box.width)
+				.attr("height", this.box.height - this.box.margin.bottom)
+				.style("fill", "none")
+				.style("pointer-events", "all")
+				.attr('transform', 'translate(' + this.box.margin.top + ',' + this.box.margin.left + ')')
+				.call(this.box.zoom).on("wheel", function() { d3.event.preventDefault()});
 
 
-			if(which=='both' || which=='reflectance'){
+			if(this.which=='both' || this.which=='reflectance'){
 				const reflectance = data.filter(s => s.reflectance_transmittance=='reflectance');
 				const line = d3.line()
 					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
@@ -215,7 +269,7 @@ export default {
 	                    .y(function(d) { return self.box.y_r(d.max); })
 
 
-	            this.box.svg.append("path")
+	            line_box.append("path")
 	                    .datum(reflectance)
 	                    .attr("fill","none")
 	                    .attr("class", "spectra_r")
@@ -224,7 +278,7 @@ export default {
 	                    .attr("stroke-width", 1)
 	                    .attr("stroke-opacity",0.3)
 	                    .attr("d", lineMin)
-	            this.box.svg.append("path")
+	            line_box.append("path")
 	                    .datum(reflectance)
 	                    .attr("fill","none")
 	                    .attr("class", "spectra_r")
@@ -234,7 +288,7 @@ export default {
 	                    .attr("stroke-opacity",0.3)
 	                    .attr("d", lineMax)
 
-				this.box.svg.append("path")
+				const lineyr=line_box.append("path")
 					.datum(reflectance)
 					.attr("fill","none")
 					.attr("class", "spectra_r")
@@ -243,13 +297,11 @@ export default {
 					.attr("stroke-width", 2.5)
 					.attr("stroke-opacity", 1)
 					.attr("d", line)				
-					.attr("stroke-dasharray", 1.5*this.box.width + " " + 1.5*this.box.width)
-			      	.attr("stroke-dashoffset", 1.5*this.box.width)
 					.on("mouseover", function(d) {		
 						self.box.tooltip.transition()		
 					    .duration(200)		
 					    .style("opacity", .9);		
-						self.box.tooltip.html(d[0].scientific_name + ' : ' + d.avg)	
+						self.box.tooltip.html(d[0].scientific_name)	
 					    .style("left", (d3.event.pageX) + "px")		
 					    .style("top", (d3.event.pageY - 28) + "px");	
 					})					
@@ -258,12 +310,16 @@ export default {
 					    .duration(500)		
 					    .style("opacity", 0);	
 					})
-			      	.transition()
-			        .duration(1000)
-			        .ease(d3.easeLinear)
-			        .attr("stroke-dashoffset", 0)
+					if(this.animate==true){
+						lineyr.attr("stroke-dasharray", 1.5*this.box.width + " " + 1.5*this.box.width)
+			      		.attr("stroke-dashoffset", 1.5*this.box.width).transition()
+						.duration(1000)
+						.ease(d3.easeLinear)
+						.attr("stroke-dashoffset", 0)
+					}
+			      	
 			}
-			if(which=='both' || which=='transmittance'){
+			if(this.which=='both' || this.which=='transmittance'){
 				let transmittance = data.filter(s => s.reflectance_transmittance=='transmittance')
 				/*transmittance.forEach(s => {
 					s.avg=1-s.avg;
@@ -282,7 +338,7 @@ export default {
 	                    .x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
 	                    .y(function(d) { return self.box.y_t(d.max); })
 
-				this.box.svg.append("path")
+				const lineyt=line_box.append("path")
 					.datum(transmittance)
 					.attr("fill","none")
 					.attr("class", "spectra_t")
@@ -291,14 +347,7 @@ export default {
 					.attr("stroke-width", 2.5)
 					.attr("stroke-opacity",1)
 					.attr("d", tline)				
-					.attr("stroke-dasharray", 1.5*this.box.width + " " + 1.5*this.box.width)
-			      	.attr("stroke-dashoffset", 1.5*this.box.width)
-			      	.transition()
-			        .duration(1000)
-			        .ease(d3.easeLinear)
-			        .attr("stroke-dashoffset", 0)
-
-                this.box.svg.append("path")
+                line_box.append("path")
                         .datum(transmittance)
                         .attr("fill","none")
                         .attr("class", "spectra_t")
@@ -307,7 +356,7 @@ export default {
                         .attr("stroke-width", 1)
                         .attr("stroke-opacity",0.3)
                         .attr("d", tlineMin)
-                this.box.svg.append("path")
+                line_box.append("path")
                         .datum(transmittance)
                         .attr("class", "spectra_t")
                         .attr("spectra","t")
@@ -316,8 +365,17 @@ export default {
                         .attr("stroke-width", 1)
                         .attr("stroke-opacity",0.3)
                         .attr("d", tlineMax)
-			}
+				if(this.animate==true){
+					lineyt.attr("stroke-dasharray", 1.5*this.box.width + " " + 1.5*this.box.width)
+					.attr("stroke-dashoffset", 1.5*this.box.width).transition()
+					.duration(1000)
+					.ease(d3.easeLinear)
+					.attr("stroke-dashoffset", 0)
+				}
 
+
+			}
+			this.animate=false
 		},
 		clearSpectra() {
 			d3.selectAll("#spectra-graph > *").remove()

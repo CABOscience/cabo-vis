@@ -60,6 +60,8 @@
 					 		return [s.geometry.coordinates[0],s.geometry.coordinates[1]]
 					 	}
 					})
+				},
+				set(){
 				}
 			},
 			showMap: {
