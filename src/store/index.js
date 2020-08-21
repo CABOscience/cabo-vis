@@ -121,7 +121,33 @@ export default new Vuex.Store({
 						taxa: context.state.search_box.search_value
 					}}
 				).then(result => {
-					context.commit('save_search_spectra_ids', result.data);
+					if(result.data.length === 0){
+						Vue.axios.get('vascan', {
+							params: {
+								q: context.state.search_box.search_value
+							}}
+						).then(result => {
+							if(result.data.results[0].numMatches > 0) {
+								const gett = result.data.results[0].matches.map(sp => Vue.axios.get('leaf_spectra/search/taxa',{
+									params: {
+										taxa: sp.scientificName
+									}
+								}).catch(function(error){console.log(error);}));
+								const allids=[]
+								Vue.axios.all(gett).then(responses => {
+									const resp=responses.map(m => m.data)
+									context.commit('save_search_spectra_ids', resp.flat());
+								})
+							}else{
+									context.commit('save_search_spectra_ids', {});
+							}
+						}).catch(error => {
+							throw new Error(`API ${error}`);
+						})
+
+					}else{
+						context.commit('save_search_spectra_ids', result.data);
+					}
 				}).catch(error => {
 					throw new Error(`API ${error}`);
 				});
