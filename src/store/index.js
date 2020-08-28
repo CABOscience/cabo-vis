@@ -2,17 +2,8 @@
  
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from 'axios';
-import VueAxios from 'vue-axios';
-//import qs from 'qs';
 
 Vue.use(Vuex);
-Vue.use(VueAxios, axios);
-
-Vue.axios.defaults.baseURL = "https://data.caboscience.org/api/v1/";
-//Vue.axios.defaults.baseURL = "http://localhost:3001/api/v1/";
-//Vue.axios.defaults.headers.common['Authorization'] = 'Bearer '+process.env.CABO_API_KEY;
-Vue.axios.defaults.headers.common['Authorization'] = 'Bearer 2e9f97ef84b1069a1885c20d982a5c751b192492378a8a3e7db38c3f1024d76a';
 
 export default new Vuex.Store({
 	state: {

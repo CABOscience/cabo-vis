@@ -31,7 +31,7 @@ export default {
     SpeciesSelect,
     SideBar,
     SpectraMap,
-    PlantsTable
+    PlantsTable,
   }, 
   data: function() {
     return {
