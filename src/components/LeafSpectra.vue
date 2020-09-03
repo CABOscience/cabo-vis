@@ -1,5 +1,5 @@
 <template>
-      <b-card border-variant="my-primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSpectra">
+      <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSpectra">
 <b-card-header header-bg-variant="dark" header-text-variant="light">
 	<b-form-group class="switches">
     <b-form-checkbox v-model="reflectance" name="check-button" value="true" unchecked-value="false" switch>
