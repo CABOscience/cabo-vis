@@ -4,18 +4,18 @@
     <nav id="sidebar" v-bind:class="{ active: isActive }">
 
         <ul class="list-unstyled components">
-            <p><strong>Results</strong></p>
+            <p><strong>{{ $t('results') }}</strong></p>
             <li>
-                <a href="#spectra">Mean spectra</a>
+                <a href="#spectra">{{ $t('mean_spectra') }}</a>
             </li>
             <li>
-                <a href="#map">Sites</a>
+                <a href="#map">{{ $t('sites') }}</a>
             </li>
             <li>
-                <a href="#plants">Plants</a>
+                <a href="#plants">{{ $t('plants') }}</a>
             </li>
             <li>
-                <a href="#">Leaf analysis</a>
+                <a href="#">{{ $t('leaf_analysis') }}</a>
             </li>
         </ul>
 

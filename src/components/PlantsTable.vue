@@ -1,7 +1,6 @@
 <template>
-<b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" header="Plants" class="text-center spectra-card" v-show="showPlantsTable">
+<b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showPlantsTable">
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
-<div id="spectra-container" class="row" >
 	<div id="plants-container" class="row">
 		<b-table
 	      id="plants-table"
@@ -16,14 +15,14 @@
           Photo
         </b-button>
         <b-button size="sm" @click="row.toggleDetails">
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+          {{ row.detailsShowing ? $('hide') : $t('show') }} {{ $t('details') }}
         </b-button>
       </template>
 
       <template v-slot:row-details="row">
         <b-card>
           <ul>
-            <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+            <li v-for="(value, key) in row.item" :key="key">{{ $t(key) }}: {{ $t(value) }}</li>
           </ul>
         </b-card>
       </template>
@@ -41,9 +40,8 @@
       <b-img fluid :src="infoModal.img"></b-img>
     </b-modal>
 
-    <p class="mt-3">Current Page: {{ currentPage }}</p>
+    <p class="mt-3">{{ $t('current_page') }}: {{ currentPage }}</p>
 	</div>
-</div>
 </b-card-text>
 	</b-card>
 </template>
@@ -68,6 +66,11 @@
     computed: {
     	rows() {
     		return this.items.length
+		},
+		header: {
+			get() {
+				return this.$i18n.t('plants')
+			}
 		},
     	showPlantsTable: {
 			get() {

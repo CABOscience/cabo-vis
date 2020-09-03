@@ -1,15 +1,15 @@
 <template>
-      <b-card border-variant="my-primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" header="Mean spectra" class="text-center spectra-card" v-show="showSpectra">
+      <b-card border-variant="my-primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSpectra">
 <b-card-header header-bg-variant="dark" header-text-variant="light">
 	<b-form-group class="switches">
     <b-form-checkbox v-model="reflectance" name="check-button" value="true" unchecked-value="false" switch>
-      Reflectance
+      {{ $t('reflectance') }}
     </b-form-checkbox>
     <b-form-checkbox variant="secondary" v-model="transmittance" name="check-button" value="true" unchecked-value="false" class="switch-transmittance" switch>
-      Transmittance
+      {{ $t('transmittance') }}
     </b-form-checkbox>
     <b-form-checkbox v-model="range" name="check-button" value="true" unchecked-value="false" switch>
-      Ranges
+       {{ $t('ranges') }}
     </b-form-checkbox>
 	</b-form-group>	
 </b-card-header>
@@ -39,6 +39,11 @@ export default {
 		showSpectra: {
 			get() {
 				return this.$store.state.showSpectra
+			}
+		},
+		header: {
+			get() {
+				return this.$i18n.t('mean_spectra')
 			}
 		},
 		showSpectraGraph: {
@@ -204,7 +209,7 @@ export default {
 					.attr("x",-50 - (this.box.height / 2))
 					.attr("dy", "1em")
 					.style("text-anchor", "middle")
-					.text("Reflectance");  
+					.text(this.$i18n.t('reflectance'));
 			}
 			if(which=='both' || which=='transmittance'){
 				this.box.y_t = d3.scaleLinear()
@@ -221,7 +226,7 @@ export default {
 				  .attr("dy", "1em")
 				  .style("text-anchor", "middle")
 				  .attr("transform", "rotate(90)")
-				  .text("Transmittance");
+				  .text(this.$i18n.t('transmittance'));
 			}
 
 			//clip box to crop when zooming

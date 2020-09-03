@@ -1,5 +1,5 @@
 <template>
-      <b-card v-if="showMap" border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" header="Site locations" class="text-center spectra-card">
+      <b-card v-if="showMap" border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card">
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
         	<div class="row"  id="map-container">
     <l-map
@@ -50,6 +50,11 @@
 			};
 		},
 		computed: {
+			header: {
+				get () {
+					return this.$i18n.t('sites');
+				}
+			},
 			markers: {
 				get () {
 					const m=this.$store.state.current_spectra.spectra_ids.filter(s => s.geometry!==null && s.geometry.coordinates[1]!==0)

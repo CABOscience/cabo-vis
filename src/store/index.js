@@ -2,6 +2,7 @@
  
 import Vue from "vue";
 import Vuex from "vuex";
+import {i18n} from '../plugins/i18n';
 
 Vue.use(Vuex);
 
@@ -59,7 +60,7 @@ export default new Vuex.Store({
 				this.dispatch('clearSpectra');
 				state.showAll = false;
 			}
-			state.search_box.announce = spectra_ids.length + ' plants found.'
+			state.search_box.announce = spectra_ids.length + i18n.t('_plants_found')
 		},
 		save_spectra(state, spectra) {
 			state.showLoader=false;

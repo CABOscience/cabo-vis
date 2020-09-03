@@ -6,8 +6,8 @@
 	<autocomplete
 	  :search="search_api"
 	  class="search-bar"
-	  placeholder="Enter species name" 
-      aria-label="Enter species name"
+	  :placeholder="placeholder" 
+      :aria-label="placeholder"
       :get-result-value="getResultValue"
       :debounceTime="500"
       @submit="handleSelection"
@@ -19,7 +19,7 @@
  <b-button  variant="primary" class="clear-button btn btn-danger" v-on:click="clear" v-if="searchNotEmpty">x</b-button>
 </b-input-group-append>
 <b-input-group-append>
- <b-button  variant="primary" class="search-button btn btn-primary" v-on:click="search">Search</b-button>
+ <b-button  variant="primary" class="search-button btn btn-primary" v-on:click="search">{{ $t('search') }}</b-button>
 </b-input-group-append>
 <b-input-group-append  class="announce-group">
   <div class="search-announce" v-html="announce"></div>
@@ -51,6 +51,11 @@ export default {
 		announce: {
 			get () {
 				return this.$store.state.search_box.announce
+			}
+		},
+		placeholder: {
+			get () {
+				return this.$i18n.t('enter_species_name')
 			}
 		},
 		authHeaders () {

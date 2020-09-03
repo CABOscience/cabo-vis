@@ -2,6 +2,7 @@
   <div id="app">
         <SideBar />
            <div id="content" v-bind:class="{ active: isActive }">
+              <LanguageSwitcher></LanguageSwitcher>
               <div id="logo">
                 <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
               </div>
@@ -16,6 +17,7 @@
 </template>
 
 <script>
+import LanguageSwitcher from "./components/LanguageSwitcher.vue"
 import Loader from "./components/Loader.vue"
 import LeafSpectra from "./components/LeafSpectra.vue"
 import SearchBar from "./components/SearchBar.vue"
@@ -23,11 +25,13 @@ import SpeciesSelect from "./components/SpeciesSelect.vue"
 import SideBar from "./components/SideBar.vue"
 import SpectraMap from "./components/SpectraMap.vue"
 import PlantsTable from "./components/PlantsTable.vue"
+
 //import * as d3 from 'd3'
 
 export default {
   name: 'App',
   components: {
+    LanguageSwitcher,
     Loader,
     LeafSpectra, 
     SearchBar,
@@ -52,6 +56,9 @@ export default {
           }
       }
   },
+  mounted: {
+
+  }
 }
 </script>
 

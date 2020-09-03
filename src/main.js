@@ -4,15 +4,14 @@ import { BootstrapVue, IconsPlugin, PaginationPlugin, TablePlugin} from 'bootstr
 import App from './App.vue'
 //import 'bootstrap/dist/css/bootstrap.css'
 import './custom.scss'
+import {i18n} from './plugins/i18n';
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 
-//import qs from 'qs';
-
 Vue.config.productionTip = false
-// Install BootstrapVue
+
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
@@ -28,6 +27,7 @@ Vue.axios.defaults.headers.common['Authorization'] = 'Bearer 2e9f97ef84b1069a188
 
 new Vue({
 	store,
+	i18n,
 	render: h => h(App),
 }).$mount('#app')
 
