@@ -11,13 +11,16 @@
       :get-result-value="getResultValue"
       :debounceTime="500"
       @submit="handleSelection"
+      ref="autocomplete"
 	 >
 	</autocomplete>
 </b-input-group-append>
 <b-input-group-append>
+ <b-button  variant="primary" class="clear-button btn btn-danger" v-on:click="clear" v-if="searchNotEmpty">x</b-button>
+</b-input-group-append>
+<b-input-group-append>
  <b-button  variant="primary" class="search-button btn btn-primary" v-on:click="search">Search</b-button>
 </b-input-group-append>
-
 <b-input-group-append  class="announce-group">
   <div class="search-announce" v-html="announce"></div>
   </b-input-group-append>
@@ -40,6 +43,7 @@ export default {
 	data: function() {
 		return {
 			searchValue : '',
+			searchNotEmpty : false,
 		}
 	},
 
@@ -58,6 +62,16 @@ export default {
 	methods: {
 		search: function(){
 			this.$store.commit('save_search', this.searchValue);
+			this.searchNotEmpty=true
+		},
+		clear: function(){
+			this.searchValue=''
+			this.$store.commit('save_search', "");
+			this.searchNotEmpty=false
+			this.$store.commit('showLoader', false);
+			this.$store.state.showSpectra = false;
+			this.$refs.autocomplete.value = ''
+
 		},
 	    getResultValue(result) {
 	      return result.name

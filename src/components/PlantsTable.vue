@@ -1,6 +1,8 @@
 <template>
-	<b-container>
-	<div id="plants-container" class="row" v-show="showPlantsTable">
+<b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" header="Plants" class="text-center spectra-card" v-show="showPlantsTable">
+        <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
+<div id="spectra-container" class="row" >
+	<div id="plants-container" class="row">
 		<b-table
 	      id="plants-table"
 	      :items="items"
@@ -41,7 +43,9 @@
 
     <p class="mt-3">Current Page: {{ currentPage }}</p>
 	</div>
-	</b-container>
+</div>
+</b-card-text>
+	</b-card>
 </template>
 
 
@@ -109,3 +113,9 @@
 	},    
   }
 </script>
+
+<style scoped>
+#plants-container{
+	margin:auto;
+}
+</style>

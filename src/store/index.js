@@ -65,6 +65,8 @@ export default new Vuex.Store({
 			state.showLoader=false;
 			state.showAll=true;
 			state.sidebar=false;
+			state.showSpectra=true
+			state.showSpectraGraph=false
 			if(spectra!=false){
 				state.current_spectra.spectra=spectra;
 			}
@@ -78,9 +80,9 @@ export default new Vuex.Store({
 			}
 		},
 		save_search(state, search) {
-			state.showSpectra=true
-			state.showSpectraGraph=false
-			state.showLoader=true
+			if(search!==''){
+				state.showLoader=true
+			}
 			state.search_box.search_value = search;
 			this.dispatch('clearSpectra');
 			this.dispatch('searchTaxa');

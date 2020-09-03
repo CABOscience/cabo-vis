@@ -4,7 +4,7 @@
     <nav id="sidebar" v-bind:class="{ active: isActive }">
 
         <ul class="list-unstyled components">
-            <p>Results</p>
+            <p><strong>Results</strong></p>
             <li>
                 <a href="#spectra">Mean spectra</a>
             </li>
@@ -52,7 +52,7 @@ export default {
     left: 0;
     height: 100vh;
     z-index: 999;
-    background: #008bae;
+    background: #006e70;
     color: #fff;
     transition: all 0.3s;
 }
@@ -69,7 +69,7 @@ export default {
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #008bae;
+    background: #006e70;
 }
 
 #sidebar ul.components {
@@ -89,14 +89,14 @@ export default {
 }
 
 #sidebar ul li a:hover {
-    color: #008bae;
+    color: #006e70;
     background: #fff;
 }
 
 #sidebar ul li.active>a,
 a[aria-expanded="true"] {
     color: #fff;
-    background: #008bae;
+    background: #006e70;
 }
 
 a[data-toggle="collapse"] {

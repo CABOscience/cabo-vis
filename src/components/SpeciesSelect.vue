@@ -12,17 +12,6 @@
       </b-form-checkbox>
 	</b-form-checkbox-group>
     </b-form-group>
-	<b-form-group class="switches">
-    <b-form-checkbox v-model="reflectance" name="check-button" value="true" unchecked-value="false" switch>
-      Reflectance
-    </b-form-checkbox>
-    <b-form-checkbox variant="secondary" v-model="transmittance" name="check-button" value="true" unchecked-value="false" class="switch-transmittance" switch>
-      Transmittance
-    </b-form-checkbox>
-    <b-form-checkbox v-model="range" name="check-button" value="true" unchecked-value="false" switch>
-      Ranges
-    </b-form-checkbox>
-	</b-form-group>
 
  </div>
 </template>
@@ -32,12 +21,9 @@
 	export default{
 	    data() {
 			return {
-				reflectance: 'true',
-				transmittance: 'false',
 				count_sp: 0,
 				test: 'test',
 				selected_sp:[],
-				range: true
 			}
 	    },
 		computed: {
@@ -49,24 +35,6 @@
 			species_options: {
 				get() {
 					return this.$store.state.species_options
-				}
-			},
-			reflectance_transmittance: {
-				get(){
-					if(this.reflectance=='true' && this.transmittance=='false'){
-						return 'reflectance'
-					}else if(this.reflectance=='false' && this.transmittance=='true'){
-						return 'transmittance'
-					}else if(this.reflectance=='true' && this.transmittance=='true'){
-						return 'both'
-					}else{
-						return 'none'
-					}
-				}
-			},
-			show_range: {
-				get() {
-					return this.range
 				}
 			},
 			species_selected: {
@@ -95,18 +63,6 @@
 			})
 		},
 		watch: {
-		    reflectance_transmittance(which) {
-		    	this.$store.state.current_spectra.reBox = true
-		        this.$store.commit('clear_spectra')
-		        this.$store.commit('reflectance_transmittance',which)
-		        this.$store.commit('save_spectra', false)
-		    },
-		    show_range(show_range) {
-		    	this.$store.state.current_spectra.reBox = true
-		    	this.$store.state.current_spectra.showRange = show_range
-		        this.$store.commit('clear_spectra')
-		        this.$store.commit('save_spectra', false)
-		    },
 		    species_selected(which) {
 		    	this.$store.state.species_selected=which
 				this.$store.state.current_spectra.reBox = true
@@ -257,17 +213,5 @@
 	color:white;
 }
 
-.switch-transmittance .custom-control-input:checked ~ .custom-control-label::before {
-	background-color:#ffa500 !important;
-	border-color:#ffa500  !important;
-}
-
-.switches{
-	max-width:200px;
-	text-align:left;
-	margin:auto;
-}
 
 </style>
-
-colors: ['#008bae','#f9ed2b','#e7262b','#65318c','#b92587','#f59121','#0756a1','#8bc442']

@@ -2,7 +2,8 @@ import Vue from 'vue'
 import store from "./store"
 import { BootstrapVue, IconsPlugin, PaginationPlugin, TablePlugin} from 'bootstrap-vue'
 import App from './App.vue'
-import 'bootstrap/dist/css/bootstrap.css'
+//import 'bootstrap/dist/css/bootstrap.css'
+import './custom.scss'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';

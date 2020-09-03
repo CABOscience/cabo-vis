@@ -1,28 +1,25 @@
 <template>
-<div id="spectra-container" class="row" v-show="showSpectra">
-<div v-if="showLoader" class="loader">
-	<svg class="loader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200px" height="200px" viewBox="0 0 100 100">
-	<circle cx="18" cy="63.8778" r="4" fill="#008bae">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="0s" repeatCount="indefinite"></animate>
-	</circle><circle cx="27" cy="65.8997" r="4" fill="#0756a1">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.125s" repeatCount="indefinite"></animate>
-	</circle><circle cx="36" cy="60.9779" r="4" fill="#65318c">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.25s" repeatCount="indefinite"></animate>
-	</circle><circle cx="45" cy="46.9951" r="4" fill="#b92587">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.375s" repeatCount="indefinite"></animate>
-	</circle><circle cx="54" cy="36.1222" r="4" fill="#e7262b">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.5s" repeatCount="indefinite"></animate>
-	</circle><circle cx="63" cy="34.1003" r="4" fill="#f59121">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.625s" repeatCount="indefinite"></animate>
-	</circle><circle cx="72" cy="39.0221" r="4" fill="#f9ed2b">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.75s" repeatCount="indefinite"></animate>
-	</circle><circle cx="81" cy="53.0049" r="4" fill="#8bc442">
-	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="-0.875s" repeatCount="indefinite"></animate>
-	</circle>
-	</svg>
-</div>
+      <b-card border-variant="my-primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" header="Mean spectra" class="text-center spectra-card" v-show="showSpectra">
+<b-card-header header-bg-variant="dark" header-text-variant="light">
+	<b-form-group class="switches">
+    <b-form-checkbox v-model="reflectance" name="check-button" value="true" unchecked-value="false" switch>
+      Reflectance
+    </b-form-checkbox>
+    <b-form-checkbox variant="secondary" v-model="transmittance" name="check-button" value="true" unchecked-value="false" class="switch-transmittance" switch>
+      Transmittance
+    </b-form-checkbox>
+    <b-form-checkbox v-model="range" name="check-button" value="true" unchecked-value="false" switch>
+      Ranges
+    </b-form-checkbox>
+	</b-form-group>	
+</b-card-header>
+        <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
+<div id="spectra-container" class="row" >
+
 <div id="spectra-graph" class="row" v-show="showSpectraGraph"></div>
 </div>
+</b-card-text>
+      </b-card>
 </template>
 
 <script>
@@ -32,15 +29,13 @@ export default {
 	name: "LeafSpectra",
 	data: function() {
 		return {
-			colors: ['#008bae','#65318c','#8bc442','#e7262b','#f59121','#b92587','#278e45','#0756a1']
+			colors: ['#008bae','#65318c','#8bc442','#e7262b','#f59121','#b92587','#278e45','#0756a1'],
+			reflectance: 'true',
+			transmittance: 'false',
+			range: true
 		}
 	},
 	computed: {
-		showLoader: {
-			get() {
-				return this.$store.state.showLoader	
-			}
-		},
 		showSpectra: {
 			get() {
 				return this.$store.state.showSpectra
@@ -50,7 +45,25 @@ export default {
 			get() {
 				return this.$store.state.showSpectraGraph
 			}
-		}
+		},
+		show_range: {
+			get() {
+				return this.range
+			}
+		},
+		reflectance_transmittance: {
+			get(){
+				if(this.reflectance=='true' && this.transmittance=='false'){
+					return 'reflectance'
+				}else if(this.reflectance=='false' && this.transmittance=='true'){
+					return 'transmittance'
+				}else if(this.reflectance=='true' && this.transmittance=='true'){
+					return 'both'
+				}else{
+					return 'none'
+				}
+			}
+		},
 	},
 	mounted: function() {
 		this.$store.subscribe((mutation,state) => {
@@ -83,7 +96,20 @@ export default {
 			} 
 		})
 	},
-
+	watch: {
+	    reflectance_transmittance(which) {
+	    	this.$store.state.current_spectra.reBox = true
+	        this.$store.commit('clear_spectra')
+	        this.$store.commit('reflectance_transmittance',which)
+	        this.$store.commit('save_spectra', false)
+	    },
+	    show_range(show_range) {
+	    	this.$store.state.current_spectra.reBox = true
+	    	this.$store.state.current_spectra.showRange = show_range
+	        this.$store.commit('clear_spectra')
+	        this.$store.commit('save_spectra', false)
+	    },
+	},
 	methods: {
 		callSpectra(){
 			const self=this
@@ -426,17 +452,29 @@ div.tooltip {
     border-radius: 5px;			
     pointer-events: none;			
 }
-.loader{
-	display:inline;
-	overflow:visible;
-	top:0px;
-	left:40%;
-	top:10%;
-	position:absolute;
+
+.spectra-card{
+	margin-top:60px !important;
 }
-#spectra-container{
-	position:relative;
-	min-width:80%;
+
+.graph-card{
 	min-height:300px;
 }
+
+
+.switch-transmittance .custom-control-input:checked ~ .custom-control-label::before {
+	background-color:#ffa500 !important;
+	border-color:#ffa500  !important;
+}
+
+.switches{
+	/*max-width:200px;*/
+	margin-bottom:0px !important;
+}
+
+.custom-switch{
+	display:inline !important;
+	margin-left:12px;
+}
+
 </style>

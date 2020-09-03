@@ -7,6 +7,7 @@
               </div>
               <a name="search"></a><SearchBar></SearchBar>
               <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
+              <Loader></Loader>
               <a name="spectra"></a><LeafSpectra></LeafSpectra>
               <a name="map"></a><SpectraMap></SpectraMap>
               <a name="plants"></a><PlantsTable></PlantsTable>
@@ -15,6 +16,7 @@
 </template>
 
 <script>
+import Loader from "./components/Loader.vue"
 import LeafSpectra from "./components/LeafSpectra.vue"
 import SearchBar from "./components/SearchBar.vue"
 import SpeciesSelect from "./components/SpeciesSelect.vue"
@@ -26,6 +28,7 @@ import PlantsTable from "./components/PlantsTable.vue"
 export default {
   name: 'App',
   components: {
+    Loader,
     LeafSpectra, 
     SearchBar,
     SpeciesSelect,
@@ -85,10 +88,20 @@ export default {
     width: 100%;
 }
 #spectra-container, #map-container, #plants-container {
-  border: 4px solid #dddddd;
+ /* border: 4px solid #dddddd;
   border-radius: 10px; 
-  margin:100px 20px;
+  margin:100px 20px;*/
 }
+
+.card-body{
+  padding:0px !important;
+  min-height:250px;
+}
+
+.card{
+  margin-bottom:50px;
+} 
+
 @media (max-width: 768px) {
     #sidebar {
         margin-left: -250px;

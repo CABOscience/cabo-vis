@@ -1,7 +1,9 @@
 <template>
-	<div class="row" v-if="showMap" id="map-container">
+      <b-card v-if="showMap" border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" header="Site locations" class="text-center spectra-card">
+        <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
+        	<div class="row"  id="map-container">
     <l-map
-      style="height: 400px; width: 100%"
+      style="height: 400px; width: 100%; position:relative"
       :zoom="zoom"
       :center="center"
       @update:zoom="zoomUpdated"
@@ -18,6 +20,8 @@
       </l-marker>
     </l-map>
 	</div>
+</b-card-text>
+</b-card>
 </template>
 
 <script>
@@ -87,6 +91,9 @@
 </script>
 
 <style>
-	
+
+#map-container{
+	margin:0px;
+}
 
 </style>
