@@ -12,15 +12,15 @@
       :bounds="bounds"
     >
       <l-tile-layer :url="url"></l-tile-layer>
-     	  <v-marker-cluster>
-      <l-marker
-        v-for="marker in markers"
-        :key="marker.fulcrum_id"
-        :lat-lng="marker.geometry.coordinates"
-      >
-		<l-popup>{{marker.scientific_name}}</l-popup>
-      </l-marker>
-      	  </v-marker-cluster>
+     	<l-marker-cluster>
+	    	<l-marker
+	       	v-for="marker in markers"
+	        :key="marker.fulcrum_id"
+	        :lat-lng="marker.geometry.coordinates"
+	      	>
+			<l-popup><strong>{{marker.scientific_name}}</strong><br>{{marker.site_id}} <img :src="marker.close_up_photos" class="popup_photo"></l-popup>
+      		</l-marker>
+      	</l-marker-cluster>
     </l-map>
 
 	</div>
@@ -47,7 +47,7 @@
 			LTileLayer,
 			LMarker,
 			LPopup,
-			'v-marker-cluster': Vue2LeafletMarkerCluster,
+			'l-marker-cluster': Vue2LeafletMarkerCluster,
 		},
 		data () {
 			return {
@@ -64,14 +64,25 @@
 			},
 			markers: {
 				get () {
-					const m=this.$store.state.current_spectra.spectra_ids.filter(s => s.geometry!==null && s.geometry.coordinates[1]!==0)
-					m.forEach(s => s.geometry.coordinates=[s.geometry.coordinates[1],s.geometry.coordinates[0]])
+					const m=this.$store.state.plants.filter(s => s.geometry!==null && s.geometry.coordinates[1]!==0)
+					m.forEach(s => {
+						s.geometry.coordinates=[s.geometry.coordinates[1],s.geometry.coordinates[0]]
+						if(s.close_up_photos!==null){
+							if(s.close_up_photos.indexOf(',')!==-1){
+								s.close_up_photos = 'https://data.caboscience.org/vis/photos/plants/'+s.close_up_photos.substr(0,s.close_up_photos.indexOf(','))+'.jpg';
+							}else{
+								s.close_up_photos = 'https://data.caboscience.org/vis/photos/plants/'+s.close_up_photos+'.jpg';
+							}
+							}else{
+								s.close_up_photos = false;
+							}
+						})
 					return m
 				}
 			},
 			bounds: {
 				get() {
-					return this.$store.state.current_spectra.spectra_ids.map(s => {
+					return this.$store.state.plants.map(s => {
 					 	if(s.geometry!==null && s.geometry.coordinates[1]!==0) {
 					 		return [s.geometry.coordinates[0],s.geometry.coordinates[1]]
 					 	}
@@ -108,5 +119,7 @@
 #map-container{
 	margin:0px;
 }
-
+.popup_photo{
+	max-width:250px;
+}
 </style>
