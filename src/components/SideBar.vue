@@ -55,16 +55,16 @@ export default {
     background: #006e70;
     color: #fff;
     transition: all 0.3s;
+    margin-left: -250px;
 }
 
 #sidebar a{
     color:#fff;
     text-decoration: none;
-
 }
 
 #sidebar.active {
-    margin-left: -250px;
+    margin-left: 0px;
 }
 
 #sidebar .sidebar-header {
@@ -139,4 +139,24 @@ a.article:hover {
     background: #008bae !important;
     color: #fff !important;
 }
+
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: -250px;
+    }
+    #content, #content.active {
+        width: 100% !important;
+    }
+/*    #content.active {
+        width: calc(100% - 250px);
+    }*/
+    #sidebarCollapse span {
+        display: none;
+    }
+}
+
 </style>

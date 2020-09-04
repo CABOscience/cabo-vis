@@ -1,8 +1,8 @@
 <template>
-<div class="search-box">
+	<b-container>
 <b-input-group size="lg" class="search-group">
   <!-- b-form-input type="search" class="search-bar" placeholder="Enter species name" v-model="searchValue"></b-form-input -->
-	<b-input-group-append>
+	<b-input-group-prepend class="search-prepend">
 	<autocomplete
 	  :search="search_api"
 	  class="search-bar"
@@ -14,19 +14,18 @@
       ref="autocomplete"
 	 >
 	</autocomplete>
-</b-input-group-append>
-<b-input-group-append>
- <b-button  variant="primary" class="clear-button btn btn-danger" v-on:click="clear" v-if="searchNotEmpty">x</b-button>
-</b-input-group-append>
-<b-input-group-append>
- <b-button  variant="primary" class="search-button btn btn-primary" v-on:click="search">{{ $t('search') }}</b-button>
-</b-input-group-append>
-<b-input-group-append  class="announce-group">
-  <div class="search-announce" v-html="announce"></div>
-  </b-input-group-append>
-</b-input-group>
-
-</div>
+	</b-input-group-prepend >
+	<b-input-group-append >
+	 <b-button  variant="primary" class="clear-button btn btn-danger" v-on:click="clear" v-if="searchNotEmpty">x</b-button>
+	</b-input-group-append>
+	<b-input-group-append class="w-15">
+	 <b-button  variant="primary" class="search-button btn btn-primary" v-on:click="search">{{ $t('search') }}</b-button>
+	</b-input-group-append>
+	<b-input-group-append  class="announce-group">
+	  <div class="search-announce" v-html="announce"></div>
+	  </b-input-group-append>
+	</b-input-group>
+</b-container>
 </template>
 
 <script>
@@ -103,11 +102,17 @@ export default {
 </script>
 <style>
 .search-box{
-	max-width:40%;
-	margin:auto;
+	/*max-width:40%;
+	margin:auto;*/
 }
+
+.search-prepend{
+	width:100%;
+}
+
 .search-bar{
-	width:400px;
+	/*max-width:500px;*/
+	width:100%;
 	/*width:400px;
 	height:2.5em;
 	margin:auto;
@@ -123,6 +128,9 @@ export default {
 
 .search-group{
 	flex-wrap: nowrap !important;
+	max-width:700px;
+	margin:auto;
+	width:90%;
 }
 
 .announce-group{

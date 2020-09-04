@@ -3,9 +3,11 @@
         <SideBar />
            <div id="content" v-bind:class="{ active: isActive }">
               <LanguageSwitcher></LanguageSwitcher>
+              <b-container>
               <div id="logo">
                 <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
               </div>
+              </b-container>
               <a name="search"></a><SearchBar></SearchBar>
               <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
               <Loader></Loader>
@@ -71,17 +73,19 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
 .main-logo{
-  max-width:35%;
-  margin:auto;
+  max-width:500px;
+  width:60%;
+  margin:5px auto 20px;
 }
+
 .wrapper {
     display: flex;
     width: 100%;
 }
 
-
-#content {
+#content.active {
     width: calc(100% - 250px);
     padding: 40px;
     min-height: 100vh;
@@ -91,7 +95,7 @@ export default {
     right: 0;
 }
 
-#content.active {
+#content {
     width: 100%;
 }
 #spectra-container, #map-container, #plants-container {
@@ -109,21 +113,5 @@ export default {
   margin-bottom:50px;
 } 
 
-@media (max-width: 768px) {
-    #sidebar {
-        margin-left: -250px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #content {
-        width: 100%;
-    }
-    #content.active {
-        width: calc(100% - 250px);
-    }
-    #sidebarCollapse span {
-        display: none;
-    }
-}
+
 </style>

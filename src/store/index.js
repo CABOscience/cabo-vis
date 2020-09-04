@@ -23,7 +23,7 @@ export default new Vuex.Store({
 		plants : [],
 		species_options: [],
 		species_selected: [],
-		sidebar: true,
+		sidebar: false,
 		showAll: false,
 		showLoader: false,
 		showSpectra: false,
@@ -65,7 +65,7 @@ export default new Vuex.Store({
 		save_spectra(state, spectra) {
 			state.showLoader=false;
 			state.showAll=true;
-			state.sidebar=false;
+			state.sidebar=true;
 			state.showSpectra=true
 			state.showSpectraGraph=false
 			if(spectra!=false){
