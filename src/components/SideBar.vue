@@ -141,7 +141,7 @@ a.article:hover {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 1396px) {
     #sidebar {
         margin-left: -250px;
     }

@@ -12,13 +12,17 @@
       :bounds="bounds"
     >
       <l-tile-layer :url="url"></l-tile-layer>
+     	  <v-marker-cluster>
       <l-marker
         v-for="marker in markers"
         :key="marker.fulcrum_id"
         :lat-lng="marker.geometry.coordinates"
       >
+		<l-popup>{{marker.scientific_name}}</l-popup>
       </l-marker>
+      	  </v-marker-cluster>
     </l-map>
+
 	</div>
 </b-card-text>
 </b-card>
@@ -26,8 +30,9 @@
 
 <script>
 	import { L, latLngBounds} from 'leaflet';
-	import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+	import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet';
 	import { Icon } from 'leaflet';
+	import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
 
 	delete Icon.Default.prototype._getIconUrl;
 	Icon.Default.mergeOptions({
@@ -41,6 +46,8 @@
 			LMap,
 			LTileLayer,
 			LMarker,
+			LPopup,
+			'v-marker-cluster': Vue2LeafletMarkerCluster,
 		},
 		data () {
 			return {
@@ -96,7 +103,8 @@
 </script>
 
 <style>
-
+@import "~leaflet.markercluster/dist/MarkerCluster.css";
+@import "~leaflet.markercluster/dist/MarkerCluster.Default.css";
 #map-container{
 	margin:0px;
 }
