@@ -15,7 +15,7 @@
      	<l-marker-cluster>
 	    	<l-marker
 	       	v-for="marker in markers"
-	        :key="marker.fulcrum_id"
+	        :key="marker.id"
 	        :lat-lng="marker.geometry.coordinates"
 	      	>
 			<l-popup><strong>{{marker.scientific_name}}</strong><br>{{marker.site_id}} <img :src="marker.close_up_photos" class="popup_photo"></l-popup>
