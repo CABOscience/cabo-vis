@@ -70,12 +70,12 @@ export default {
 		},
 		clear: function(){
 			this.searchValue=''
-			this.$store.commit('save_search', "");
+			this.$store.commit('save_search', "")
 			this.searchNotEmpty=false
-			this.$store.commit('showLoader', false);
-			this.$store.state.showSpectra = false;
+			this.$store.commit('showLoader', false)
+			this.$store.state.showSpectra = false
 			this.$refs.autocomplete.value = ''
-
+			this.$store.state.species_selected = []
 		},
 	    getResultValue(result) {
 	      return result.name
