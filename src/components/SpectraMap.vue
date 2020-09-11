@@ -18,7 +18,13 @@
 	        :key="marker.id"
 	        :lat-lng="marker.geometry.coordinates"
 	      	>
-			<l-popup><strong>{{marker.scientific_name}}</strong><br>{{marker.site_id}} <img :src="marker.close_up_photos" class="popup_photo"></l-popup>
+			<l-popup>
+				<h2>{{marker.scientific_name}}</h2>
+				<br>{{marker.site_id}} 
+				<br>{{marker.first_observed_by}} 
+				<br>{{marker.date_first_observed}} 
+				<img :src="marker.close_up_photos" class="popup_photo">
+			</l-popup>
       		</l-marker>
       	</l-marker-cluster>
     </l-map>
