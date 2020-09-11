@@ -297,7 +297,7 @@ export default {
 		  if(this.which=='transmittance' || this.which=='both'){
 			//this.box.y_r.domain()[0]=(this.box.y_t.domain()[0]-this.box.starty_t.domain()[0])/100
 		    //this.box.y_r.domain()[1]=(this.box.y_t.domain()[1]-this.box.starty_t.domain()[1])/100
-		    const newY_T = d3.event.transform.rescaleY(this.box.y_r);
+		    const newY_T = d3.event.transform.rescaleY(this.box.y_t);
 		  	//this.box.y_t= d3.event.transform.rescaleY(this.box.y_t);
 		  	this.box.yAxisT.call(d3.axisRight(newY_T))	
 		  	if(Math.abs(newY_T.domain()[0]-this.box.y_t.domain()[0])>threshy | Math.abs(newY_T.domain()[1]-this.box.y_r.domain()[1])>threshy){
