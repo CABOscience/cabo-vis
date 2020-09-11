@@ -20,6 +20,7 @@ const messages = {'en': {
 	hide: 'Hide',
 	details: 'details',
 	current_page: 'Current page',
+	reset_zoom: 'Reset Zoom',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -39,6 +40,7 @@ const messages = {'en': {
 	hide: 'Fermer',
 	details: 'détails',
 	current_page: 'Page actuelle',
+	reset_zoom: 'Réinitialiser le spectre',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

@@ -28,6 +28,7 @@ export default new Vuex.Store({
 		showLoader: false,
 		showSpectra: false,
 		showSpectraGraph: false,
+		showResetZoom: true,
 	},
 	getters: {},
 	mutations: {
@@ -104,6 +105,9 @@ export default new Vuex.Store({
 		},
 		toggle_sidebar(state, search){
 			state.sidebar=!state.sidebar;
+		},
+		reset_zoom(){
+			state.showResetZoom=false
 		}
 	},
 	actions: {
@@ -199,7 +203,6 @@ export default new Vuex.Store({
 			});
 		},
 		getManySpectraMeanTaxa (context) {
-
 			const gets = context.state.species_selected.map(sp => Vue.axios.get('leaf_spectra_mean/search/',{
 				params: {
 					species: sp

@@ -3,7 +3,7 @@
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
         	<div class="row"  id="map-container">
     <l-map
-      style="height: 400px; width: 100%; position:relative"
+      style="height: 600px; width: 100%; position:relative"
       :zoom="zoom"
       :center="center"
       @update:zoom="zoomUpdated"
@@ -11,7 +11,7 @@
       @update:bounds="boundsUpdated"
       :bounds="bounds"
     >
-      <l-tile-layer :url="url"></l-tile-layer>
+      <l-tile-layer :url="satellite"></l-tile-layer>
      	<l-marker-cluster>
 	    	<l-marker
 	       	v-for="marker in markers"
@@ -51,7 +51,8 @@
 		},
 		data () {
 			return {
-			  url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			  osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+			  satellite: 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
 			  zoom: 10,
 			  center: [45.5,-73.3],
 			};

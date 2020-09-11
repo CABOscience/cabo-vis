@@ -11,6 +11,8 @@
     <b-form-checkbox v-model="range" name="check-button" value="true" unchecked-value="false" switch>
        {{ $t('ranges') }}
     </b-form-checkbox>
+    <b-button v-on:click="resetZoom" v-show="showResetZoom" class="btn-danger reset-zoom">{{ $t('reset_zoom') }}
+    </b-button>
 	</b-form-group>	
 </b-card-header>
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
@@ -32,7 +34,8 @@ export default {
 			colors: ['#008bae','#65318c','#8bc442','#e7262b','#f59121','#b92587','#278e45','#0756a1'],
 			reflectance: 'true',
 			transmittance: 'false',
-			range: true
+			range: true, 
+			showResetZoom: false,
 		}
 	},
 	computed: {
@@ -49,6 +52,11 @@ export default {
 		showSpectraGraph: {
 			get() {
 				return this.$store.state.showSpectraGraph
+			}
+		},
+		showResetZoom: {
+			get() {
+				return this.$store.state.showResetZoom
 			}
 		},
 		show_range: {
@@ -240,8 +248,9 @@ export default {
 
 			this.box.zoom = d3.zoom()
 				.scaleExtent([0.9, 5]) // This controls how much you can unzoom (x1) and zoom (x5)
-				.translateExtent([[0, 0], [this.box.width, this.box.height - this.box.margin.bottom]])  
+				//.translateExtent([[0, 0], [this.box.width, this.box.height - this.box.margin.bottom]])  
 				.extent([[0, 0], [this.box.width, this.box.height - this.box.margin.bottom]])
+				.on("start", this.startZoom)
 				.on("zoom", this.updateChart);
 
 			// Define the div for the tooltip
@@ -249,21 +258,51 @@ export default {
 			    .attr("class", "tooltip")				
 			    .style("opacity", 0);
 
+			this.box.startx=this.box.x
+			this.box.starty_t=this.box.y_t
+			this.box.starty_r=this.box.y_r
 			//Invisible box to control zoome
-			//return box
+		},
+		startZoom() {
+			this.box.startx=this.box.x
+			this.box.starty_t=this.box.y_t
+			this.box.starty_r=this.box.y_r
 		},
 		updateChart() {
 
+		  this.showResetZoom=true;
+		  //this.box.x.domain()[0]=(this.box.x.domain()[0]-this.box.startx.domain()[0])/100
+		  //this.box.x.domain()[1]=(this.box.x.domain()[1]-this.box.startx.domain()[1])/100
+
 		  // recover the new scale
-		  this.box.x = d3.event.transform.rescaleX(this.box.x);
-		  this.box.xAxis.call(d3.axisBottom(this.box.x))
+		  const newX = d3.event.transform.rescaleX(this.box.x);
+		  this.box.xAxis.call(d3.axisBottom(newX))
+		  const threshx=1
+		  const threshy=0.01
+		  if(Math.abs(newX.domain()[0]-this.box.x.domain()[0])>threshx | Math.abs(newX.domain()[1]-this.box.x.domain()[1])>threshx){
+		  	this.box.x=newX
+		  }
+		  
 		  if(this.which=='reflectance' || this.which=='both'){
-		  	this.box.y_r = d3.event.transform.rescaleY(this.box.y_r); 	
-		  	this.box.yAxisR.call(d3.axisLeft(this.box.y_r))		  	
+		  	const thresh=10
+			//this.box.y_r.domain()[0]=(this.box.y_r.domain()[0]-this.box.starty_r.domain()[0])/100
+		    //this.box.y_r.domain()[1]=(this.box.y_r.domain()[1]-this.box.starty_r.domain()[1])/100
+		    const newY_R = d3.event.transform.rescaleY(this.box.y_r);
+		  	//this.box.y_r = d3.event.transform.rescaleY(this.box.y_r); 	
+		  	this.box.yAxisR.call(d3.axisLeft(newY_R))		
+		  	if(Math.abs(newY_R.domain()[0]-this.box.y_r.domain()[0])>threshy | Math.abs(newY_R.domain()[1]-this.box.y_r.domain()[1])>threshy){
+		  		this.box.y_r=newY_R
+		  	}
 		  }
 		  if(this.which=='transmittance' || this.which=='both'){
-		  	this.box.y_t= d3.event.transform.rescaleY(this.box.y_t);
-		  	this.box.yAxisT.call(d3.axisRight(this.box.y_t))	
+			//this.box.y_r.domain()[0]=(this.box.y_t.domain()[0]-this.box.starty_t.domain()[0])/100
+		    //this.box.y_r.domain()[1]=(this.box.y_t.domain()[1]-this.box.starty_t.domain()[1])/100
+		    const newY_T = d3.event.transform.rescaleY(this.box.y_r);
+		  	//this.box.y_t= d3.event.transform.rescaleY(this.box.y_t);
+		  	this.box.yAxisT.call(d3.axisRight(newY_T))	
+		  	if(Math.abs(newY_T.domain()[0]-this.box.y_t.domain()[0])>threshy | Math.abs(newY_T.domain()[1]-this.box.y_r.domain()[1])>threshy){
+		  		this.box.y_t=newY_T
+		  	}
 		  }
 		  //this.box.y_t = d3.event.transform.rescaleY(this.box.y_t);
 
@@ -427,6 +466,12 @@ export default {
 			d3.selectAll(".spectra_r").remove()
 			d3.selectAll(".spectra_t").remove()
 		},
+		resetZoom() {
+			//this.$store.commit('clear_spectra')
+			this.clearSpectra()
+        	this.$store.commit('save_spectra', false)
+        	this.showResetZoom=false
+		}
 	}
 }
 </script>
@@ -480,6 +525,15 @@ div.tooltip {
 .custom-switch{
 	display:inline !important;
 	margin-left:12px;
+}
+
+.reset-zoom{
+	height: 30px;
+    padding: 5px 8px !important;
+    text-align: center;
+    line-height: 1.2em !important;
+    margin-left: 20px;
+    float: right;
 }
 
 </style>
