@@ -11,6 +11,8 @@
     <b-form-checkbox v-model="range" name="check-button" value="true" unchecked-value="false" switch>
        {{ $t('ranges') }}
     </b-form-checkbox>
+    <b-button v-on:click="downloadMeanCsv" class="btn-secondary reset-zoom">{{ $t('download_csv') }}
+    </b-button>
     <b-button v-on:click="resetZoom" v-show="showResetZoom" class="btn-danger reset-zoom">{{ $t('reset_zoom') }}
     </b-button>
 	</b-form-group>	
@@ -137,6 +139,9 @@ export default {
 				}
 				i++
 			})			
+		},
+		downloadMeanCsv() {
+			this.$store.commit('download_mean_csv')
 		},
 		leafSpectra(data) {
 			const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))

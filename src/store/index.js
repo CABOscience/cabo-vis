@@ -3,6 +3,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import {i18n} from '../plugins/i18n';
+import fs from 'fs';
 
 Vue.use(Vuex);
 
@@ -108,6 +109,9 @@ export default new Vuex.Store({
 		},
 		reset_zoom(){
 			state.showResetZoom=false
+		},
+		download_mean_csv(state){
+			this.dispatch('downloadMeanCSV')
 		}
 	},
 	actions: {
@@ -220,5 +224,16 @@ export default new Vuex.Store({
 			context.state.current_spectra.spectra_ids=[]
 			context.state.current_spectra.spectra=[]
 		},
+		downloadMeanCSV(context){
+			Vue.axios.post('leaf_spectra/csv/', {
+			    taxa: 'Acer saccharum',
+			    type: 'reflectance',
+			    responseType: 'stream'
+			}).then(response => {
+			    response.data.pipe(fs.createWriteStream('test.csv'))
+			}).catch(error => {
+				console.log(error)
+			});
+		}
 	}
 });
