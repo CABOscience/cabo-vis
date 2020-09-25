@@ -245,7 +245,7 @@ export default new Vuex.Store({
 			}).then(response => {
 				const d = Date.now();
 				this.dispatch('processCSVResponse',{response:response,filename:'cabo_plant_spectra_'+d+'.csv'})
-				//context.state.showSpectraDownloadSpinner=false
+				context.state.showPlantSpectraDownloadSpinner=false
 			}).catch(error => {
 				console.log(error)
 			});

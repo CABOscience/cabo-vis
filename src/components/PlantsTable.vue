@@ -12,18 +12,18 @@
 	    	
       <template v-slot:cell(plant_photos)="row">
       	<b-button-group>
-	        <b-button size="sm" @click="photo(row.item, row.index, $event.target)" class="mr-1">
-	          Photo
+	        <b-button size="sm" @click="photo(row.item, row.index, $event.target)" class="mr-1" v-show="!!row.item.plant_photos">
+	          Photos
 	        </b-button>
 	        <b-button size="sm" @click="row.toggleDetails" class="mr-1">
 	          {{ row.detailsShowing ? $('hide') : $t('show') }} {{ $t('details') }}
 	        </b-button>
-	        <b-button size="sm" @click="dowload_plant_spectra(row.item, row.index, $event.target)" class="mr-1">
-	          {{ $t('download_spectra_data') }}
+	        <b-button size="sm" @click="download_plant_spectra(row.item, row.index, $event.target)" class="mr-1" variant="primary">
+	          {{ $t('download_spectra_data') }} <b-icon-arrow-down-circle  v-show="!downloadPlantSpectraSpinner(row.index)"></b-icon-arrow-down-circle>
 		      <b-spinner
 		      	small
 		        variant="light"
-		        v-show="downloadPlantSpectraSpinner"
+		        v-show="downloadPlantSpectraSpinner(row.index)"
 		      ></b-spinner>
 	        </b-button>
     	</b-button-group>
@@ -37,7 +37,6 @@
         </b-card>
       </template>
 
-
 	    </b-table>
     <b-pagination
       v-model="currentPage"
@@ -47,7 +46,21 @@
     ></b-pagination>
     <!-- Info modal -->
     <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
-      <b-img fluid :src="infoModal.img"></b-img>
+          <b-carousel
+		      id="carousel-1"
+		      v-model="slide"
+		      :interval="4000"
+		      controls
+		      indicators
+		      background="#ababab"
+		      img-height="800"
+		      style="text-shadow: 1px 1px 2px #333;"
+		      @sliding-start="onSlideStart"
+		      @sliding-end="onSlideEnd"
+		    >
+	      <b-carousel-slide v-for="(value, key) in infoModal.img" :key="key" :img-src="value" >
+	      </b-carousel-slide>
+  		</b-carousel>
     </b-modal>
 
     <p class="mt-3">{{ $t('current_page') }}: {{ currentPage }}</p>
@@ -70,7 +83,9 @@
           id: 'info-modal',
           title: '',
           content: ''
-        }
+        },
+        slide: 0,
+        sliding: null
       }
     },
     computed: {
@@ -87,11 +102,11 @@
 				return this.$store.state.showAll	
 			}
 		},
-		downloadPlantSpectraSpinner : {
-			get(item) {
-				return this.$store.state.showPlantSpectraDownloadSpinner
+		downloadPlantSpectraSpinner() {
+			return(index)=> {
+				return this.$store.state.showPlantSpectraDownloadSpinner===index
 			}
-		},
+		}
     },
     methods: {
     	photo(item, index, button) {
@@ -103,9 +118,16 @@
 			this.infoModal.title = ''
 		    this.infoModal.content = ''
 	    },
-	    dowload_plant_spectra(item, index, button) {
+	    download_plant_spectra(item, index, button) {
+	    	this.$store.state.showPlantSpectraDownloadSpinner=index
 	    	this.$store.commit('download_plant_spectra_csv', item.sample_ids)
-	    }
+	    },
+		onSlideStart(slide) {
+			this.sliding = true
+		},
+		onSlideEnd(slide) {
+			this.sliding = false
+		}
     },
 	mounted: function() {
 		this.$store.subscribe((mutation,state) => {
@@ -120,12 +142,18 @@
 				    	})
 						ro.sample_ids = ids.join(',')
 						ro.scientific_name = m.scientific_name
-						ro.site_id = m.site_id
+						ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
 						if(m.plant_photos!==null){
-							if(m.plant_photos.indexOf(',')!==-1){
-								ro.plant_photos = 'https://data.caboscience.org/vis/photos/plants/'+m.plant_photos.substr(0,m.plant_photos.indexOf(','))+'.jpg';
-							}else{
-								ro.plant_photos = 'https://data.caboscience.org/vis/photos/plants/'+m.plant_photos+'.jpg';
+							ro.plant_photos=[]
+							let pf=m.plant_photos.split(',')
+							pf.map(p=>{
+								ro.plant_photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
+							})
+							if(m.close_up_photos!==null){
+								pf=m.close_up_photos.split(',')
+								pf.map(p=>{
+									ro.plant_photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
+								})
 							}
 						}else{
 							ro.plant_photos = false;

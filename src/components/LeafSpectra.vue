@@ -12,7 +12,8 @@
        {{ $t('ranges') }}
     </b-form-checkbox>
     <b-button v-on:click="downloadTaxaMeanCsv" class="btn-secondary reset-zoom">{{ $t('download_csv') }}
-      <b-spinner
+     <b-icon-arrow-down-circle  v-show="!downloadSpinner"></b-icon-arrow-down-circle>
+     	<b-spinner
       	small
         variant="light"
         v-show="downloadSpinner"
