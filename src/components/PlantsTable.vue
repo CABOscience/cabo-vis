@@ -11,18 +11,28 @@
 	    >
 	    	
       <template v-slot:cell(plant_photos)="row">
-        <b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
-          Photo
-        </b-button>
-        <b-button size="sm" @click="row.toggleDetails">
-          {{ row.detailsShowing ? $('hide') : $t('show') }} {{ $t('details') }}
-        </b-button>
+      	<b-button-group>
+	        <b-button size="sm" @click="photo(row.item, row.index, $event.target)" class="mr-1">
+	          Photo
+	        </b-button>
+	        <b-button size="sm" @click="row.toggleDetails" class="mr-1">
+	          {{ row.detailsShowing ? $('hide') : $t('show') }} {{ $t('details') }}
+	        </b-button>
+	        <b-button size="sm" @click="dowload_plant_spectra(row.item, row.index, $event.target)" class="mr-1">
+	          {{ $t('download_spectra_data') }}
+		      <b-spinner
+		      	small
+		        variant="light"
+		        v-show="downloadPlantSpectraSpinner"
+		      ></b-spinner>
+	        </b-button>
+    	</b-button-group>
       </template>
 
       <template v-slot:row-details="row">
         <b-card>
           <ul>
-            <li v-for="(value, key) in row.item" :key="key">{{ $t(key) }}: {{ $t(value) }}</li>
+            <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
           </ul>
         </b-card>
       </template>
@@ -76,10 +86,15 @@
 			get() {
 				return this.$store.state.showAll	
 			}
-		}
+		},
+		downloadPlantSpectraSpinner : {
+			get(item) {
+				return this.$store.state.showPlantSpectraDownloadSpinner
+			}
+		},
     },
     methods: {
-    	info(item, index, button) {
+    	photo(item, index, button) {
 			this.infoModal.title = item.scientific_name;
 			this.infoModal.img = item.plant_photos;
 			this.$root.$emit('bv::show::modal', this.infoModal.id, button)
@@ -88,6 +103,9 @@
 			this.infoModal.title = ''
 		    this.infoModal.content = ''
 	    },
+	    dowload_plant_spectra(item, index, button) {
+	    	this.$store.commit('download_plant_spectra_csv', item.sample_ids)
+	    }
     },
 	mounted: function() {
 		this.$store.subscribe((mutation,state) => {
@@ -96,6 +114,11 @@
 				if(state.plants.length!==0){
 					this.items=state.plants.map(function(m) {
 						let ro = {}
+						let ids = []
+				    	m.bulk_leaf_samples.map(i=>{
+				    		ids.push(i.sample_id)
+				    	})
+						ro.sample_ids = ids.join(',')
 						ro.scientific_name = m.scientific_name
 						ro.site_id = m.site_id
 						if(m.plant_photos!==null){

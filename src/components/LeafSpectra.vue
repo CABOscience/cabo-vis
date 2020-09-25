@@ -11,8 +11,12 @@
     <b-form-checkbox v-model="range" name="check-button" value="true" unchecked-value="false" switch>
        {{ $t('ranges') }}
     </b-form-checkbox>
-    <b-button v-on:click="downloadMeanCsv" class="btn-secondary reset-zoom">{{ $t('download_csv') }}
-    </b-button>
+    <b-button v-on:click="downloadTaxaMeanCsv" class="btn-secondary reset-zoom">{{ $t('download_csv') }}
+      <b-spinner
+      	small
+        variant="light"
+        v-show="downloadSpinner"
+      ></b-spinner></b-button>
     <b-button v-on:click="resetZoom" v-show="showResetZoom" class="btn-danger reset-zoom">{{ $t('reset_zoom') }}
     </b-button>
 	</b-form-group>	
@@ -36,7 +40,7 @@ export default {
 			colors: ['#008bae','#65318c','#8bc442','#e7262b','#f59121','#b92587','#278e45','#0756a1'],
 			reflectance: 'true',
 			transmittance: 'false',
-			range: true, 
+			range: true,
 			showResetZoom: false,
 		}
 	},
@@ -56,14 +60,14 @@ export default {
 				return this.$store.state.showSpectraGraph
 			}
 		},
-		showResetZoom: {
-			get() {
-				return this.$store.state.showResetZoom
-			}
-		},
 		show_range: {
 			get() {
 				return this.range
+			}
+		},
+		downloadSpinner : {
+			get() {
+				return this.$store.state.showSpectraDownloadSpinner
 			}
 		},
 		reflectance_transmittance: {
@@ -140,8 +144,8 @@ export default {
 				i++
 			})			
 		},
-		downloadMeanCsv() {
-			this.$store.commit('download_mean_csv')
+		downloadTaxaMeanCsv() {
+			this.$store.commit('download_taxa_mean_csv')
 		},
 		leafSpectra(data) {
 			const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))

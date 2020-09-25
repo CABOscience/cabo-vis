@@ -29,7 +29,8 @@ export default new Vuex.Store({
 		showLoader: false,
 		showSpectra: false,
 		showSpectraGraph: false,
-		showResetZoom: true,
+		showSpectraDownloadSpinner: false,
+		showPlantSpectraDownloadSpinner: false,
 	},
 	getters: {},
 	mutations: {
@@ -107,11 +108,12 @@ export default new Vuex.Store({
 		toggle_sidebar(state, search){
 			state.sidebar=!state.sidebar;
 		},
-		reset_zoom(){
-			state.showResetZoom=false
-		},
-		download_mean_csv(state){
-			this.dispatch('downloadMeanCSV')
+		download_taxa_mean_csv(state){
+			state.showSpectraDownloadSpinner=true
+			this.dispatch('downloadTaxaMeanCSV')
+		}, 
+		download_plant_spectra_csv(state, record_id){
+			this.dispatch('downloadPlantSpectraCSV',record_id)
 		}
 	},
 	actions: {
@@ -224,16 +226,37 @@ export default new Vuex.Store({
 			context.state.current_spectra.spectra_ids=[]
 			context.state.current_spectra.spectra=[]
 		},
-		downloadMeanCSV(context){
+		downloadTaxaMeanCSV(context){
 			Vue.axios.post('leaf_spectra/csv/', {
-			    taxa: 'Acer saccharum',
-			    type: 'reflectance',
-			    responseType: 'stream'
+			    taxa: context.state.species_selected,
+			    type: 'mean',
 			}).then(response => {
-			    response.data.pipe(fs.createWriteStream('test.csv'))
+				const d = Date.now();
+				this.dispatch('processCSVResponse',{response:response,filename:'cabo_mean_spectra_by_species_'+d+'.csv'})
+				context.state.showSpectraDownloadSpinner=false
 			}).catch(error => {
 				console.log(error)
 			});
+		},
+		downloadPlantSpectraCSV(context, sample_ids){
+			Vue.axios.post('leaf_spectra/csv/', {
+			    ids: sample_ids,
+			    type: 'raw',
+			}).then(response => {
+				const d = Date.now();
+				this.dispatch('processCSVResponse',{response:response,filename:'cabo_plant_spectra_'+d+'.csv'})
+				//context.state.showSpectraDownloadSpinner=false
+			}).catch(error => {
+				console.log(error)
+			});
+		},
+		processCSVResponse(context,data){
+			const url = window.URL.createObjectURL(new Blob([data.response.data]));
+			const link = document.createElement('a');
+			link.href = url;
+			link.setAttribute('download', data.filename);
+			document.body.appendChild(link);
+			link.click();
 		}
 	}
 });

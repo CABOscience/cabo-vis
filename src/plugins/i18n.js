@@ -21,6 +21,8 @@ const messages = {'en': {
 	details: 'details',
 	current_page: 'Current page',
 	reset_zoom: 'Reset Zoom',
+	download_csv: 'Download as CSV',
+	download_spectra_data: 'Download plant spectra'
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -41,6 +43,8 @@ const messages = {'en': {
 	details: 'détails',
 	current_page: 'Page actuelle',
 	reset_zoom: 'Réinitialiser le spectre',
+	download_csv: 'Télécharger CSV',
+	download_spectra_data :'Télécharger données spectrales'
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 
