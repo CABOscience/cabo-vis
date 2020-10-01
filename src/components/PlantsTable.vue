@@ -1,5 +1,17 @@
 <template>
 <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showPlantsTable">
+<b-card-header header-bg-variant="dark" header-text-variant="light">
+      	<b-button-group>
+	        <b-button size="sm" @click="download_all_plant_spectra()" class="mr-1" variant="primary">
+	          {{ $t('download_all_plant_spectra_data') }} <b-icon-arrow-down-circle  v-show="!downloadAllPlantSpectraSpinner"></b-icon-arrow-down-circle>
+		      <b-spinner
+		      	small
+		        variant="light"
+		        v-show="downloadAllPlantSpectraSpinner"
+		      ></b-spinner>
+	        </b-button>
+    	</b-button-group>
+</b-card-header>
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
 	<div id="plants-container" class="row">
 		<b-table
@@ -19,7 +31,7 @@
 	          {{ row.detailsShowing ? $('hide') : $t('show') }} {{ $t('details') }}
 	        </b-button>
 	        <b-button size="sm" @click="download_plant_spectra(row.item, row.index, $event.target)" class="mr-1" variant="primary">
-	          {{ $t('download_spectra_data') }} <b-icon-arrow-down-circle  v-show="!downloadPlantSpectraSpinner(row.index)"></b-icon-arrow-down-circle>
+	          {{ $t('download_plant_spectra_data') }} <b-icon-arrow-down-circle  v-show="!downloadPlantSpectraSpinner(row.index)"></b-icon-arrow-down-circle>
 		      <b-spinner
 		      	small
 		        variant="light"
@@ -106,6 +118,11 @@
 			return(index)=> {
 				return this.$store.state.showPlantSpectraDownloadSpinner===index
 			}
+		},
+		downloadAllPlantSpectraSpinner: {
+			get() {
+				return this.$store.state.showAllPlantSpectraDownloadSpinner
+			}
 		}
     },
     methods: {
@@ -121,6 +138,9 @@
 	    download_plant_spectra(item, index, button) {
 	    	this.$store.state.showPlantSpectraDownloadSpinner=index
 	    	this.$store.commit('download_plant_spectra_csv', item.sample_ids)
+	    },
+	    download_all_plant_spectra(){
+	    	this.$store.commit('download_all_plant_spectra_csv')
 	    },
 		onSlideStart(slide) {
 			this.sliding = true

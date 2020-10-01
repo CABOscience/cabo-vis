@@ -22,7 +22,10 @@ const messages = {'en': {
 	current_page: 'Current page',
 	reset_zoom: 'Reset Zoom',
 	download_csv: 'Download as CSV',
-	download_spectra_data: 'Download plant spectra'
+	download_plant_spectra_data: 'Download plant spectra',
+	download_all_plant_spectra_data: 'Download all plant spectra',
+	info_sheet: 'Info Sheet',
+	spectra: 'Spectra'
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -44,7 +47,10 @@ const messages = {'en': {
 	current_page: 'Page actuelle',
 	reset_zoom: 'Réinitialiser le spectre',
 	download_csv: 'Télécharger CSV',
-	download_spectra_data :'Télécharger données spectrales'
+	download_plant_spectra_data :'Télécharger données spectrales',
+	download_all_plant_spectra_data :'Télécharger toutes les données spectrales',
+	info_sheet: 'Feuille descriptive',
+	spectra: 'Spectre'
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

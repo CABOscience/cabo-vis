@@ -31,6 +31,8 @@ export default new Vuex.Store({
 		showSpectraGraph: false,
 		showSpectraDownloadSpinner: false,
 		showPlantSpectraDownloadSpinner: false,
+		showAllPlantSpectraDownloadSpinner: false,
+		showMarkerPlantSpectraDownloadSpinner: false,
 	},
 	getters: {},
 	mutations: {
@@ -114,6 +116,10 @@ export default new Vuex.Store({
 		}, 
 		download_plant_spectra_csv(state, record_id){
 			this.dispatch('downloadPlantSpectraCSV',record_id)
+		},
+		download_all_plant_spectra_csv(state){
+			state.showAllPlantSpectraDownloadSpinner=true
+			this.dispatch('downloadAllPlantSpectraCSV')
 		}
 	},
 	actions: {
@@ -246,6 +252,24 @@ export default new Vuex.Store({
 				const d = Date.now();
 				this.dispatch('processCSVResponse',{response:response,filename:'cabo_plant_spectra_'+d+'.csv'})
 				context.state.showPlantSpectraDownloadSpinner=false
+				context.state.showMarkerPlantSpectraDownloadSpinner=false
+			}).catch(error => {
+				console.log(error)
+			});
+		},
+		downloadAllPlantSpectraCSV(context){
+			let ids=[]
+			context.state.current_spectra.spectra_ids.map(s=>{
+				ids.push(s.sample_id)
+			})
+			ids=ids.join(",");
+			Vue.axios.post('leaf_spectra/csv/', {
+			    ids: ids,
+			    type: 'raw',
+			}).then(response => {
+				const d = Date.now();
+				this.dispatch('processCSVResponse',{response:response,filename:'cabo_all_plant_spectra_'+d+'.csv'})
+				context.state.showAllPlantSpectraDownloadSpinner=false
 			}).catch(error => {
 				console.log(error)
 			});
