@@ -25,7 +25,7 @@
     <b-modal :id="infoModal.id" :title="infoModal.marker.scientific_name" ok-only @hide="resetInfoModal">
   <b-tabs content-class="mt-3">
     <b-tab :title="tab1_title" active>
-		<br>{{infoModal.marker.site_id}} 
+		{{infoModal.marker.site_id}} 
 		<br>{{infoModal.marker.first_observed_by}} 
 		<br>{{infoModal.marker.date_first_observed}} 
 		<b-carousel
@@ -108,6 +108,7 @@
 				get () {
 					const s=this.$store.state.plants.filter(s => s.geometry!==null && s.geometry.coordinates[1]!==0)
 					s.forEach(m => {
+						m.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
 						m.geometry.coordinates=[m.geometry.coordinates[1],m.geometry.coordinates[0]]
 						let ids = []
 				    	m.bulk_leaf_samples.map(i=>{
