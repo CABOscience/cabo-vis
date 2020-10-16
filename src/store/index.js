@@ -12,6 +12,10 @@ export default new Vuex.Store({
 		search_box: {
 			search_value: '',
 			announce: '',
+			geomFilter: '',
+			startDate: '',
+			endDate: '',
+			projects: '',
 		},
 		current_spectra: {
 			spectra_ids: [],
@@ -64,6 +68,8 @@ export default new Vuex.Store({
 			}else{
 				this.dispatch('clearSpectra');
 				state.showAll = false;
+				state.showLoader=false
+				state.showSpectra=false
 			}
 			state.search_box.announce = spectra_ids.length + i18n.t('_plants_found')
 		},
@@ -85,11 +91,8 @@ export default new Vuex.Store({
 				this.dispatch('saveSpectra');
 			}
 		},
-		save_search(state, search) {
-			if(search!==''){
-				state.showLoader=true
-			}
-			state.search_box.search_value = search;
+		save_search(state) {
+			state.showLoader=true
 			this.dispatch('clearSpectra');
 			this.dispatch('searchTaxa');
 		},
@@ -125,36 +128,17 @@ export default new Vuex.Store({
 	actions: {
 		searchTaxa (context) {
 			context.commit('clear_spectra');
-			if(context.state.search_box.search_value !== '' && context.state.search_box.search_value !== ' '){
-				Vue.axios.get('leaf_spectra/search/taxa', {
-					params: {
-						taxa: context.state.search_box.search_value
-					}}
+			if((context.state.search_box.search_value !== '' && context.state.search_box.search_value !== ' ') | context.state.search_box.geomFilter !=='' | context.state.search_box.projects!=='' | context.state.search_box.startDate!==''){
+				Vue.axios.post('leaf_spectra/search/taxa', {
+						taxa: context.state.search_box.search_value,
+						start_date: context.state.search_box.startDate,
+						end_date: context.state.search_box.endDate,
+						geometry: context.state.search_box.geomFilter,
+						projects: context.state.search_box.projects,
+					}
 				).then(result => {
 					if(result.data.length === 0){
-						Vue.axios.get('vascan', {
-							params: {
-								q: context.state.search_box.search_value
-							}}
-						).then(result => {
-							if(result.data.results[0].numMatches > 0) {
-								const gett = result.data.results[0].matches.map(sp => Vue.axios.get('leaf_spectra/search/taxa',{
-									params: {
-										taxa: sp.scientificName
-									}
-								}).catch(function(error){console.log(error);}));
-								const allids=[]
-								Vue.axios.all(gett).then(responses => {
-									const resp=responses.map(m => m.data)
-									context.commit('save_search_spectra_ids', resp.flat());
-								})
-							}else{
-									context.commit('save_search_spectra_ids', {});
-							}
-						}).catch(error => {
-							throw new Error(`API ${error}`);
-						})
-
+						context.commit('save_search_spectra_ids', {});
 					}else{
 						context.commit('save_search_spectra_ids', result.data);
 					}

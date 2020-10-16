@@ -25,7 +25,15 @@ const messages = {'en': {
 	download_plant_spectra_data: 'Download plant spectra',
 	download_all_plant_spectra_data: 'Download all plant spectra',
 	info_sheet: 'Info Sheet',
-	spectra: 'Spectra'
+	spectra: 'Spectra',
+	start_date: 'Start date',
+	end_date: 'End date',
+	select_the_date_range : 'Select a date range',
+	filter_by: 'Filter by',
+	geography: 'geography',
+	date: 'date',
+	project: 'project',
+	search_by_species: 'Search by species'
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -50,7 +58,15 @@ const messages = {'en': {
 	download_plant_spectra_data :'Télécharger données spectrales',
 	download_all_plant_spectra_data :'Télécharger toutes les données spectrales',
 	info_sheet: 'Feuille descriptive',
-	spectra: 'Spectre'
+	spectra: 'Spectre',
+	start_date: 'Date de début',
+	end_date: 'Date de fin',
+	select_the_date_range: 'Choisir la période désirée',
+	filter_by: 'Filtrer par',
+	geography: 'géographie',
+	date: 'date',
+	project: 'projet',
+	search_by_species: 'Recherche par espèce'
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 
