@@ -81,7 +81,7 @@
 		</div>
   		<div><b-button variant="danger" @click="resetDates">Reset filter</b-button></div>
     </b-modal>
-    <b-modal id="geography-filter" class="test-modal" title="" ok-only @shown="geoModalShown" @hide="geoModalHidden">
+    <b-modal id="geography-filter" class="test-modal" :title="geo_filter_title" ok-only @shown="geoModalShown" @hide="geoModalHidden">
 	    <b-container style="width: 100%; height:100%; max-width:2000px">
 	    <l-map
 	      style="width: 100%; height:100%"
@@ -149,6 +149,9 @@ export default {
 		},
 		search_by_species () {
 			return this.$i18n.t('search_by_species')
+		},
+		geo_filter_title () {
+			return this.$i18n.t('geo_filter_title')
 		},
 		authHeaders () {
 		    return {

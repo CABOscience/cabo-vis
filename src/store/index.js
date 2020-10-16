@@ -67,7 +67,7 @@ export default new Vuex.Store({
 				this.dispatch('getManyPlants');
 			}else{
 				this.dispatch('clearSpectra');
-				state.showAll = false;
+				state.showAll = false
 				state.showLoader=false
 				state.showSpectra=false
 			}
@@ -138,7 +138,7 @@ export default new Vuex.Store({
 					}
 				).then(result => {
 					if(result.data.length === 0){
-						context.commit('save_search_spectra_ids', {});
+						context.commit('save_search_spectra_ids', []);
 					}else{
 						context.commit('save_search_spectra_ids', result.data);
 					}

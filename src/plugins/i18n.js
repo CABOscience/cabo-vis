@@ -33,7 +33,8 @@ const messages = {'en': {
 	geography: 'geography',
 	date: 'date',
 	project: 'project',
-	search_by_species: 'Search by species'
+	search_by_species: 'Search by species',
+	geo_filter_title: 'Delineate area of interest by clicking on polygon icon on top-right of map',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -66,7 +67,8 @@ const messages = {'en': {
 	geography: 'géographie',
 	date: 'date',
 	project: 'projet',
-	search_by_species: 'Recherche par espèce'
+	search_by_species: 'Recherche par espèce',
+	geo_filter_title: 'Spécifiez la zone d\'intérêt en cliquant sur l\'icône de polygon en haut à droite de la carte',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 
