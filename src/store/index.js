@@ -244,7 +244,7 @@ export default new Vuex.Store({
 		downloadAllPlantSpectraCSV(context){
 			let ids=[]
 			context.state.current_spectra.spectra_ids.map(s=>{
-				ids.push(s.sample_id)
+				ids.push("'"+s.sample_id+"'")
 			})
 			ids=ids.join(",");
 			Vue.axios.post('leaf_spectra/csv/', {

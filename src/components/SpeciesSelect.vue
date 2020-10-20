@@ -1,5 +1,5 @@
 <template>
-  <div id="which-select" v-if="show">
+  <b-container id="which-select" v-if="show">
     <b-form-group>
   	<b-form-checkbox-group id="checkbox-group" v-model="selected_sp" name="selected_sp" buttons>
 		<b-form-checkbox
@@ -13,7 +13,7 @@
 	</b-form-checkbox-group>
     </b-form-group>
 
- </div>
+ </b-container>
 </template>
 
 
