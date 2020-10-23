@@ -152,7 +152,7 @@ export default {
 			const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 			var margin = {top: 50, right: 50, bottom: 50, left: 50}
 					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
-					, height = 0.35*window.innerWidth - margin.top - margin.bottom; // Use the window's height
+					, height = 0.4*window.innerWidth - margin.top - margin.bottom; // Use the window's height
 				const svg = d3.select("#spectra-graph").append('svg')
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
@@ -193,9 +193,9 @@ export default {
 		},
 		drawBox(which){
 			this.box={}
-			this.box.margin = {top: 0, right: 50, bottom: 50, left: 50}
+			this.box.margin = {top: 0, right: 50, bottom: 80, left: 50}
 			this.box.width = 0.7*window.innerWidth - this.box.margin.left - this.box.margin.right // Use the window's width 
-			this.box.height = 0.3*window.innerWidth - this.box.margin.top - this.box.margin.bottom; // Use the window's height
+			this.box.height = 0.4*window.innerWidth - this.box.margin.top - this.box.margin.bottom; // Use the window's height
 			const self=this
 			this.box.svg = d3.select("#spectra-graph").append('svg')
 				.attr("width", this.box.width + this.box.margin.left + this.box.margin.right)
@@ -207,26 +207,39 @@ export default {
 				.range([0, this.box.width])
 
 			// 3. Call the x axis in a group tag
-			this.box.xAxis=this.box.svg.append("g")
+			this.box.xAxis=d3.axisBottom(this.box.x)
+			this.box.gxAxis=this.box.svg.append("g")
 				.attr("class", "x axis")
 				.attr("transform", "translate(0," + this.box.height + ")")
-				.call(d3.axisBottom(this.box.x)); // Create an axis component with d3.axisBottom
+				.call(this.box.xAxis)
+				.style("font-size", "0.9em"); 
+
+			this.box.svg.append("text")
+				.attr("y", this.box.height + 0.4*this.box.margin.bottom )
+				.attr("x", (this.box.width / 2))
+				.attr("dy", "1em")
+				.style("text-anchor", "middle")
+				.style("font-size", "1.1em")
+				.text(this.$i18n.t('wavelength'));
 
 			if(which=='both' || which=='reflectance'){
 				this.box.y_r = d3.scaleLinear()
 					.domain([0, 1]) // input 
 					.range([this.box.height, this.box.height*0.15]); // output 
-
-				this.box.yAxisR=this.box.svg.append("g")
+				this.box.yAxisR=d3.axisLeft(this.box.y_r)
+				this.box.gyAxisR=this.box.svg.append("g")
 					.attr("class", "y axis")
-					.call(d3.axisLeft(this.box.y_r)); // Create an axis component with d3.axisLeft
+					.call(this.box.yAxisR)
+					.style("font-size", "0.9em"); 
+				// Create an axis component with d3.axisLeft
 				// text label for the y axis
 				this.box.svg.append("text")
 					.attr("transform", "rotate(-90)")
-					.attr("y", 0 - this.box.margin.left)
-					.attr("x",-50 - (this.box.height / 2))
+					.attr("y", 0 - 1.1*this.box.margin.left)
+					.attr("x", -50 - (this.box.height / 2))
 					.attr("dy", "1em")
 					.style("text-anchor", "middle")
+					.style("font-size", "1.1em")
 					.text(this.$i18n.t('reflectance'));
 			}
 			if(which=='both' || which=='transmittance'){
@@ -234,16 +247,20 @@ export default {
 					.domain([1,0]) // input 
 					.range([this.box.height, 0+(this.box.height*0.15)]); // output 
 
-				this.box.yAxisT=this.box.svg.append("g")
+				this.box.yAxisT=d3.axisRight(this.box.y_t)
+				this.box.gyAxisT=this.box.svg.append("g")
 					.attr("class", "y axis")
 					.attr("transform", "translate( " + this.box.width + ", 0 )")
-					.call(d3.axisRight(this.box.y_t)); 
+					.call(this.box.yAxisT)
+					.style("font-size", "0.9em"); 
+
 				this.box.svg.append("text")
-				  .attr("y", - this.box.width - this.box.margin.right )
+				  .attr("y", - this.box.width - 1.1*this.box.margin.right )
 				  .attr("x",50 + (this.box.height/2))
 				  .attr("dy", "1em")
 				  .style("text-anchor", "middle")
 				  .attr("transform", "rotate(90)")
+				  .style("font-size", "1.1em")
 				  .text(this.$i18n.t('transmittance'));
 			}
 
@@ -281,46 +298,19 @@ export default {
 		updateChart() {
 
 		  this.showResetZoom=true;
-		  //this.box.x.domain()[0]=(this.box.x.domain()[0]-this.box.startx.domain()[0])/100
-		  //this.box.x.domain()[1]=(this.box.x.domain()[1]-this.box.startx.domain()[1])/100
-
 		  // recover the new scale
 		  const newX = d3.event.transform.rescaleX(this.box.x);
-		  this.box.xAxis.call(d3.axisBottom(newX))
-		  const threshx=1
-		  const threshy=0.01
-		  if(Math.abs(newX.domain()[0]-this.box.x.domain()[0])>threshx | Math.abs(newX.domain()[1]-this.box.x.domain()[1])>threshx){
-		  	this.box.x=newX
-		  }
-		  
+		  this.box.gxAxis.call(this.box.xAxis.scale(newX))
 		  if(this.which=='reflectance' || this.which=='both'){
-		  	const thresh=10
-			//this.box.y_r.domain()[0]=(this.box.y_r.domain()[0]-this.box.starty_r.domain()[0])/100
-		    //this.box.y_r.domain()[1]=(this.box.y_r.domain()[1]-this.box.starty_r.domain()[1])/100
 		    const newY_R = d3.event.transform.rescaleY(this.box.y_r);
-		  	//this.box.y_r = d3.event.transform.rescaleY(this.box.y_r); 	
-		  	this.box.yAxisR.call(d3.axisLeft(newY_R))		
-		  	if(Math.abs(newY_R.domain()[0]-this.box.y_r.domain()[0])>threshy | Math.abs(newY_R.domain()[1]-this.box.y_r.domain()[1])>threshy){
-		  		this.box.y_r=newY_R
-		  	}
+		  	this.box.gyAxisR.call(this.box.yAxisR.scale(newY_R))
+		  	d3.selectAll('.spectra_r').attr("transform", d3.event.transform);
 		  }
 		  if(this.which=='transmittance' || this.which=='both'){
-			//this.box.y_r.domain()[0]=(this.box.y_t.domain()[0]-this.box.starty_t.domain()[0])/100
-		    //this.box.y_r.domain()[1]=(this.box.y_t.domain()[1]-this.box.starty_t.domain()[1])/100
 		    const newY_T = d3.event.transform.rescaleY(this.box.y_t);
-		  	//this.box.y_t= d3.event.transform.rescaleY(this.box.y_t);
-		  	this.box.yAxisT.call(d3.axisRight(newY_T))	
-		  	if(Math.abs(newY_T.domain()[0]-this.box.y_t.domain()[0])>threshy | Math.abs(newY_T.domain()[1]-this.box.y_r.domain()[1])>threshy){
-		  		this.box.y_t=newY_T
-		  	}
+		    this.box.gyAxisT.call(this.box.yAxisT.scale(newY_T))
+		    d3.selectAll('.spectra_t').attr("transform", d3.event.transform);
 		  }
-		  //this.box.y_t = d3.event.transform.rescaleY(this.box.y_t);
-
-		  // update axes with these new boundaries
-		  //this.box.yAxisT.call(d3.axisLeft(newYT))
-		  this.clearBox()
-		  this.callSpectra()
-
 		},
 		meanLeafSpectra(data,color) {
 
@@ -465,8 +455,6 @@ export default {
 					.ease(d3.easeLinear)
 					.attr("stroke-dashoffset", 0)
 				}
-
-
 			}
 		},
 		clearSpectra() {
