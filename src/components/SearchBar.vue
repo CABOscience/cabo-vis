@@ -1,6 +1,6 @@
 <template>
 	<b-container>
-  <b-card no-body class="tab-group">
+  <b-card no-body class="tab-group" v-show="showSearch">
     <b-tabs card >
       <b-tab :title="search_by_species" active  >
 <b-input-group size="lg" class="search-group">
@@ -155,8 +155,11 @@ export default {
 		},
 		authHeaders () {
 		    return {
-		      'Authorization': 'Bearer 2e9f97ef84b1069a1885c20d982a5c751b192492378a8a3e7db38c3f1024d76a'
+		      'Authorization': 'Bearer '+process.env.VUE_APP_CABO_API
 		    }
+		},
+		showSearch (){
+			return !this.$store.state.showPassword
 		},
 	},
 	methods: {

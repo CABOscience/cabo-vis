@@ -4,11 +4,13 @@ import Vue from "vue";
 import Vuex from "vuex";
 import {i18n} from '../plugins/i18n';
 import fs from 'fs';
+import bcrypt from 'bcryptjs';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
+		password: '',
 		search_box: {
 			search_value: '',
 			announce: '',
@@ -37,6 +39,7 @@ export default new Vuex.Store({
 		showPlantSpectraDownloadSpinner: false,
 		showAllPlantSpectraDownloadSpinner: false,
 		showMarkerPlantSpectraDownloadSpinner: false,
+		showPassword: true,
 	},
 	getters: {},
 	mutations: {
@@ -123,7 +126,14 @@ export default new Vuex.Store({
 		download_all_plant_spectra_csv(state){
 			state.showAllPlantSpectraDownloadSpinner=true
 			this.dispatch('downloadAllPlantSpectraCSV')
-		}
+		},
+		updatePassword(state,password){
+			bcrypt.compare(password, process.env.VUE_APP_CABO_PASSWORD, function(err, res) {
+				if(res==true){
+					state.showPassword=false
+				}
+			});
+		},
 	},
 	actions: {
 		searchTaxa (context) {

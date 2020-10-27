@@ -8,6 +8,7 @@
                 <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
               </div>
               </b-container>
+              <PasswordPage />
               <a name="search"></a><SearchBar></SearchBar>
               <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
               <Loader></Loader>
@@ -19,6 +20,7 @@
 </template>
 
 <script>
+import PasswordPage from "./components/PasswordPage.vue"
 import LanguageSwitcher from "./components/LanguageSwitcher.vue"
 import Loader from "./components/Loader.vue"
 import LeafSpectra from "./components/LeafSpectra.vue"
@@ -33,6 +35,7 @@ import PlantsTable from "./components/PlantsTable.vue"
 export default {
   name: 'App',
   components: {
+    PasswordPage,
     LanguageSwitcher,
     Loader,
     LeafSpectra, 

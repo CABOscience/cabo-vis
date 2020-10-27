@@ -12,7 +12,6 @@
       </b-form-checkbox>
 	</b-form-checkbox-group>
     </b-form-group>
-
  </b-container>
 </template>
 
