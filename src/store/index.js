@@ -42,6 +42,7 @@ export default new Vuex.Store({
 		showAllPlantSpectraDownloadSpinner: false,
 		showMarkerPlantSpectraDownloadSpinner: false,
 		showPassword: true,
+		showFiveWarning: false,
 	},
 	getters: {},
 	mutations: {
@@ -60,8 +61,13 @@ export default new Vuex.Store({
 					  .map(function(count, scientific_name) { return { count: count, scientific_name: scientific_name }})
 					  .value()
 					  .sort(function (a, b) { return b.count - a.count; })
-					  .slice(0, 5)
 				);
+			if (state.species_options.length > 5){
+				state.species_options=state.species_options.slice(0, 5)
+				state.showFiveWarning=true
+			}else{
+				state.showFiveWarning=false
+			}
 			if(spectra_ids.length!=0){
 				state.species_selected=state.species_options.map(t => {
 					return t.scientific_name
