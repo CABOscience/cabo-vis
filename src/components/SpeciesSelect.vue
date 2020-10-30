@@ -10,6 +10,7 @@
         :class="variant(index)"
     	>
         {{ option.scientific_name }}
+		<b-badge variant="secondary">{{ option.count }}</b-badge>
       </b-form-checkbox>
 	</b-form-checkbox-group>
     </b-form-group>
