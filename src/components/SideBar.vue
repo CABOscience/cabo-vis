@@ -9,7 +9,7 @@
                 <a href="#spectra">{{ $t('mean_spectra') }}</a>
             </li>
             <li>
-                <a href="#map">{{ $t('sites') }}</a>
+                <a href="#map">{{ $t('map_of_observations') }}</a>
             </li>
             <li>
                 <a href="#plants">{{ $t('plants') }}</a>
