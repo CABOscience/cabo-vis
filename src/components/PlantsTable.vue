@@ -14,21 +14,34 @@
 </b-card-header>
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
 	<div id="plants-container" class="row">
+    <b-form-group label="Selection mode:" label-cols-md="4">
+      <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
+    </b-form-group>
 		<b-table
 	      id="plants-table"
 	      :items="items"
 	      :per-page="perPage"
 	      :current-page="currentPage"
 	      small
+	      selectable
 	    >
-	    	
+      <template #cell(selected)="{ rowSelected }">
+        <template v-if="rowSelected">
+          <span aria-hidden="true">&check;</span>
+          <span class="sr-only">Selected</span>
+        </template>
+        <template v-else>
+          <span aria-hidden="true">&nbsp;</span>
+          <span class="sr-only">Not selected</span>
+        </template>
+      </template>
       <template v-slot:cell(plant_photos)="row">
       	<b-button-group>
 	        <b-button size="sm" @click="photo(row.item, row.index, $event.target)" class="mr-1" v-show="!!row.item.plant_photos">
 	          Photos
 	        </b-button>
 	        <b-button size="sm" @click="row.toggleDetails" class="mr-1">
-	          {{ row.detailsShowing ? $('hide') : $t('show') }} {{ $t('details') }}
+	          {{ row.detailsShowing ? $t('hide') : $t('show') }} {{ $t('details') }}
 	        </b-button>
 	        <b-button size="sm" @click="download_plant_spectra(row.item, row.index, $event.target)" class="mr-1" variant="primary">
 	          <b-icon-arrow-down-circle  v-show="!downloadPlantSpectraSpinner(row.index)"></b-icon-arrow-down-circle>
@@ -41,10 +54,10 @@
     	</b-button-group>
       </template>
 
-      <template v-slot:row-details="row">
+      <template #row-details="row">
         <b-card>
           <ul>
-            <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+            <!-- <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li> -->
           </ul>
         </b-card>
       </template>

@@ -283,7 +283,8 @@ export default {
 			this.$store.state.search_box.endDate = this.endDate;
 	    },
 	    geoModalHidden() {
-			this.$store.state.search_box.geomFilter = JSON.stringify(this.drawnItems.toGeoJSON().features[0].geometry);
+	    	var geo = this.drawnItems.toGeoJSON();
+			this.$store.state.search_box.geomFilter = JSON.stringify(geo.features[0].geometry);
 	    },
 	},
 	created: function () {
