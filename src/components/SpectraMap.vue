@@ -85,7 +85,7 @@
 		data () {
 			return {
 				osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-				satellite: 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
+				satellite: 'https://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
 				zoom: 10,
 				center: [45.5,-73.3],
 				infoModal: {
