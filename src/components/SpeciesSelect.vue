@@ -1,5 +1,6 @@
 <template>
   <b-container id="which-select" v-if="show">
+  <b-alert show variant="warning">{{ $t('only_five_species_shown') }}</b-alert>
     <b-form-group>
   	<b-form-checkbox-group id="checkbox-group" v-model="selected_sp" name="selected_sp" buttons>
 		<b-form-checkbox

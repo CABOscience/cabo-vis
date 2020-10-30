@@ -17,7 +17,6 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(PaginationPlugin)
 Vue.use(TablePlugin)
-
 Vue.use(VueAxios, axios);
 
 Vue.axios.defaults.baseURL = "https://data.caboscience.org/api/v1/";

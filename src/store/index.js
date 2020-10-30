@@ -5,6 +5,8 @@ import Vuex from "vuex";
 import {i18n} from '../plugins/i18n';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
+import _ from 'lodash';
+
 
 Vue.use(Vuex);
 
@@ -46,22 +48,20 @@ export default new Vuex.Store({
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
 			let tt=0
+
 			if(state.species_options.length !== 0) {
 				state.species_options=state.species_options.filter(function(value, index, self){
 					return state.species_selected.indexOf(value.scientific_name) !== -1;
 				})
 			}
-			state.species_options=state.species_options.concat(spectra_ids.map(t => {
-				return t.scientific_name
-			}).filter(function(value, index, self) {
-				return self.indexOf(value) === index && state.species_selected.indexOf(value)=== -1 ;				
-			}).map(function(t){
-				let o = {}
-				o.scientific_name=t
-				o.key=tt++
-				return o
-			}))
-
+			state.species_options=state.species_options.concat(
+					_(state.current_spectra.spectra_ids)
+					  .countBy("scientific_name")
+					  .map(function(count, scientific_name) { return { count: count, scientific_name: scientific_name }})
+					  .value()
+					  .sort(function (a, b) { return b.count - a.count; })
+					  .slice(0, 5)
+				);
 			if(spectra_ids.length!=0){
 				state.species_selected=state.species_options.map(t => {
 					return t.scientific_name
@@ -278,3 +278,5 @@ export default new Vuex.Store({
 		}
 	}
 });
+
+
