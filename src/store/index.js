@@ -19,10 +19,12 @@ export default new Vuex.Store({
 			geomFilter: '',
 			startDate: '',
 			endDate: '',
-			projects: '',
+			projects: [],
+			projects_selected: ''
 		},
 		current_spectra: {
 			spectra_ids: [],
+			selected_spectra_ids: [],
 			spectra: [],
 			which: 'reflectance',
 			reBox: true,
@@ -40,6 +42,8 @@ export default new Vuex.Store({
 		showSpectraDownloadSpinner: false,
 		showPlantSpectraDownloadSpinner: false,
 		showAllPlantSpectraDownloadSpinner: false,
+		showSelectedPlantSpectraDownloadButton: false,
+		showSelectedPlantSpectraDownloadSpinner: false,
 		showMarkerPlantSpectraDownloadSpinner: false,
 		showPassword: true,
 		showFiveWarning: false,
@@ -105,6 +109,12 @@ export default new Vuex.Store({
 			this.dispatch('clearSpectra');
 			this.dispatch('searchTaxa');
 		},
+		get_projects(state){
+			this.dispatch('getProjects');
+		},
+		save_projects(state,projects) {
+			state.search_box.projects=projects;
+		},
 		reflectance_transmittance(state, which) {
 			state.current_spectra.which = which;
 			//this.dispatch('saveSpectra',state.current_spectra.spectra, false);
@@ -133,6 +143,10 @@ export default new Vuex.Store({
 			state.showAllPlantSpectraDownloadSpinner=true
 			this.dispatch('downloadAllPlantSpectraCSV')
 		},
+		download_selected_plant_spectra_csv(state){
+			state.showSelectedPlantSpectraDownloadSpinner=true
+			this.dispatch('downloadSelectedPlantSpectraCSV')
+		},
 		updatePassword(state,password){
 			bcrypt.compare(password, process.env.VUE_APP_CABO_PASSWORD, function(err, res) {
 				if(res==true){
@@ -144,13 +158,18 @@ export default new Vuex.Store({
 	actions: {
 		searchTaxa (context) {
 			context.commit('clear_spectra');
-			if((context.state.search_box.search_value !== '' && context.state.search_box.search_value !== ' ') | context.state.search_box.geomFilter !=='' | context.state.search_box.projects!=='' | context.state.search_box.startDate!==''){
+			if((context.state.search_box.search_value !== '' && context.state.search_box.search_value !== ' ') | context.state.search_box.geomFilter !=='' | context.state.search_box.projects_selected!=='' | context.state.search_box.startDate!==''){
+				let projects=[]
+				context.state.search_box.projects_selected.map(s=>{
+					projects.push("'"+s+"'")
+				})
+				projects=projects.join(",");
 				Vue.axios.post('leaf_spectra/search/taxa', {
 						taxa: context.state.search_box.search_value,
 						start_date: context.state.search_box.startDate,
 						end_date: context.state.search_box.endDate,
 						geometry: context.state.search_box.geomFilter,
-						projects: context.state.search_box.projects,
+						projects: projects
 					}
 				).then(result => {
 					if(result.data.length === 0){
@@ -169,6 +188,13 @@ export default new Vuex.Store({
 		clearSpectra (context){
 			context.commit('clear_spectra');
 			//context.commit('save_spectra',[], false)
+		},
+		getProjects (context) {
+			Vue.axios.get('projects/'+context.state.search_box.projects).then(result => {
+				context.commit('save_projects', result.data);
+			}).catch(error => {
+				console.log(error)
+			});
 		},
 		getOneSpectra (context) {
 			Vue.axios.get('leaf_spectra/reflectance/'+context.state.current_spectra.spectra_ids[0].fulcrum_id).then(result => {
@@ -270,6 +296,23 @@ export default new Vuex.Store({
 				const d = Date.now();
 				this.dispatch('processCSVResponse',{response:response,filename:'cabo_all_plant_spectra_'+d+'.csv'})
 				context.state.showAllPlantSpectraDownloadSpinner=false
+			}).catch(error => {
+				console.log(error)
+			});
+		},
+		downloadSelectedPlantSpectraCSV(context){
+			let ids=[]
+			context.state.current_spectra.selected_spectra_ids.map(s=>{
+				ids.push("'"+s.sample_ids+"'")
+			})
+			ids=ids.join(",");
+			Vue.axios.post('leaf_spectra/csv/', {
+			    ids: ids,
+			    type: 'raw',
+			}).then(response => {
+				const d = Date.now();
+				this.dispatch('processCSVResponse',{response:response,filename:'cabo_selected_plant_spectra_'+d+'.csv'})
+				context.state.showSelectedPlantSpectraDownloadSpinner=false
 			}).catch(error => {
 				console.log(error)
 			});

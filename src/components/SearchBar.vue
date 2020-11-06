@@ -96,6 +96,23 @@
 	</b-container>
     </b-modal>
 
+    <b-modal id="project-filter" class="test-modal" :title="projects_filter_title" ok-only @shown="projectsModalShown" @hide="projectsModalHidden">
+	    <b-container>
+	    <b-form-group>
+	      <b-form-checkbox
+	        v-for="proj in projects_list"
+	        v-model="projects_selected"
+	        :key="proj.project"
+	        :value="proj.project"
+	        name="flavour-4a"
+	        stacked
+	      >
+	        {{ proj.project }}
+	      </b-form-checkbox>
+	    </b-form-group>
+		</b-container>
+    </b-modal>
+
 </b-container>
 </template>
 
@@ -153,10 +170,22 @@ export default {
 		geo_filter_title () {
 			return this.$i18n.t('geo_filter_title')
 		},
+		projects_filter_title () {
+			return this.$i18n.t('choose_a_project')
+		},
+		projects_list () {
+			return this.$store.state.search_box.projects
+		},
+		projects_selected:{
+			get(){
+				return []
+			},
+			set(value){
+				this.$store.state.search_box.projects_selected=value
+			}
+		},
 		authHeaders () {
-		    return {
-		      'Authorization': 'Bearer '+process.env.VUE_APP_CABO_API
-		    }
+			return this.$store.state.search_box.announce
 		},
 		showSearch (){
 			return !this.$store.state.showPassword
@@ -278,10 +307,17 @@ export default {
 		    this.drawnItems=drawnItems;
 			map.invalidateSize(); 
 	    },
+	    projectsModalShown() {
+	    	this.$store.commit('get_projects');
+	    },
 	    dateModalHidden() {
 			this.$store.state.search_box.startDate = this.startDate;
 			this.$store.state.search_box.endDate = this.endDate;
 	    },
+	    projectsModalHidden() {
+			this.$store.state.search_box.startDate = this.startDate;
+			this.$store.state.search_box.endDate = this.endDate;
+	    },	    
 	    geoModalHidden() {
 	    	var geo = this.drawnItems.toGeoJSON();
 			this.$store.state.search_box.geomFilter = JSON.stringify(geo.features[0].geometry);
@@ -290,6 +326,9 @@ export default {
 	created: function () {
 		
 	},
+	mounted: function () {
+
+	}
 }
 </script>
 <style>

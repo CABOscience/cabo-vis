@@ -37,6 +37,12 @@ const messages = {'en': {
 	search_by_species: 'Search by species',
 	geo_filter_title: 'Delineate area of interest by clicking on polygon icon on top-right of map',
 	only_five_species_shown: 'Only the 5 most frequent species are shown',
+	select_all_plants: 'Select all',
+	clear_selected: 'Clear selection',
+	click_to_select_spectra: 'Click on rows to select plant',
+	download_selected_spectra: 'Download selected spectra',
+	map_of_observations: 'Map of observations',
+	choose_a_project: 'Choose a project',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -73,6 +79,12 @@ const messages = {'en': {
 	search_by_species: 'Recherche par espèce',
 	geo_filter_title: 'Spécifiez la zone d\'intérêt en cliquant sur l\'icône de polygone en haut à droite de la carte',
 	only_five_species_shown: 'Seule les 5 espèces les plus fréquentes sont présentées',
+	select_all_plants: 'Selectionner toutes les plantes',
+	clear_selected: 'Désélectionner tout',
+	click_to_select_spectra: 'Cliquez sur des lignes pour les sélectionner',
+	download_selected_spectra: 'Téléchargez les spectres sélectionnés',
+	map_of_observations: 'Carte des observations',
+	choose_a_project: 'Choisir un projet',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

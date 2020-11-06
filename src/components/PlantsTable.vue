@@ -1,29 +1,43 @@
 <template>
 <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showPlantsTable">
 <b-card-header header-bg-variant="dark" header-text-variant="light">
+      	<b-container>
+      		<b-row>
+      			<b-col  v-show="!rowsSelected">
+      		{{ $t('click_to_select_spectra') }}
+      	</b-col>
+      	<b-col cols="6">
+      	</b-col>
+		<b-col>
       	<b-button-group>
-	        <b-button size="sm" @click="download_all_plant_spectra()" class="mr-1" variant="primary">
-	          {{ $t('download_all_plant_spectra_data') }} <b-icon-arrow-down-circle  v-show="!downloadAllPlantSpectraSpinner"></b-icon-arrow-down-circle>
+      		<b-button size="sm" @click="selectAllRows" v-show="!selectAll">{{ $t("select_all_plants") }}</b-button>
+			<b-button size="sm" @click="clearSelected">{{ $t("clear_selected") }}</b-button>
+	        <b-button size="sm" @click="download_selected_plant_spectra()" class="mr-1" variant="primary" v-show="rowsSelected">
+	          {{ $t('download_selected_spectra') }} <b-icon-arrow-down-circle  v-show="!downloadSelectedPlantSpectraSpinner"></b-icon-arrow-down-circle>
 		      <b-spinner
 		      	small
 		        variant="light"
-		        v-show="downloadAllPlantSpectraSpinner"
+		        v-show="downloadSelectedPlantSpectraSpinner"
 		      ></b-spinner>
 	        </b-button>
     	</b-button-group>
+    </b-col>
+</b-row>
+    	</b-container>
 </b-card-header>
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
 	<div id="plants-container" class="row">
-    <b-form-group label="Selection mode:" label-cols-md="4">
-      <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
-    </b-form-group>
 		<b-table
 	      id="plants-table"
 	      :items="items"
-	      :per-page="perPage"
-	      :current-page="currentPage"
 	      small
+	      fluid
+	      sticky-header="600px"
+	      ref="selectableTable"
 	      selectable
+	      :select-mode="selectMode"
+	      @row-selected="onRowSelected"
+	      head-variant="dark"
 	    >
       <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
@@ -54,21 +68,7 @@
     	</b-button-group>
       </template>
 
-      <template #row-details="row">
-        <b-card>
-          <ul>
-            <!-- <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li> -->
-          </ul>
-        </b-card>
-      </template>
-
 	    </b-table>
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="rows"
-      :per-page="perPage"
-      aria-controls="my-table"
-    ></b-pagination>
     <!-- Info modal -->
     <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
           <b-carousel
@@ -87,8 +87,6 @@
 	      </b-carousel-slide>
   		</b-carousel>
     </b-modal>
-
-    <p class="mt-3">{{ $t('current_page') }}: {{ currentPage }}</p>
 	</div>
 </b-card-text>
 	</b-card>
@@ -110,7 +108,10 @@
           content: ''
         },
         slide: 0,
-        sliding: null
+        sliding: null,
+        selectMode: 'multi',
+        rowsSelected: false,
+        selectAll: false,
       }
     },
     computed: {
@@ -132,9 +133,14 @@
 				return this.$store.state.showPlantSpectraDownloadSpinner===index
 			}
 		},
-		downloadAllPlantSpectraSpinner: {
+		downloadSelectedPlantSpectraSpinner: {
 			get() {
-				return this.$store.state.showAllPlantSpectraDownloadSpinner
+				return this.$store.state.showSelectedPlantSpectraDownloadSpinner
+			}
+		},
+		selected: {
+			get() {
+				return this.$store.state.selected_spectra_ids
 			}
 		}
     },
@@ -152,15 +158,36 @@
 	    	this.$store.state.showPlantSpectraDownloadSpinner=index
 	    	this.$store.commit('download_plant_spectra_csv', item.sample_ids)
 	    },
-	    download_all_plant_spectra(){
-	    	this.$store.commit('download_all_plant_spectra_csv')
+	    download_selected_plant_spectra(){
+	    	this.$store.commit('download_selected_plant_spectra_csv')
 	    },
 		onSlideStart(slide) {
 			this.sliding = true
 		},
 		onSlideEnd(slide) {
 			this.sliding = false
-		}
+		},
+		onRowSelected(items) {
+			if(items.length!==0){
+				this.rowsSelected=true
+			}else{
+				this.rowsSelected=false
+			}
+			if(items.length===this.rows){
+				this.selectAll=true
+			}else{
+				this.selectAll=false
+			}
+			this.$store.state.current_spectra.selected_spectra_ids = items
+		},
+		selectAllRows() {
+			this.$refs.selectableTable.selectAllRows()
+			this.rowsSelected=true
+		},
+		clearSelected() {
+			this.$refs.selectableTable.clearSelected()
+			this.rowsSelected=false
+		},
     },
 	mounted: function() {
 		this.$store.subscribe((mutation,state) => {
