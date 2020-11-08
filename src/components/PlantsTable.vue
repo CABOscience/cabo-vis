@@ -1,17 +1,11 @@
 <template>
-<b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showPlantsTable">
+<b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showPlantsTable" fluid>
 <b-card-header header-bg-variant="dark" header-text-variant="light">
       	<b-container>
-      		<b-row>
-      			<b-col  v-show="!rowsSelected">
-      		{{ $t('click_to_select_spectra') }}
-      	</b-col>
-      	<b-col cols="6">
-      	</b-col>
-		<b-col>
       	<b-button-group>
-      		<b-button size="sm" @click="selectAllRows" v-show="!selectAll">{{ $t("select_all_plants") }}</b-button>
-			<b-button size="sm" @click="clearSelected">{{ $t("clear_selected") }}</b-button>
+      		<b-button size="sm" variant="light" disabled v-show="!rowsSelected">{{ $t('click_to_select_spectra') }}</b-button>
+      		<b-button size="sm" variant="primary" @click="selectAllRows" v-show="!selectAll">{{ $t("select_all_plants") }}</b-button>
+			<b-button size="sm" variant="danger" @click="clearSelected" v-show="rowsSelected">{{ $t("clear_selected") }}</b-button>
 	        <b-button size="sm" @click="download_selected_plant_spectra()" class="mr-1" variant="primary" v-show="rowsSelected">
 	          {{ $t('download_selected_spectra') }} <b-icon-arrow-down-circle  v-show="!downloadSelectedPlantSpectraSpinner"></b-icon-arrow-down-circle>
 		      <b-spinner
@@ -21,23 +15,20 @@
 		      ></b-spinner>
 	        </b-button>
     	</b-button-group>
-    </b-col>
-</b-row>
     	</b-container>
 </b-card-header>
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
-	<div id="plants-container" class="row">
 		<b-table
 	      id="plants-table"
 	      :items="items"
 	      small
-	      fluid
 	      sticky-header="600px"
 	      ref="selectableTable"
 	      selectable
 	      :select-mode="selectMode"
 	      @row-selected="onRowSelected"
 	      head-variant="dark"
+	      no-gutters
 	    >
       <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
@@ -87,7 +78,6 @@
 	      </b-carousel-slide>
   		</b-carousel>
     </b-modal>
-	</div>
 </b-card-text>
 	</b-card>
 </template>
@@ -231,5 +221,6 @@
 <style scoped>
 #plants-container{
 	margin:auto;
+	width:100%;
 }
 </style>

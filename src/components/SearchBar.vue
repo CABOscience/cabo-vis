@@ -144,6 +144,7 @@ export default {
 			startDate: '',
 			endDate: '',
 			projects: '',
+			projects_selected: [],
 			osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 			satellite: 'https://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
 			zoom: 10,
@@ -175,14 +176,6 @@ export default {
 		},
 		projects_list () {
 			return this.$store.state.search_box.projects
-		},
-		projects_selected:{
-			get(){
-				return []
-			},
-			set(value){
-				this.$store.state.search_box.projects_selected=value
-			}
 		},
 		authHeaders () {
 			return this.$store.state.search_box.announce
@@ -315,8 +308,7 @@ export default {
 			this.$store.state.search_box.endDate = this.endDate;
 	    },
 	    projectsModalHidden() {
-			this.$store.state.search_box.startDate = this.startDate;
-			this.$store.state.search_box.endDate = this.endDate;
+	    	this.$store.state.search_box.projects_selected = this.projects_selected;
 	    },	    
 	    geoModalHidden() {
 	    	var geo = this.drawnItems.toGeoJSON();
