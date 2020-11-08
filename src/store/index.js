@@ -302,10 +302,14 @@ export default new Vuex.Store({
 		},
 		downloadSelectedPlantSpectraCSV(context){
 			let ids=[]
-			context.state.current_spectra.selected_spectra_ids.map(s=>{
-				ids.push("'"+s.sample_ids+"'")
-			})
-			ids=ids.join(",");
+			if(context.state.current_spectra.selected_spectra_ids.length==1){
+				ids="'"+context.state.current_spectra.selected_spectra_ids[0]+"'"
+			}else{
+				context.state.current_spectra.selected_spectra_ids.map(s=>{
+					ids.push("'"+s.sample_ids+"'")
+				})
+				ids=ids.join(",");
+			}
 			Vue.axios.post('leaf_spectra/csv/', {
 			    ids: ids,
 			    type: 'raw',
