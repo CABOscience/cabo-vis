@@ -45,7 +45,7 @@
 	        <b-button size="sm" @click="photo(row.item, row.index, $event.target)" class="mr-1" v-show="!!row.item.plant_photos">
 	          Photos
 	        </b-button>
-	        <b-button size="sm" @click="row.toggleDetails" class="mr-1">
+	        <b-button size="sm" @click="row.toggleDetails" class="mr-1" v-show='false'>
 	          {{ row.detailsShowing ? $t('hide') : $t('show') }} {{ $t('details') }}
 	        </b-button>
 	        <b-button size="sm" @click="download_plant_spectra(row.item, row.index, $event.target)" class="mr-1" variant="primary">
