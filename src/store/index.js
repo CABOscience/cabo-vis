@@ -160,10 +160,14 @@ export default new Vuex.Store({
 			context.commit('clear_spectra');
 			if((context.state.search_box.search_value !== '' && context.state.search_box.search_value !== ' ') | context.state.search_box.geomFilter !=='' | context.state.search_box.projects_selected!=='' | context.state.search_box.startDate!==''){
 				let projects=[]
-				context.state.search_box.projects_selected.map(s=>{
-					projects.push("'"+s+"'")
-				})
-				projects=projects.join(",");
+				if(Array.isArray(context.state.search_box.projects_selected)){
+					context.state.search_box.projects_selected.map(s=>{
+						projects.push("'"+s+"'")
+					})
+					projects=projects.join(",");
+				}else{
+					projects='';
+				}
 				Vue.axios.post('leaf_spectra/search/taxa', {
 						taxa: context.state.search_box.search_value,
 						start_date: context.state.search_box.startDate,
