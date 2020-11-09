@@ -30,9 +30,9 @@
 	</b-input-group>
       </b-tab>
 		<template v-slot:tabs-end>
-	      	<b-nav-item href="#" role="presentation" @click="dateModal">{{ $t("filter_by") }} : {{ $t("date") }}</b-nav-item>
-	      	<b-nav-item href="#" role="presentation" @click="geographyModal">{{ $t("geography") }}</b-nav-item>
-	      	<b-nav-item href="#" role="presentation" @click="projectModal">{{ $t("project") }}</b-nav-item>
+	      	<b-nav-item href="#" role="presentation" @click="dateModal">{{ $t("filter_by") }} : {{ $t("date") }}<b-icon icon="check" v-show="dateFilterActive"></b-icon></b-nav-item>
+	      	<b-nav-item href="#" role="presentation" @click="geographyModal">{{ $t("geography") }}<b-icon icon="check" aria-hidden="true" v-show="geoFilterActive"></b-icon></b-nav-item>
+	      	<b-nav-item href="#" role="presentation" @click="projectModal">{{ $t("project") }}<b-icon icon="check" aria-hidden="true"  v-show="projectsFilterActive"></b-icon></b-nav-item>
       	</template>
     </b-tabs>
   </b-card>
@@ -160,7 +160,12 @@ export default {
 			}
 		},
 		placeholder () {
-			return this.$i18n.t('enter_species_name')
+			if(this.$store.state.search_box.projects_selected.length!==0 | this.$store.state.search_box.geomFilter!=='' | this.$store.state.search_box.startDate!==''){
+				return this.$i18n.t('search_all_species')
+			}else{
+				return this.$i18n.t('enter_species_name')
+			}
+			
 		},
 		select_a_date () {
 			return this.$i18n.t('select_the_date_range')
@@ -183,6 +188,15 @@ export default {
 		showSearch (){
 			return !this.$store.state.showPassword
 		},
+    	dateFilterActive(){
+    		return this.$store.state.search_box.startDate!==''
+    	},
+    	projectsFilterActive(){
+    		return this.$store.state.search_box.projects_selected!=='' && this.$store.state.search_box.projects_selected.length!==0
+    	},
+    	geoFilterActive(){
+    		return this.$store.state.search_box.geomFilter!==''
+    	},
 	},
 	methods: {
 		search: function(){
@@ -201,8 +215,9 @@ export default {
 			this.$refs.autocomplete.value = ''
 			this.$store.state.species_selected = []
 			this.$store.state.search_box.geomFilter=''
-			this.$store.state.search_box.dateFilter=''
-			this.$store.state.search_box.projectFilter=''
+			this.$store.state.search_box.startDate=''
+			this.$store.state.search_box.endDate=''
+			this.$store.state.search_box.projects_selected=''
 			this.$store.state.species_options=[]
 			this.$store.state.search_box.announce=''
 			this.drawnItems=''
