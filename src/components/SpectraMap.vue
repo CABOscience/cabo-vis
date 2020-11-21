@@ -54,6 +54,9 @@
 	      ></b-spinner>
         </b-button>
     </b-tab>
+    <b-tab :title="tab3_title" @click="update_traits(infoModal.marker.sample_ids)">
+    	<TraitsModal></TraitsModal>
+    </b-tab>
   </b-tabs>
     </b-modal>
 	</div>
@@ -66,7 +69,8 @@
 	import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet';
 	import { Icon } from 'leaflet';
 	import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
-
+    import TraitsModal from "./TraitsModal.vue"
+	
 	delete Icon.Default.prototype._getIconUrl;
 	Icon.Default.mergeOptions({
 	  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -81,6 +85,7 @@
 			LMarker,
 			LPopup,
 			'l-marker-cluster': Vue2LeafletMarkerCluster,
+			TraitsModal,
 		},
 		data () {
 			return {
@@ -163,6 +168,11 @@
 					return this.$i18n.t('spectra')
 				}
 			},
+			tab3_title: {
+				get() {
+					return this.$i18n.t('traits')
+				}
+			},
 		},
 		methods: {
 	    	markerModal(marker, target) {
@@ -193,6 +203,9 @@
 				this.$store.state.showMarkerPlantSpectraDownloadSpinner=true
 		    	this.$store.commit('download_plant_spectra_csv', marker.sample_ids)
 		    },
+		    update_traits(sample_ids){
+		    	this.$store.commit('download_traits', sample_ids)
+		    }
 		},
 		mounted: function() {
 		}

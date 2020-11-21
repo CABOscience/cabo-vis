@@ -30,6 +30,7 @@ export default new Vuex.Store({
 			reBox: true,
 			showRange: "true",
 		},
+		current_traits: [],
 		plants_sample_ids : [],
 		plants : [],
 		species_options: [],
@@ -147,6 +148,9 @@ export default new Vuex.Store({
 			state.showSelectedPlantSpectraDownloadSpinner=true
 			this.dispatch('downloadSelectedPlantSpectraCSV')
 		},
+		download_traits(state,sample_ids){
+			this.dispatch('getLeafAreaAndWaterSamples',sample_ids)
+		},
 		updatePassword(state,password){
 			bcrypt.compare(password, process.env.VUE_APP_CABO_PASSWORD, function(err, res) {
 				if(res==true){
@@ -226,6 +230,17 @@ export default new Vuex.Store({
 				const resp=responses.map(m => m.data[0])
 				context.commit('save_plants',resp);
 			})
+		},
+		getLeafAreaAndWaterSamples (context, sample_id) {
+			Vue.axios.get('leaf_area_and_water_samples',{
+				params: {
+					sample_id: sample_id
+				},
+			}).then(result => {
+				context.state.current_traits=result.data
+			}).catch(error => {
+				console.log(error);
+			});
 		},
 		getManySpectraMean (context) {
 			const ids = context.state.current_spectra.spectra_ids.map(sp => "'"+sp.fulcrum_id+"'");
