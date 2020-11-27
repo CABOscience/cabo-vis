@@ -13,10 +13,11 @@
 </b-table -->
 <template>
     <div class="app-body row">
+		<h4>{{$t('Dry matter and water')}}</h4>
         <template v-for="(this_trait, name, index) in traits">
         	<b-container>
 			  <b-row>
-			    <b-col cols="8" class="trait-name">{{ $t(name) }}</b-col>
+			    <b-col cols="8" class="trait-name"><p v-html="$t(name)"></p></b-col>
 			    <b-col class="trait-value">{{ shorten(this_trait) }}</b-col>
 			    <b-col cols="8">
 			    	<TraitDensity :key="name" :traitVal="this_trait"></TraitDensity>
@@ -47,7 +48,11 @@ export default {
     },
     methods: {
     	shorten (val) {
-    		return val.substring(0,6)
+    		if(val.indexOf('.')>1){
+    			return val.substring(0,val.indexOf('.')+3)
+	    	}else{
+	    		return val.substring(0,6)
+	    	}
     	}
     }
 }
@@ -62,5 +67,13 @@ export default {
 
  .trait-value{
  	font-size:1em;
+ }
+
+ h4{
+	margin: auto;
+	padding: 2px 0px 10px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #006e70;
  }
 </style>

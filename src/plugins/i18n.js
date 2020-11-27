@@ -45,9 +45,9 @@ const messages = {'en': {
 	map_of_observations: 'Map of observations',
 	choose_a_project: 'Choose a project',
 	traits: 'Traits',
-	leaf_mass_per_area_g_m2: 'Leaf mass per area (g/m2)',
+	leaf_mass_per_area_g_m2: 'Leaf mass per area (g m<sup>2</sup>)',
 	leaf_relative_water_content_perc: 'Leaf relative water content (%)',
-	leaf_dry_matter_content_mg_g: 'Leaf dry matter content (mg/g)',
+	leaf_dry_matter_content_mg_g: 'Leaf dry matter content (mg g<sup>-1</sup>)',
 	equivalent_water_thickness_cm: 'Equivalent water thickness (cm)'
 },'fr': {
 	results : 'Résultats',
