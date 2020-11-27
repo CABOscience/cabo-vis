@@ -42,8 +42,8 @@
       </template>
       <template v-slot:cell(plant_photos)="row">
       	<b-button-group>
-	        <b-button size="sm" @click="photo(row.item, row.index, $event.target)" class="mr-1" v-show="!!row.item.plant_photos">
-	          Photos
+	        <b-button size="sm" @click="photo(row.item, row.index, $event.target)" class="mr-1">
+	          {{ $t('details') }}
 	        </b-button>
 	        <b-button size="sm" @click="row.toggleDetails" class="mr-1" v-show='false'>
 	          {{ row.detailsShowing ? $t('hide') : $t('show') }} {{ $t('details') }}
@@ -61,32 +61,19 @@
 
 	    </b-table>
     <!-- Info modal -->
-    <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
-          <b-carousel
-		      id="carousel-1"
-		      v-model="slide"
-		      :interval="4000"
-		      controls
-		      indicators
-		      background="#ababab"
-		      img-height="800"
-		      style="text-shadow: 1px 1px 2px #333;"
-		      @sliding-start="onSlideStart"
-		      @sliding-end="onSlideEnd"
-		    >
-	      <b-carousel-slide v-for="(value, key) in infoModal.img" :key="key" :img-src="value" >
-	      </b-carousel-slide>
-  		</b-carousel>
-    </b-modal>
+    <!-- SampleModal modalType="tableModal"></SampleModal -->
 </b-card-text>
 	</b-card>
 </template>
 
 
 <script>
-
+  import SampleModal from './SampleModal.vue'
 
   export default {
+	components: {
+		SampleModal,
+	},
     data() {
       return {
         perPage: 20,
@@ -136,9 +123,9 @@
     },
     methods: {
     	photo(item, index, button) {
-			this.infoModal.title = item.scientific_name;
-			this.infoModal.img = item.plant_photos;
-			this.$root.$emit('bv::show::modal', this.infoModal.id, button)
+			this.infoModal = item;
+			//this.$root.$emit('bv::show::modal', this.infoModal.id, button)
+			this.$store.commit('show_sample_modal',item);
     	},
 	    resetInfoModal() {
 			this.infoModal.title = ''
@@ -193,21 +180,7 @@
 						ro.sample_ids = ids.join(',')
 						ro.scientific_name = m.scientific_name
 						ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
-						if(m.plant_photos!==null){
-							ro.plant_photos=[]
-							let pf=m.plant_photos.split(',')
-							pf.map(p=>{
-								ro.plant_photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
-							})
-							if(m.close_up_photos!==null){
-								pf=m.close_up_photos.split(',')
-								pf.map(p=>{
-									ro.plant_photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
-								})
-							}
-						}else{
-							ro.plant_photos = false;
-						}
+						ro.plant_photos=''
 						return ro
 					})
 				}

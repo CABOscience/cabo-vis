@@ -35,6 +35,7 @@ export default new Vuex.Store({
 		plants : [],
 		species_options: [],
 		species_selected: [],
+		sampleModal: {},
 		sidebar: false,
 		showAll: false,
 		showLoader: false,
@@ -150,6 +151,9 @@ export default new Vuex.Store({
 		},
 		download_traits(state,sample_ids){
 			this.dispatch('getLeafAreaAndWaterSamples',sample_ids)
+		},
+		show_sample_modal(state,modal_content){
+			state.sampleModal = modal_content
 		},
 		updatePassword(state,password){
 			bcrypt.compare(password, process.env.VUE_APP_CABO_PASSWORD, function(err, res) {

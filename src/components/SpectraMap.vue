@@ -22,43 +22,7 @@
       		</l-marker>
       	</l-marker-cluster>
     </l-map>
-    <b-modal :id="infoModal.id" :title="infoModal.marker.scientific_name" ok-only @hide="resetInfoModal">
-  <b-tabs content-class="mt-3">
-    <b-tab :title="tab1_title" active>
-		{{infoModal.marker.site_id}} 
-		<br>{{infoModal.marker.first_observed_by}} 
-		<br>{{infoModal.marker.date_first_observed}} 
-		<b-carousel
-		  id="carousel-1"
-		  v-model="slide"
-		  :interval="4000"
-		  controls
-		  indicators
-		  background="#ababab"
-		  img-height="700"
-		  style="text-shadow: 1px 1px 2px #333;"
-		  @sliding-start="onSlideStart"
-		  @sliding-end="onSlideEnd"
-		>
-		<b-carousel-slide v-for="(value, key) in infoModal.marker.photos" :key="key" :img-src="value" class="marker-slide">
-		</b-carousel-slide>
-		</b-carousel>
-		</b-tab>
-    <b-tab :title="tab2_title">
-          <b-button size="sm" @click="download_plant_spectra(infoModal.marker, $event.target)" class="mr-1" variant="primary">
-          {{ $t('download_plant_spectra_data') }} <b-icon-arrow-down-circle  v-show="!downloadMarkerPlantSpectraSpinner"></b-icon-arrow-down-circle>
-	      <b-spinner
-	      	small
-	        variant="light"
-	        v-show="downloadMarkerPlantSpectraSpinner"
-	      ></b-spinner>
-        </b-button>
-    </b-tab>
-    <b-tab :title="tab3_title" @click="update_traits(infoModal.marker.sample_ids)">
-    	<TraitsModal></TraitsModal>
-    </b-tab>
-  </b-tabs>
-    </b-modal>
+	<SampleModal v-if="showModal" modalType="mapModal"></SampleModal>
 	</div>
 </b-card-text>
 </b-card>
@@ -69,7 +33,7 @@
 	import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet';
 	import { Icon } from 'leaflet';
 	import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
-    import TraitsModal from "./TraitsModal.vue"
+	import SampleModal from './SampleModal.vue'
 	
 	delete Icon.Default.prototype._getIconUrl;
 	Icon.Default.mergeOptions({
@@ -85,7 +49,7 @@
 			LMarker,
 			LPopup,
 			'l-marker-cluster': Vue2LeafletMarkerCluster,
-			TraitsModal,
+			SampleModal,
 		},
 		data () {
 			return {
@@ -93,14 +57,9 @@
 				satellite: 'https://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
 				zoom: 10,
 				center: [45.5,-73.3],
-				infoModal: {
-					id:'marker-modal',
-					title: '',
-					content: '',
-					marker: {},
-				},
 				slide: 0,
-				sliding: null
+				sliding: null,
+				showModal: false,
 			};
 		},
 		computed: {
@@ -120,19 +79,6 @@
 				    		ids.push(i.sample_id)
 				    	})
 						m.sample_ids = ids.join(',')
-						m.photos=[]
-						if(m.plant_photos!==null){
-							let pf=m.plant_photos.split(',')
-							pf.map(p=>{
-								m.photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
-							})
-						}
-						if(m.close_up_photos!==null){
-							let cpf=m.close_up_photos.split(',')
-							cpf.map(p=>{
-								m.photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
-							})
-						}
 					})
 					return s
 				}
@@ -158,33 +104,14 @@
 					return this.$store.state.showMarkerPlantSpectraDownloadSpinner	
 				}
 			},
-			tab1_title: {
-				get() {
-					return this.$i18n.t('info_sheet')
-				}
-			},
-			tab2_title: {
-				get() {
-					return this.$i18n.t('spectra')
-				}
-			},
-			tab3_title: {
-				get() {
-					return this.$i18n.t('traits')
-				}
-			},
 		},
 		methods: {
 	    	markerModal(marker, target) {
-				this.infoModal.marker=marker
-				this.$root.$emit('bv::show::modal', this.infoModal.id, marker)
-	    	},
-		    resetInfoModal() {
-				this.infoModal.title = ''
-			    this.infoModal.content = ''
-			    this.infoModal.marker = ''
-		    },
-			zoomUpdated (zoom) {
+				this.$store.commit('show_sample_modal',marker);
+				this.showModal = true;
+				this.this_sample = marker;
+	    	},			
+	    	zoomUpdated (zoom) {
 			  this.zoom = zoom;
 			},
 			centerUpdated (center) {
@@ -199,13 +126,6 @@
 			onSlideEnd(slide) {
 				this.sliding = false
 			},
-		    download_plant_spectra(marker, button) {
-				this.$store.state.showMarkerPlantSpectraDownloadSpinner=true
-		    	this.$store.commit('download_plant_spectra_csv', marker.sample_ids)
-		    },
-		    update_traits(sample_ids){
-		    	this.$store.commit('download_traits', sample_ids)
-		    }
 		},
 		mounted: function() {
 		}

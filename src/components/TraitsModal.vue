@@ -43,7 +43,7 @@ export default {
     },
     computed: {
     	traits () {
-    		return  _.pick(this.$store.state.current_traits[0], ["leaf_mass_per_area_g_m2", "leaf_relative_water_content_perc", "leaf_dry_matter_content_mg_g","equivalent_water_thickness_cm"]);
+    		return  _.pick(this.$store.state.current_traits[0], ["leaf_mass_per_area_g_m2", "leaf_dry_matter_content_mg_g","equivalent_water_thickness_cm", "leaf_relative_water_content_perc"]);
 	   	}
     },
     methods: {
