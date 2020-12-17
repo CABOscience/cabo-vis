@@ -1,6 +1,7 @@
 <template>
       <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSpectra">
-<div id="spectra-container">
+<b-card-text>
+<div id="spectra-container" class="row">
 
 <div :id="spectraGraph" class="sample-spectra-graph" ref="sampleSpectra"></div>
 </div>
@@ -68,8 +69,15 @@ export default {
 				if(self.whichSpectra=='main-spectra' | typeof(self.whichSpectra== undefined )) {
 				}else{
 					d3.selectAll(".sample-spectra-graph > *").remove()
-					this.drawBox("reflectance", self.whichSpectra);
-					this.meanLeafSpectra(state.sampleSpectra,this.colors[0]);
+					this.drawBox("reflectance", 'sample-spectra');
+					this.clearBox();
+					var i;
+					for (i=1; i<=6; i++){
+						const tl = state.sampleSpectra.filter(t=>{
+							return t.leaf_number==i
+						})
+						this.meanLeafSpectra(tl,'sample-spectra',this.colors[i-1])
+					}
 				}
 			break;
 			case 'clear_spectra':
@@ -92,11 +100,19 @@ export default {
 		updateChart() {
 			this.showResetZoom=true;
 			// recover the new scale
-			const newX = d3.event.transform.rescaleX(this.box.x);
-			this.box.gxAxis.call(this.box.xAxis.scale(newX))
-			const newY_R = d3.event.transform.rescaleY(this.box.y_r);
-			this.box.gyAxisR.call(this.box.yAxisR.scale(newY_R))
-			d3.selectAll('.sample-spectra-graph .spectra_r').attr("transform", d3.event.transform);
+		  // recover the new scale
+		  const newX = d3.event.transform.rescaleX(this.box.x);
+		  this.box.gxAxis.call(this.box.xAxis.scale(newX))
+		  if(this.which=='reflectance' || this.which=='both'){
+		    const newY_R = d3.event.transform.rescaleY(this.box.y_r);
+		  	this.box.gyAxisR.call(this.box.yAxisR.scale(newY_R))
+		  	d3.selectAll('.sample-spectra-graph .spectra_r').attr("transform", d3.event.transform);
+		  }
+		  if(this.which=='transmittance' || this.which=='both'){
+		    const newY_T = d3.event.transform.rescaleY(this.box.y_t);
+		    this.box.gyAxisT.call(this.box.yAxisT.scale(newY_T))
+		    d3.selectAll('.sample-spectra-graph .spectra_t').attr("transform", d3.event.transform);
+		  }
 		},
 		clearSpectra() {
 			d3.selectAll(".sample-spectra-graph > *").remove()
@@ -123,11 +139,11 @@ export default {
 }
 .spectra-graph svg {
 	margin:auto;
-	display:block !important;
+	/*display:block !important;*/
 }
 .spectra-graph{
 	margin:auto;
-	display:block !important;
+	/*display:block !important;*/
 }
 
 div.tooltip {	
@@ -171,7 +187,6 @@ div.tooltip {
     text-align: center;
     float: right;
     display:block;
-    z-index:9999;
 }
 
 </style>

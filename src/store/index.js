@@ -165,7 +165,7 @@ export default new Vuex.Store({
 		},
 		show_sample_spectra(state,ids){
 			state.whichSpectra="sample"+ids
-			this.dispatch('getManySpectraMean',ids)
+			this.dispatch('getManyLeafSpectra',ids)
 		},
 		updatePassword(state,password){
 			bcrypt.compare(password, process.env.VUE_APP_CABO_PASSWORD, function(err, res) {
@@ -258,13 +258,13 @@ export default new Vuex.Store({
 				console.log(error);
 			});
 		},
-		getManySpectraMean (context,ids) {
+		getManyLeafSpectra (context,ids) {
 			ids = ids.split(',')
 			ids = ids.map(i=>{
 				return parseInt(i)
 			})
 			Vue.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-			Vue.axios.post('/leaf_spectra_mean/search/', {
+			Vue.axios.post('/leaf_spectra_raw/', {
 			    ids: ids,
 			}).then(result => {
 				context.commit('save_sample_spectra',result.data);

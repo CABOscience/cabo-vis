@@ -83,7 +83,7 @@ export default {
 
 		//clip box to crop when zooming
 		this.box.clip = this.box.svg.append("defs").append("SVG:clipPath")
-			.attr("id", "clip")
+			.attr("id", "clip-"+spectra_type)
 			.append("SVG:rect")
 			.attr("width", this.box.width )
 			.attr("height", this.box.height - this.box.margin.bottom)
@@ -102,19 +102,22 @@ export default {
 		    .attr("class", "tooltip")				
 		    .style("opacity", 0);
 
-		this.box.startx=this.box.x
-		this.box.starty_t=this.box.y_t
-		this.box.starty_r=this.box.y_r
-		//Invisible box to control zoome
 	},
-  	meanLeafSpectra: function(data,color) { 
-
+  	meanLeafSpectra: function(data,spectra_type,color) { 
 			data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
 			const self=this
 
+			if (spectra_type=='main-spectra'){
+				var stroke_opacity=1
+				var stroke_width=2.5
+			}else{
+				var stroke_opacity=0.6
+				var stroke_width=1.5
+			}
+
 			// Create the scatter variable: where both the circles and the brush take place
 			const line_box = this.box.svg.append('g')
-			  .attr("clip-path", "url(#clip)")
+			  .attr("clip-path", "url(#clip-"+spectra_type+")")
 
 			this.box.svg.append("rect")
 				.attr("width", this.box.width)
@@ -126,10 +129,11 @@ export default {
 
 
 			if(this.which=='both' || this.which=='reflectance'){
-				const reflectance = data.filter(s => s.reflectance_transmittance=='reflectance');
+
+				const reflectance = data.filter(s => s.r_t=='reflectance');
 				const line = d3.line()
 					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-					.y(function(d) { return self.box.y_r(d.avg); })
+					.y(function(d) { return self.box.y_r(d.val); })
 
 	            if(this.showRange == "true"){
 					const lineMin = d3.line()
@@ -166,8 +170,8 @@ export default {
 					.attr("class", "spectra_r")
 					.attr("spectra","r")
 					.attr("stroke", color)
-					.attr("stroke-width", 2.5)
-					.attr("stroke-opacity", 1)
+					.attr("stroke-width", stroke_width)
+					.attr("stroke-opacity", stroke_opacity)
 					.attr("d", line)				
 					.on("mouseover", function(d) {		
 						self.box.tooltip.transition()		
@@ -192,7 +196,7 @@ export default {
 			      	
 			}
 			if(this.which=='both' || this.which=='transmittance'){
-				let transmittance = data.filter(s => s.reflectance_transmittance=='transmittance')
+				let transmittance = data.filter(s => s.r_t=='transmittance')
 				/*transmittance.forEach(s => {
 					s.avg=1-s.avg;
 					s.max=1-s.max;
@@ -231,7 +235,7 @@ export default {
 
 				const tline = d3.line()
 					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-					.y(function(d) { return self.box.y_t(d.avg); })
+					.y(function(d) { return self.box.y_t(d.val); })
 
 				const lineyt=line_box.append("path")
 					.datum(transmittance)
@@ -239,8 +243,8 @@ export default {
 					.attr("class", "spectra_t")
 					.attr("spectra","t")
 					.attr("stroke", color)
-					.attr("stroke-width", 2.5)
-					.attr("stroke-opacity",1)
+					.attr("stroke-width", stroke_width)
+					.attr("stroke-opacity", stroke_opacity)
 					.attr("d", tline)
 
 				if(this.animate==true){

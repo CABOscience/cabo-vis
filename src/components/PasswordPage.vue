@@ -21,7 +21,10 @@ export default {
     },
     computed: {
     	password: {
-		    set (value) {
+            get(){
+
+            },
+		    set(value) {
 		      this.$store.commit('updatePassword', value)
 		    }
 	    },

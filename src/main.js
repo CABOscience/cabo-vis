@@ -22,7 +22,6 @@ Vue.use(VueAxios, axios);
 Vue.axios.defaults.baseURL = "https://data.caboscience.org/api/v1/";
 //Vue.axios.defaults.baseURL = "http://localhost:3001/api/v1/";
 //Vue.axios.defaults.headers.common['Authorization'] = 'Bearer '+process.env.CABO_API_KEY;
-console.log(process.env.VUE_APP_CABO_API_KEY);
 Vue.axios.defaults.headers.common['Authorization'] = 'Bearer '+ process.env.VUE_APP_CABO_API_KEY;
 
 new Vue({

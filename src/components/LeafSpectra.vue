@@ -119,7 +119,7 @@ export default {
 					}
 				}else{
 					this.drawBox("reflectance",state.whichSpectra);
-					this.meanLeafSpectra(state.current_spectra.spectra,this.colors[0]);
+					this.meanLeafSpectra(state.current_spectra.spectra,'main-spectra',this.colors[0]);
 				}
 			break;
 			case 'clear_spectra':
@@ -151,7 +151,7 @@ export default {
 				this.dataSpectra.forEach(s => {
 					if(self.speciesSelected.indexOf(s.data[0].scientific_name)!==-1){
 						const color=self.colors[self.species_list.indexOf(s.data[0].scientific_name)]
-						self.meanLeafSpectra(s.data,color);
+						self.meanLeafSpectra(s.data,'main-spectra',color);
 					}
 					if(i==self.dataSpectra.length){
 						this.animate=false
