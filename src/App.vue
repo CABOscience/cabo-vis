@@ -12,9 +12,10 @@
               <a name="search"></a><SearchBar></SearchBar>
               <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
               <Loader></Loader>
-              <a name="spectra"></a><LeafSpectra></LeafSpectra>
+              <a name="spectra"></a><LeafSpectra which="main-spectra"></LeafSpectra>
               <a name="map"></a><SpectraMap></SpectraMap>
               <a name="plants"></a><PlantsTable></PlantsTable>
+              <SampleModal modalType="sampleModal"></SampleModal>
           </div>
   </div>
 </template>
@@ -29,6 +30,7 @@ import SpeciesSelect from "./components/SpeciesSelect.vue"
 import SideBar from "./components/SideBar.vue"
 import SpectraMap from "./components/SpectraMap.vue"
 import PlantsTable from "./components/PlantsTable.vue"
+import SampleModal from "./components/SampleModal.vue"
 
 //import * as d3 from 'd3'
 
@@ -44,6 +46,7 @@ export default {
     SideBar,
     SpectraMap,
     PlantsTable,
+    SampleModal,
   }, 
   data: function() {
     return {
@@ -116,5 +119,15 @@ export default {
   margin-bottom:50px;
 } 
 
+@media (min-width: 992px)
+ .modal-lg {
+    max-width: auto !important;
+   }
 
+@media (min-width: 576px)
+  .modal-dialog {
+    max-width: auto !important;
+
+  }
+  
 </style>

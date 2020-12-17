@@ -61,19 +61,14 @@
 
 	    </b-table>
     <!-- Info modal -->
-    <!-- SampleModal modalType="tableModal"></SampleModal -->
-</b-card-text>
+	</b-card-text>
 	</b-card>
 </template>
 
 
 <script>
-  import SampleModal from './SampleModal.vue'
 
   export default {
-	components: {
-		SampleModal,
-	},
     data() {
       return {
         perPage: 20,

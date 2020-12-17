@@ -22,7 +22,6 @@
       		</l-marker>
       	</l-marker-cluster>
     </l-map>
-	<SampleModal v-if="showModal" modalType="mapModal"></SampleModal>
 	</div>
 </b-card-text>
 </b-card>
@@ -33,7 +32,6 @@
 	import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet';
 	import { Icon } from 'leaflet';
 	import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
-	import SampleModal from './SampleModal.vue'
 	
 	delete Icon.Default.prototype._getIconUrl;
 	Icon.Default.mergeOptions({
@@ -49,7 +47,6 @@
 			LMarker,
 			LPopup,
 			'l-marker-cluster': Vue2LeafletMarkerCluster,
-			SampleModal,
 		},
 		data () {
 			return {
@@ -59,7 +56,6 @@
 				center: [45.5,-73.3],
 				slide: 0,
 				sliding: null,
-				showModal: false,
 			};
 		},
 		computed: {
@@ -108,7 +104,6 @@
 		methods: {
 	    	markerModal(marker, target) {
 				this.$store.commit('show_sample_modal',marker);
-				this.showModal = true;
 				this.this_sample = marker;
 	    	},			
 	    	zoomUpdated (zoom) {

@@ -48,7 +48,9 @@ const messages = {'en': {
 	leaf_mass_per_area_g_m2: 'Leaf mass per area (g m<sup>2</sup>)',
 	leaf_relative_water_content_perc: 'Leaf relative water content (%)',
 	leaf_dry_matter_content_mg_g: 'Leaf dry matter content (mg g<sup>-1</sup>)',
-	equivalent_water_thickness_cm: 'Equivalent water thickness (cm)'
+	equivalent_water_thickness_cm: 'Equivalent water thickness (cm)',
+	details: 'Details',
+	dry_matter_and_water: 'Dry matter and water',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -93,6 +95,8 @@ const messages = {'en': {
 	map_of_observations: 'Carte des observations',
 	choose_a_project: 'Choisir un projet',
 	traits: 'Traits',
+	details: 'Détails',
+	dry_matter_and_water: 'Matières sèches et eau',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

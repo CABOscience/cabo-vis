@@ -42,7 +42,7 @@ export default {
 			  return a - b;
 			});
 			var margin = {top: 15, right: 30, bottom: 30, left: 50},
-			    width = 460 - margin.left - margin.right,
+			    width = 550 - margin.left - margin.right,
 			    height = 75 - margin.top - margin.bottom;
 
 			// append the svg object to the body of the page

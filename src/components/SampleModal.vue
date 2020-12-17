@@ -1,27 +1,28 @@
 <template>
-  <b-modal :id="modal_id" :title="sampleModal.scientific_name" ok-only @hide="resetInfoModal">
+  <b-modal :id="modal_id" :title="sampleModal.scientific_name" ok-only @hide="resetInfoModal" size="lg">
   <b-tabs content-class="mt-3">
-    <b-tab :title="tab1_title" active>
+    <b-tab :title="tab1_title" class="photos-tab" active>
 		{{sampleModal.site_id}} 
 		<br>{{sampleModal.first_observed_by}} 
 		<br>{{sampleModal.date_first_observed}} 
 		<b-carousel
 		  id="carousel-1"
 		  v-model="slide"
-		  :interval="4000"
+		  :interval="3000"
 		  controls
 		  indicators
 		  background="#ababab"
-		  img-height="700"
+		  img-height="300px"
 		  style="text-shadow: 1px 1px 2px #333;"
 		  @sliding-start="onSlideStart"
 		  @sliding-end="onSlideEnd"
 		>
-		<b-carousel-slide v-for="(value, key) in photos" :key="key" :img-src="value" class="marker-slide">
+		<b-carousel-slide v-for="(value, key) in photos" :key="key" :img-src="value" img-height="800px" class="marker-slide">
 		</b-carousel-slide>
 		</b-carousel>
 		</b-tab>
-    <b-tab :title="tab2_title">
+    <b-tab :title="tab2_title" @click="get_sample_spectra(sampleModal.sample_ids)">
+			
           <b-button size="sm" @click="download_plant_spectra(sampleModal, $event.target)" class="mr-1" variant="primary">
           {{ $t('download_plant_spectra_data') }} <b-icon-arrow-down-circle v-show="!downloadMarkerPlantSpectraSpinner"></b-icon-arrow-down-circle>
 	      <b-spinner
@@ -30,6 +31,7 @@
 	        v-show="downloadMarkerPlantSpectraSpinner"
 	      ></b-spinner>
         </b-button>
+		<LeafSampleSpectra :which="ids"></LeafSampleSpectra>
     </b-tab>
     <b-tab :title="tab3_title" @click="update_traits(sampleModal.sample_ids)">
     	<TraitsModal></TraitsModal>
@@ -40,10 +42,15 @@
 
 <script>
     import TraitsModal from "./TraitsModal.vue"
+    import LeafSpectra from "./LeafSpectra.vue"
+    import LeafSampleSpectra from "./LeafSampleSpectra"
+	import * as d3 from 'd3'
 
 	export default{
 		components: {
 			TraitsModal,
+			LeafSpectra,
+			LeafSampleSpectra
 		},
 		data () {
 			return {
@@ -83,7 +90,13 @@
 				get() {
 					return this.$attrs.modalType;
 				}
+			},
+			ids: {
+				get() {
+					return 'sample'+this.$store.state.sampleModal.sample_ids
+				}
 			}
+
 		},
 		methods: {
 		    resetInfoModal() {
@@ -91,6 +104,9 @@
 			    this.sampleModal.content = ''
 			    this.sampleModal.marker = ''
 			    this.modalUp = false
+			    this.$bvModal.hide(this.modal_id)
+			    d3.selectAll(".sample-spectra-graph > *").remove()
+			    this.box=""
 		    },
 			onSlideStart(slide) {
 				this.sliding = true
@@ -134,6 +150,10 @@
 					}
 					return plant_photos;
 				})[0]
+		    },
+		    get_sample_spectra(sample_ids){
+			    d3.selectAll(".sample-spectra-graph > *").remove()
+		    	this.$store.commit('show_sample_spectra',sample_ids)
 		    }
 		},
 		mounted: function() {
@@ -143,8 +163,9 @@
 					case 'show_sample_modal':
 						if(self.modalUp==false){
 							this.refresh_photos()
-							this.$root.$emit('bv::show::modal', self.modal_id)
-							self.modalUp=true;
+							this.$bvModal.show(self.modal_id)
+							//this.$root.$emit('bv::show::modal', self.modal_id)
+							//self.modalUp=true;
 						}
 					break;
 				}
@@ -152,3 +173,15 @@
 		}
 	}
 </script>
+
+<style>
+
+.photos-tab{
+	max-width:600px;
+	margin:auto !important;
+}
+
+.marker-slide{
+	max-width:600px;
+}
+</style>

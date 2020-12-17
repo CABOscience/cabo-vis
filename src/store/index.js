@@ -36,7 +36,9 @@ export default new Vuex.Store({
 		species_options: [],
 		species_selected: [],
 		sampleModal: {},
+		sampleSpectra: [],
 		sidebar: false,
+		whichSpectra: 'main-spectra',
 		showAll: false,
 		showLoader: false,
 		showSpectra: false,
@@ -79,6 +81,7 @@ export default new Vuex.Store({
 					return t.scientific_name
 				})
 				this.dispatch('getManySpectraMeanTaxa');
+				this.whichSpectra="main-spectra";
 				this.dispatch('getManyPlants');
 			}else{
 				this.dispatch('clearSpectra');
@@ -88,7 +91,7 @@ export default new Vuex.Store({
 			}
 			state.search_box.announce = spectra_ids.length + i18n.t('_plants_found')
 		},
-		save_spectra(state, spectra) {
+		save_main_spectra(state, spectra) {
 			state.showLoader=false;
 			state.showAll=true;
 			state.sidebar=true;
@@ -96,6 +99,11 @@ export default new Vuex.Store({
 			state.showSpectraGraph=false
 			if(spectra!=false){
 				state.current_spectra.spectra=spectra;
+			}
+		},
+		save_sample_spectra(state, spectra) {
+			if(spectra!=false){
+				state.sampleSpectra=spectra;
 			}
 		},
 		save_plants(state, plants) {
@@ -154,6 +162,10 @@ export default new Vuex.Store({
 		},
 		show_sample_modal(state,modal_content){
 			state.sampleModal = modal_content
+		},
+		show_sample_spectra(state,ids){
+			state.whichSpectra="sample"+ids
+			this.dispatch('getManySpectraMean',ids)
 		},
 		updatePassword(state,password){
 			bcrypt.compare(password, process.env.VUE_APP_CABO_PASSWORD, function(err, res) {
@@ -246,21 +258,18 @@ export default new Vuex.Store({
 				console.log(error);
 			});
 		},
-		getManySpectraMean (context) {
-			const ids = context.state.current_spectra.spectra_ids.map(sp => "'"+sp.fulcrum_id+"'");
+		getManySpectraMean (context,ids) {
+			ids = ids.split(',')
+			ids = ids.map(i=>{
+				return parseInt(i)
+			})
 			Vue.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 			Vue.axios.post('/leaf_spectra_mean/search/', {
-			  //params: {
 			    ids: ids,
-			    type: 'reflectance',
-			  //},
-			  //paramsSerializer: params => {
-			  //  return qs.stringify(params, {arrayFormat: 'brackets'})
-			  //}
 			}).then(result => {
-				context.commit('save_spectra',result.data);
+				context.commit('save_sample_spectra',result.data);
 			}).catch(error => {
-				//context.commit('save_spectra',[], false)
+				console.log(error)
 			});
 		},
 		getManySpectraMeanTaxa (context) {
@@ -271,7 +280,7 @@ export default new Vuex.Store({
 			}).catch(function(error){console.log(error);}));
 			Vue.axios.all(gets).then(responses => {
 				//const resp=responses.map(m => m.data[0])
-				context.commit('save_spectra',responses);
+				context.commit('save_main_spectra',responses);
 			})
 		},
 		saveSpectra(context){

@@ -25,7 +25,7 @@
         <b-card-text bg-variant="light" text-variant="gray-dark" class="graph-card">
 <div id="spectra-container" class="row" >
 
-<div id="spectra-graph" class="row" v-show="showSpectraGraph"></div>
+<div :id="spectraGraph" class="main-spectra-graph" v-show="showSpectraGraph"></div>
 </div>
 </b-card-text>
       </b-card>
@@ -33,6 +33,8 @@
 
 <script>
 import * as d3 from 'd3'
+import spectra from '../spectra'
+
 
 export default {
 	name: "LeafSpectra",
@@ -43,6 +45,7 @@ export default {
 			transmittance: 'false',
 			range: true,
 			showResetZoom: false,
+			spectraGraph: 'main-spectra'
 		}
 	},
 	computed: {
@@ -85,29 +88,38 @@ export default {
 			}
 		},
 	},
+	created() {
+		this.meanLeafSpectra = spectra.meanLeafSpectra
+		this.drawBox = spectra.drawBox
+	},
 	mounted: function() {
 		this.$store.subscribe((mutation,state) => {
 			switch(mutation.type) {
-			case 'save_spectra':
+			case 'save_main_spectra':
 				var self = this;
-				if(state.current_spectra.spectra.length!==0 && state.current_spectra.which !=='none'){
-					if(state.current_spectra.reBox==true){
-						this.clearSpectra();
-						this.drawBox(state.current_spectra.which);
+				if(state.whichSpectra=='main-spectra'){
+					if(state.current_spectra.spectra.length!==0 && state.current_spectra.which !=='none'){
+						if(state.current_spectra.reBox==true){
+							this.clearSpectra();
+							this.drawBox(state.current_spectra.which,'main-spectra');
+						}
+						this.clearBox();
+						this.species_list=state.species_options.map(t => {
+							return t.scientific_name
+						})
+						this.speciesSelected=state.species_selected
+						this.dataSpectra=state.current_spectra.spectra
+						this.which=state.current_spectra.which
+						this.showRange=state.current_spectra.showRange
+						this.animate=true
+						state.showSpectraGraph=true
+						this.callSpectra();
+					}else if(state.current_spectra.which=='none'){
+						this.clearBox();
 					}
-					this.clearBox();
-					this.species_list=state.species_options.map(t => {
-						return t.scientific_name
-					})
-					this.speciesSelected=state.species_selected
-					this.dataSpectra=state.current_spectra.spectra
-					this.which=state.current_spectra.which
-					this.showRange=state.current_spectra.showRange
-					this.animate=true
-					state.showSpectraGraph=true
-					this.callSpectra();
-				}else if(state.current_spectra.which=='none'){
-					this.clearBox();
+				}else{
+					this.drawBox("reflectance",state.whichSpectra);
+					this.meanLeafSpectra(state.current_spectra.spectra,this.colors[0]);
 				}
 			break;
 			case 'clear_spectra':
@@ -118,177 +130,37 @@ export default {
 	},
 	watch: {
 	    reflectance_transmittance(which) {
+	    	this.$store.state.whichSpectra='main-spectra'
 	    	this.$store.state.current_spectra.reBox = true
 	        this.$store.commit('clear_spectra')
 	        this.$store.commit('reflectance_transmittance',which)
-	        this.$store.commit('save_spectra', false)
+	        this.$store.commit('save_main_spectra', false)
 	    },
 	    show_range(show_range) {
+	    	this.$store.state.whichSpectra='main-spectra'
 	    	this.$store.state.current_spectra.reBox = true
 	    	this.$store.state.current_spectra.showRange = show_range
 	        this.$store.commit('clear_spectra')
-	        this.$store.commit('save_spectra', false)
+	        this.$store.commit('save_main_spectra', false)
 	    },
 	},
 	methods: {
 		callSpectra(){
 			const self=this
 			let i=1
-			this.dataSpectra.forEach(s => {
-				if(self.speciesSelected.indexOf(s.data[0].scientific_name)!==-1){
-					const color=self.colors[self.species_list.indexOf(s.data[0].scientific_name)]
-					self.meanLeafSpectra(s.data,color);
-				}
-				if(i==self.dataSpectra.length){
-					this.animate=false
-				}
-				i++
-			})			
+				this.dataSpectra.forEach(s => {
+					if(self.speciesSelected.indexOf(s.data[0].scientific_name)!==-1){
+						const color=self.colors[self.species_list.indexOf(s.data[0].scientific_name)]
+						self.meanLeafSpectra(s.data,color);
+					}
+					if(i==self.dataSpectra.length){
+						this.animate=false
+					}
+					i++
+				})
 		},
 		downloadTaxaMeanCsv() {
 			this.$store.commit('download_taxa_mean_csv')
-		},
-		leafSpectra(data) {
-			const spectra = data.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
-			var margin = {top: 50, right: 50, bottom: 50, left: 50}
-					, width = 0.7*window.innerWidth - margin.left - margin.right // Use the window's width 
-					, height = 0.4*window.innerWidth - margin.top - margin.bottom; // Use the window's height
-				const svg = d3.select("#spectra-graph").append('svg')
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-					.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-				const x = d3.scaleLinear()
-					.domain([d3.min(spectra, function(d) { return +d.wavelength; }), d3.max(spectra, function(d) { return +d.wavelength; })])
-				.range([0, width])
-
-				var y = d3.scaleLinear()
-					.domain([0, d3.max(spectra, function(d) { return +d.r_t_average; })]) // input 
-					.range([height, 0+(height*0.15)]); // output 
-				// 3. Call the x axis in a group tag
-				svg.append("g")
-					.attr("class", "x axis")
-					.attr("transform", "translate(0," + height + ")")
-					.call(d3.axisBottom(x)); // Create an axis component with d3.axisBottom
-
-				// 4. Call the y axis in a group tag
-				svg.append("g")
-					.attr("class", "y axis")
-					.call(d3.axisLeft(y)); // Create an axis component with d3.axisLeft
-
-					const line = d3.line()
-						.x(function(d) { return x(d.wavelength); }) // set the x values for the line generator
-						.y(function(d) { return y(d.r_t_average); })
-
-				data.forEach(function(spectr) {
-					const thiss = spectr.data.spectra_processeds.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
-					svg.append("path")
-						.datum(thiss)
-						.attr("fill","none")
-						.attr("stroke", "steelblue")
-						.attr("stroke-width", 1.5)
-						.attr("stroke-opacity",0.5)
-						.attr("d", line)				
-				})
-		},
-		drawBox(which){
-			this.box={}
-			this.box.margin = {top: 0, right: 50, bottom: 80, left: 50}
-			this.box.width = 0.7*window.innerWidth - this.box.margin.left - this.box.margin.right // Use the window's width 
-			this.box.height = 0.4*window.innerWidth - this.box.margin.top - this.box.margin.bottom; // Use the window's height
-			const self=this
-			this.box.svg = d3.select("#spectra-graph").append('svg')
-				.attr("width", this.box.width + this.box.margin.left + this.box.margin.right)
-				.attr("height", this.box.height + this.box.margin.top + this.box.margin.bottom)
-				.append("g")
-				.attr("transform", "translate(" + this.box.margin.left + "," + this.box.margin.top + ")")
-			this.box.x = d3.scaleLinear()
-				.domain([345, 2500])
-				.range([0, this.box.width])
-
-			// 3. Call the x axis in a group tag
-			this.box.xAxis=d3.axisBottom(this.box.x)
-			this.box.gxAxis=this.box.svg.append("g")
-				.attr("class", "x axis")
-				.attr("transform", "translate(0," + this.box.height + ")")
-				.call(this.box.xAxis)
-				.style("font-size", "0.9em"); 
-
-			this.box.svg.append("text")
-				.attr("y", this.box.height + 0.4*this.box.margin.bottom )
-				.attr("x", (this.box.width / 2))
-				.attr("dy", "1em")
-				.style("text-anchor", "middle")
-				.style("font-size", "1.1em")
-				.text(this.$i18n.t('wavelength'));
-
-			if(which=='both' || which=='reflectance'){
-				this.box.y_r = d3.scaleLinear()
-					.domain([0, 1]) // input 
-					.range([this.box.height, this.box.height*0.15]); // output 
-				this.box.yAxisR=d3.axisLeft(this.box.y_r)
-				this.box.gyAxisR=this.box.svg.append("g")
-					.attr("class", "y axis")
-					.call(this.box.yAxisR)
-					.style("font-size", "0.9em"); 
-				// Create an axis component with d3.axisLeft
-				// text label for the y axis
-				this.box.svg.append("text")
-					.attr("transform", "rotate(-90)")
-					.attr("y", 0 - 1.1*this.box.margin.left)
-					.attr("x", -50 - (this.box.height / 2))
-					.attr("dy", "1em")
-					.style("text-anchor", "middle")
-					.style("font-size", "1.1em")
-					.text(this.$i18n.t('reflectance'));
-			}
-			if(which=='both' || which=='transmittance'){
-				this.box.y_t = d3.scaleLinear()
-					.domain([1,0]) // input 
-					.range([this.box.height, 0+(this.box.height*0.15)]); // output 
-
-				this.box.yAxisT=d3.axisRight(this.box.y_t)
-				this.box.gyAxisT=this.box.svg.append("g")
-					.attr("class", "y axis")
-					.attr("transform", "translate( " + this.box.width + ", 0 )")
-					.call(this.box.yAxisT)
-					.style("font-size", "0.9em"); 
-
-				this.box.svg.append("text")
-				  .attr("y", - this.box.width - 1.1*this.box.margin.right )
-				  .attr("x",50 + (this.box.height/2))
-				  .attr("dy", "1em")
-				  .style("text-anchor", "middle")
-				  .attr("transform", "rotate(90)")
-				  .style("font-size", "1.1em")
-				  .text(this.$i18n.t('transmittance'));
-			}
-
-			//clip box to crop when zooming
-			this.box.clip = this.box.svg.append("defs").append("SVG:clipPath")
-				.attr("id", "clip")
-				.append("SVG:rect")
-				.attr("width", this.box.width )
-				.attr("height", this.box.height - this.box.margin.bottom)
-				.attr("x", 0)
-				.attr("y", this.box.margin.bottom);
-
-			this.box.zoom = d3.zoom()
-				.scaleExtent([0.9, 5]) // This controls how much you can unzoom (x1) and zoom (x5)
-				//.translateExtent([[0, 0], [this.box.width, this.box.height - this.box.margin.bottom]])  
-				.extent([[0, 0], [this.box.width, this.box.height - this.box.margin.bottom]])
-				.on("start", this.startZoom)
-				.on("zoom", this.updateChart);
-
-			// Define the div for the tooltip
-			this.box.tooltip = d3.select("body").append("div")	
-			    .attr("class", "tooltip")				
-			    .style("opacity", 0);
-
-			this.box.startx=this.box.x
-			this.box.starty_t=this.box.y_t
-			this.box.starty_r=this.box.y_r
-			//Invisible box to control zoome
 		},
 		startZoom() {
 			this.box.startx=this.box.x
@@ -304,170 +176,25 @@ export default {
 		  if(this.which=='reflectance' || this.which=='both'){
 		    const newY_R = d3.event.transform.rescaleY(this.box.y_r);
 		  	this.box.gyAxisR.call(this.box.yAxisR.scale(newY_R))
-		  	d3.selectAll('.spectra_r').attr("transform", d3.event.transform);
+		  	d3.selectAll('.main-spectra-graph .spectra_r').attr("transform", d3.event.transform);
 		  }
 		  if(this.which=='transmittance' || this.which=='both'){
 		    const newY_T = d3.event.transform.rescaleY(this.box.y_t);
 		    this.box.gyAxisT.call(this.box.yAxisT.scale(newY_T))
-		    d3.selectAll('.spectra_t').attr("transform", d3.event.transform);
+		    d3.selectAll('.main-spectra-graph .spectra_t').attr("transform", d3.event.transform);
 		  }
 		},
-		meanLeafSpectra(data,color) {
-
-			data.slice().sort((a, b) => d3.descending(a.wavelength, b.wavelength))
-			const self=this
-
-			// Create the scatter variable: where both the circles and the brush take place
-			const line_box = this.box.svg.append('g')
-			  .attr("clip-path", "url(#clip)")
-
-			this.box.svg.append("rect")
-				.attr("width", this.box.width)
-				.attr("height", this.box.height - this.box.margin.bottom)
-				.style("fill", "none")
-				.style("pointer-events", "all")
-				.attr('transform', 'translate(' + this.box.margin.top + ',' + this.box.margin.left + ')')
-				.call(this.box.zoom).on("wheel", function() { d3.event.preventDefault()});
-
-
-			if(this.which=='both' || this.which=='reflectance'){
-				const reflectance = data.filter(s => s.reflectance_transmittance=='reflectance');
-				const line = d3.line()
-					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-					.y(function(d) { return self.box.y_r(d.avg); })
-
-	            if(this.showRange == "true"){
-					const lineMin = d3.line()
-						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-						.y(function(d) { return self.box.y_r(d.min); })
-
-					const lineMax = d3.line()
-						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-						.y(function(d) { return self.box.y_r(d.max); })
-
-					line_box.append("path")
-						.datum(reflectance)
-						.attr("fill","none")
-						.attr("class", "spectra_r")
-						.attr("stroke", color)
-						.attr("spectra","r_min")
-						.attr("stroke-width", 1)
-						.attr("stroke-opacity",0.3)
-						.attr("d", lineMin)
-
-					line_box.append("path")
-						.datum(reflectance)
-						.attr("fill","none")
-						.attr("class", "spectra_r")
-						.attr("spectra","r_max")
-						.attr("stroke", color)
-						.attr("stroke-width", 1)
-						.attr("stroke-opacity",0.3)
-						.attr("d", lineMax)
-				}
-				const lineyr=line_box.append("path")
-					.datum(reflectance)
-					.attr("fill","none")
-					.attr("class", "spectra_r")
-					.attr("spectra","r")
-					.attr("stroke", color)
-					.attr("stroke-width", 2.5)
-					.attr("stroke-opacity", 1)
-					.attr("d", line)				
-					.on("mouseover", function(d) {		
-						self.box.tooltip.transition()		
-					    .duration(200)		
-					    .style("opacity", .9);		
-						self.box.tooltip.html(d[0].scientific_name)	
-					    .style("left", (d3.event.pageX) + "px")		
-					    .style("top", (d3.event.pageY - 28) + "px");	
-					})					
-					.on("mouseout", function(d) {		
-						self.box.tooltip.transition()		
-					    .duration(500)		
-					    .style("opacity", 0);	
-					})
-					if(this.animate==true){
-						lineyr.attr("stroke-dasharray", 1.5*this.box.width + " " + 1.5*this.box.width)
-			      		.attr("stroke-dashoffset", 1.5*this.box.width).transition()
-						.duration(1000)
-						.ease(d3.easeLinear)
-						.attr("stroke-dashoffset", 0)
-					}
-			      	
-			}
-			if(this.which=='both' || this.which=='transmittance'){
-				let transmittance = data.filter(s => s.reflectance_transmittance=='transmittance')
-				/*transmittance.forEach(s => {
-					s.avg=1-s.avg;
-					s.max=1-s.max;
-					s.min=1-s.min;
-				})*/
-
-				if(this.showRange == "true") {
-					const tlineMin = d3.line()
-						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-						.y(function(d) { return self.box.y_t(d.min); })
-
-					const tlineMax = d3.line()
-						.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-						.y(function(d) { return self.box.y_t(d.max); })
-
-					line_box.append("path")
-						.datum(transmittance)
-						.attr("fill","none")
-						.attr("class", "spectra_t")
-						.attr("spectra","t_min")
-						.attr("stroke", color)
-						.attr("stroke-width", 1)
-						.attr("stroke-opacity",0.3)
-						.attr("d", tlineMin)
-               		line_box.append("path")
-                        .datum(transmittance)
-                        .attr("class", "spectra_t")
-                        .attr("spectra","t_max")
-                        .attr("fill","none")
-                        .attr("stroke", color)
-                        .attr("stroke-width", 1)
-                        .attr("stroke-opacity",0.3)
-                        .attr("d", tlineMax)
-
-                }
-
-				const tline = d3.line()
-					.x(function(d) { return self.box.x(d.wavelength); }) // set the x values for the line generator
-					.y(function(d) { return self.box.y_t(d.avg); })
-
-				const lineyt=line_box.append("path")
-					.datum(transmittance)
-					.attr("fill","none")
-					.attr("class", "spectra_t")
-					.attr("spectra","t")
-					.attr("stroke", color)
-					.attr("stroke-width", 2.5)
-					.attr("stroke-opacity",1)
-					.attr("d", tline)
-
-				if(this.animate==true){
-					lineyt.attr("stroke-dasharray", 1.5*this.box.width + " " + 1.5*this.box.width)
-					.attr("stroke-dashoffset", 1.5*this.box.width).transition()
-					.duration(1000)
-					.ease(d3.easeLinear)
-					.attr("stroke-dashoffset", 0)
-				}
-			}
-		},
 		clearSpectra() {
-			d3.selectAll("#spectra-graph > *").remove()
+			d3.selectAll(".main-spectra-graph > *").remove()
 		},
 		clearBox() {
-			d3.selectAll(".spectra_r").remove()
-			d3.selectAll(".spectra_t").remove()
+			d3.selectAll(".main-spectra-graph .spectra_r").remove()
+			d3.selectAll(".main-spectra-graph .spectra_t").remove()
 		},
 		resetZoom() {
 			//this.$store.commit('clear_spectra')
 			this.clearSpectra()
-        	this.$store.commit('save_spectra', false)
+        	this.$store.commit('save_main_spectra', false)
         	this.showResetZoom=false
 		}
 	}
@@ -480,13 +207,13 @@ export default {
 	padding:50px;
 	width:100%;
 }
-#spectra-graph svg {
+.main-spectra-graph svg {
 	margin:auto;
-	display:block;
+	display:block !important;
 }
-#spectra-graph{
+.main-spectra-graph{
 	margin:auto;
-	display:block;
+	display:block !important;
 }
 
 div.tooltip {	
