@@ -9,9 +9,9 @@ export default {
 			this.box.width = 0.7*window.innerWidth - this.box.margin.left - this.box.margin.right // Use the window's width 
 			this.box.height = 0.4*window.innerWidth - this.box.margin.top - this.box.margin.bottom; // Use the window's height
 		}else{
-			this.box.margin = {top: 0, right: 50, bottom: 80, left: 100}
-			this.box.width = 770 - this.box.margin.left - this.box.margin.right // Use the window's width 
-			this.box.height = 0.6*770 - this.box.margin.top - this.box.margin.bottom; // Use the window's height
+			this.box.margin = {top: 0, right: 50, bottom: 80, left: 75}
+			this.box.width = 740 - this.box.margin.left - this.box.margin.right // Use the window's width 
+			this.box.height = 0.6*740 - this.box.margin.top - this.box.margin.bottom; // Use the window's height
 		}
 		const self=this
 		this.box.svg = d3.select('#'+this.spectraGraph).append('svg')
@@ -86,9 +86,9 @@ export default {
 			.attr("id", "clip-"+spectra_type)
 			.append("SVG:rect")
 			.attr("width", this.box.width )
-			.attr("height", this.box.height - this.box.margin.bottom)
+			.attr("height", this.box.height)
 			.attr("x", 0)
-			.attr("y", this.box.margin.bottom);
+			.attr("y", 0);
 
 		this.box.zoom = d3.zoom()
 			.scaleExtent([0.9, 5]) // This controls how much you can unzoom (x1) and zoom (x5)

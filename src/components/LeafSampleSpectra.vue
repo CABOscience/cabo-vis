@@ -2,6 +2,20 @@
 <b-container>
 	<Loader v-show="!showSampleSpectra"></Loader>
       <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSampleSpectra">
+
+<b-card-header header-bg-variant="dark" header-text-variant="light">
+	<b-form-group class="switches">
+    <b-form-checkbox v-model="reflectance" name="check-button" value="true" unchecked-value="false" switch>
+      {{ $t('reflectance') }}
+    </b-form-checkbox>
+    <b-form-checkbox variant="secondary" v-model="transmittance" name="check-button" value="true" unchecked-value="false" class="switch-transmittance" switch>
+      {{ $t('transmittance') }}
+    </b-form-checkbox>
+    <b-button v-on:click="resetZoom" v-show="showResetZoom" class="btn-danger reset-zoom">{{ $t('reset_zoom') }}
+    </b-button>
+	</b-form-group>	
+</b-card-header>
+
 <b-card-text>
 
 
@@ -55,6 +69,19 @@ export default {
 				return this.$attrs.which
 			}
 		},
+		reflectance_transmittance: {
+			get(){
+				if(this.reflectance=='true' && this.transmittance=='false'){
+					return 'reflectance'
+				}else if(this.reflectance=='false' && this.transmittance=='true'){
+					return 'transmittance'
+				}else if(this.reflectance=='true' && this.transmittance=='true'){
+					return 'both'
+				}else{
+					return 'none'
+				}
+			}
+		},
 	},
 	created() {
 		this.meanLeafSpectra = spectra.meanLeafSpectra
@@ -65,11 +92,10 @@ export default {
 			switch(mutation.type) {
 			case 'save_sample_spectra':
 				var self = this;
-				if(self.whichSpectra=='main-spectra' | typeof(self.whichSpectra== undefined )) {
-				}else{
+				if(self.whichSpectra !== 'main-spectra' & typeof(self.whichSpectra) !== undefined ) {
 					this.showSampleSpectra=true;
 					d3.selectAll(".sample-spectra-graph > *").remove()
-					this.drawBox("reflectance", 'sample-spectra');
+					this.drawBox(this.reflectance_transmittance, 'sample-spectra');
 					this.clearBox();
 					var i;
 					for (i=1; i<=6; i++){
@@ -87,6 +113,11 @@ export default {
 		})
 	},
 	watch: {
+	    reflectance_transmittance(which) {
+	    	this.$store.state.whichSpectra='sample-spectra'
+	    	this.clearSpectra()
+	        this.$store.commit('save_sample_spectra', false)
+	    },
 	},
 	methods: {
 		downloadTaxaMeanCsv() {
