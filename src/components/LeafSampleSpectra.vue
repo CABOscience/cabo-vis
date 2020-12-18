@@ -1,21 +1,29 @@
 <template>
-      <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSpectra">
+<b-container>
+	<Loader v-show="!showSampleSpectra"></Loader>
+      <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSampleSpectra">
 <b-card-text>
+
+
 <div id="spectra-container" class="row">
 
 <div :id="spectraGraph" class="sample-spectra-graph" ref="sampleSpectra"></div>
 </div>
 </b-card-text>
       </b-card>
+</b-container>
 </template>
 
 <script>
 import * as d3 from 'd3'
 import spectra from '../spectra'
-
+import Loader from './Loader.vue'
 
 export default {
 	name: "LeafSpectra",
+	components: {
+		Loader,
+	},
 	data: function() {
 		return {
 			colors: ['#008bae','#65318c','#8bc442','#e7262b','#f59121','#b92587','#278e45','#0756a1'],
@@ -23,22 +31,13 @@ export default {
 			transmittance: 'false',
 			range: true,
 			showResetZoom: false,
+			showSampleSpectra: false,
 		}
 	},
 	computed: {
-		showSpectra: {
-			get() {
-				return this.$store.state.showSpectra
-			}
-		},
 		header: {
 			get() {
 				return this.$i18n.t('spectra')
-			}
-		},
-		showSpectraGraph: {
-			get() {
-				return this.$store.state.showSpectraGraph
 			}
 		},
 		show_range: {
@@ -68,6 +67,7 @@ export default {
 				var self = this;
 				if(self.whichSpectra=='main-spectra' | typeof(self.whichSpectra== undefined )) {
 				}else{
+					this.showSampleSpectra=true;
 					d3.selectAll(".sample-spectra-graph > *").remove()
 					this.drawBox("reflectance", 'sample-spectra');
 					this.clearBox();

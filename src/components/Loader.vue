@@ -1,5 +1,5 @@
 <template>
-<div v-if="showLoader" class="loader">
+<div class="loader">
 	<svg class="loader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200px" height="200px" viewBox="0 0 100 100">
 	<circle cx="18" cy="63.8778" r="4" fill="#008bae">
 	  <animate attributeName="cy" values="34;66;34" times="0;0.5;1" dur="1s" calcMode="spline" keySplines="0.5 0 0.5 1;0.5 0 0.5 1" begin="0s" repeatCount="indefinite"></animate>
@@ -27,11 +27,6 @@
 export default{
 	name: "Loader",
 	computed: {
-		showLoader: {
-			get() {
-				return this.$store.state.showLoader	
-			}
-		},
 	}
 }
 

@@ -11,7 +11,7 @@
               <PasswordPage />
               <a name="search"></a><SearchBar></SearchBar>
               <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
-              <Loader></Loader>
+              <Loader v-show="showLoader"></Loader>
               <a name="spectra"></a><LeafSpectra which="main-spectra"></LeafSpectra>
               <a name="map"></a><SpectraMap></SpectraMap>
               <a name="plants"></a><PlantsTable></PlantsTable>
@@ -62,7 +62,12 @@ export default {
           get () {
               return this.$store.state.sidebar
           }
+      },
+    showLoader: {
+      get() {
+        return this.$store.state.showLoader 
       }
+    },
   },
   mounted() {
 
