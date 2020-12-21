@@ -51,6 +51,7 @@ const messages = {'en': {
 	equivalent_water_thickness_cm: 'Equivalent water thickness (cm)',
 	details: 'Details',
 	dry_matter_and_water: 'Dry matter and water',
+	leaf: 'Leaf'
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -97,6 +98,7 @@ const messages = {'en': {
 	traits: 'Traits',
 	details: 'Détails',
 	dry_matter_and_water: 'Matières sèches et eau',
+	leaf: 'Feuille'
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

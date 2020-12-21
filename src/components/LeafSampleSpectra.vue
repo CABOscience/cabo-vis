@@ -4,6 +4,17 @@
       <b-card border-variant="primary" footer-bg-variant="dark" header-bg-variant="primary" header-text-variant="white" :header="header" class="text-center spectra-card" v-show="showSampleSpectra">
 
 <b-card-header header-bg-variant="dark" header-text-variant="light">
+    <b-form-group fluid
+    	v-slot="{ ariaDescribedby }"
+    	:label="leaf"
+     >
+      <b-form-checkbox-group
+        v-model="selectedLeaf"
+        :options="options"
+        :aria-describedby="ariaDescribedby"
+        name="flavour-1"
+      ></b-form-checkbox-group>
+    </b-form-group>
 	<b-form-group class="switches">
     <b-form-checkbox v-model="reflectance" name="check-button" value="true" unchecked-value="false" switch>
       {{ $t('reflectance') }}
@@ -46,12 +57,19 @@ export default {
 			range: true,
 			showResetZoom: false,
 			showSampleSpectra: false,
+			options: [1,2,3,4,5,6],
+			selectedLeaf: [1,2,3,4,5,6],
 		}
 	},
 	computed: {
 		header: {
 			get() {
 				return this.$i18n.t('spectra')
+			}
+		},
+		leaf:{
+			get() {
+				return this.$i18n.t('leaf')
 			}
 		},
 		show_range: {
@@ -82,6 +100,11 @@ export default {
 				}
 			}
 		},
+		selectLeaves: {
+			get(){
+				return this.selectedLeaf;
+			}
+		}
 	},
 	created() {
 		this.meanLeafSpectra = spectra.meanLeafSpectra
@@ -99,10 +122,12 @@ export default {
 					this.clearBox();
 					var i;
 					for (i=1; i<=6; i++){
-						const tl = state.sampleSpectra.filter(t=>{
-							return t.leaf_number==i
-						})
-						this.meanLeafSpectra(tl,'sample-spectra',this.colors[i-1])
+						if(self.selectedLeaf.includes(i)){
+							const tl = state.sampleSpectra.filter(t=>{
+								return t.leaf_number==i
+							})
+							this.meanLeafSpectra(tl,'sample-spectra',this.colors[i-1])
+						}
 					}
 				}
 			break;
@@ -118,6 +143,11 @@ export default {
 	    	this.clearSpectra()
 	        this.$store.commit('save_sample_spectra', false)
 	    },
+	    selectLeaves(which){
+	    	this.$store.state.whichSpectra='sample-spectra'
+	    	this.clearSpectra()
+	    	this.$store.commit('save_sample_spectra', false)
+	    }
 	},
 	methods: {
 		downloadTaxaMeanCsv() {

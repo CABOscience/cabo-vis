@@ -21,7 +21,7 @@
 		</b-carousel-slide>
 		</b-carousel>
 		</b-tab>
-    <b-tab :title="tab2_title" @click="get_sample_spectra(sampleModal.sample_ids)">
+    	<b-tab :title="tab2_title" @click="get_sample_spectra(sampleModal.sample_ids)">
 			
           <b-button size="sm" @click="download_plant_spectra(sampleModal, $event.target)" class="mr-1" variant="primary">
           {{ $t('download_plant_spectra_data') }} <b-icon-arrow-down-circle v-show="!downloadMarkerPlantSpectraSpinner"></b-icon-arrow-down-circle>
