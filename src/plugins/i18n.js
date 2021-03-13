@@ -51,7 +51,14 @@ const messages = {'en': {
 	equivalent_water_thickness_cm: 'Equivalent water thickness (cm)',
 	details: 'Details',
 	dry_matter_and_water: 'Dry matter and water',
-	leaf: 'Leaf'
+	leaf: 'Leaf',
+	leaf_area_and_water_samples: 'Dry matter and water',
+	leaf_chemistry_samples: 'Leaf chemistry',
+	al_mg_g: 'Alumunium (mg/g)',
+	ca_mg_g: 'Calcium (mg/g)',
+	cu_mg_g: 'Copper (mg/g)',
+	fe_mg_g: 'Iron (mg/g)',
+	k_mg_g: 'Potassium (mg/g)',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -98,7 +105,9 @@ const messages = {'en': {
 	traits: 'Traits',
 	details: 'Détails',
 	dry_matter_and_water: 'Matières sèches et eau',
-	leaf: 'Feuille'
+	leaf: 'Feuille',
+	leaf_area_and_water_samples: 'Matières sèches et eau',
+	leaf_chemistry_samples: 'Chimie de la feuille',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

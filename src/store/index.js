@@ -157,8 +157,8 @@ export default new Vuex.Store({
 			state.showSelectedPlantSpectraDownloadSpinner=true
 			this.dispatch('downloadSelectedPlantSpectraCSV')
 		},
-		download_traits(state,sample_ids){
-			this.dispatch('getLeafAreaAndWaterSamples',sample_ids)
+		download_traits(state,which){
+			this.dispatch('getTraits',which)
 		},
 		show_sample_modal(state,modal_content){
 			state.sampleModal = modal_content
@@ -247,10 +247,10 @@ export default new Vuex.Store({
 				context.commit('save_plants',resp);
 			})
 		},
-		getLeafAreaAndWaterSamples (context, sample_id) {
-			Vue.axios.get('leaf_area_and_water_samples',{
+		getTraits (context, which) {
+			Vue.axios.get(which.cat,{
 				params: {
-					sample_id: sample_id
+					sample_id: which.sample_id
 				},
 			}).then(result => {
 				context.state.current_traits=result.data

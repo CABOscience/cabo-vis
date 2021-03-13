@@ -33,8 +33,8 @@
         </b-button>
 		<LeafSampleSpectra :which="ids"></LeafSampleSpectra>
     </b-tab>
-    <b-tab :title="tab3_title" @click="update_traits(sampleModal.sample_ids)">
-    	<TraitsModal></TraitsModal>
+    <b-tab :title="tab3_title">
+    	<TraitsModal :sampleId="sampleModal.sample_ids"></TraitsModal>
     </b-tab>
   </b-tabs>
   </b-modal>
@@ -119,8 +119,11 @@
 				this.$store.state.showMarkerPlantSpectraDownloadSpinner=true
 		    	this.$store.commit('download_plant_spectra_csv', marker.sample_ids)
 		    },
-		    update_traits(sample_ids){
-		    	this.$store.commit('download_traits', sample_ids)
+		    update_traits(sample_id){
+		       /* let which={}
+		        which.cat='leaf_chemistry_samples'
+		        which.sample_id=sample_id
+		    	this.$store.commit('download_traits', which)*/
 		    },
 		    refresh_photos(){
 		    	var self = this

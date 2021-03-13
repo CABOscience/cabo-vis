@@ -13,6 +13,26 @@ import Vue from 'vue';
 export default {
     data() {
       return {
+      	trait_table:{
+      		"leaf_mass_per_area_g_m2":"leaf_area_and_water_samples", 
+      		"leaf_dry_matter_content_mg_g":"leaf_area_and_water_samples",
+      		"equivalent_water_thickness_cm":"leaf_area_and_water_samples",
+      		"leaf_relative_water_content_perc":"leaf_area_and_water_samples",
+      		"al_mg_g":"icp_leaf_element_concentrations",
+      		"b_mg_g":"icp_leaf_element_concentrations",
+      		"ca_mg_g":"icp_leaf_element_concentrations",
+      		"cu_mg_g":"icp_leaf_element_concentrations",
+      		"fe_mg_g":"icp_leaf_element_concentrations",
+      		"k_mg_g":"icp_leaf_element_concentrations",
+      		"mg_mg_g":"icp_leaf_element_concentrations",
+      		"mn_mg_g":"icp_leaf_element_concentrations",
+      		"mo_mg_g":"icp_leaf_element_concentrations",
+      		"na_mg_g":"icp_leaf_element_concentrations",
+      		"ni_mg_g":"icp_leaf_element_concentrations",
+      		"p_mg_g":"icp_leaf_element_concentrations",
+      		"s_mg_g":"icp_leaf_element_concentrations",
+      		"zn_mg_g":"icp_leaf_element_concentrations",
+      	}
       }
     },
     computed: {
@@ -42,7 +62,7 @@ export default {
 			  return a - b;
 			});
 			var margin = {top: 15, right: 30, bottom: 30, left: 50},
-			    width = 550 - margin.left - margin.right,
+			    width = 450 - margin.left - margin.right,
 			    height = 75 - margin.top - margin.bottom;
 
 			// append the svg object to the body of the page
@@ -55,8 +75,8 @@ export default {
 			          "translate(" + margin.left + "," + margin.top + ")");
 
 			  // add the x Axis
-			  var tmin = data[Math.floor(data.length*0.01)]
-			  var tmax = data[data.length - Math.floor(data.length*0.01)]
+			  var tmin = data[Math.floor(data.length*0.03)]
+			  var tmax = data[data.length - Math.floor(data.length*0.03)]
 			  var x = d3.scaleLinear()
 			            .domain([tmin, tmax])
 			            .range([0, width]);
@@ -120,7 +140,8 @@ export default {
 		getAllValuesForOneTrait(trait) {
 			this.axios.get('/traits/all/',{
 				params: {
-					trait: trait
+					trait: trait,
+					table: this.trait_table[trait]
 				},
 			}).then(result => {
 				this.density(result.data);

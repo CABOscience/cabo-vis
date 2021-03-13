@@ -1,62 +1,48 @@
-
-<!-- b-table
-	      id="traits-table"
-	      :items="traits"
-	      small
-	      stacked
-	      sticky-header="600px"
-	      ref="selectableTable"
-	      head-variant="dark"
-	      no-gutters
-	    >
-
-</b-table -->
 <template>
     <div class="app-body row traits">
-		<h4>{{$t('dry_matter_and_water')}}</h4>
-        <template v-for="(this_trait, name, index) in traits">
-        	<b-container fluid>
-			  <b-row>
-			    <b-col col lg="7" class="trait-name"><p v-html="$t(name)"></p></b-col>
-			    <b-col col lg="2" class="trait-value">{{ shorten(this_trait) }}</b-col>
-			  </b-row>
-			  <b-row>
-			    <b-col cols="8">
-			    	<TraitDensity :key="name" :traitVal="this_trait"></TraitDensity>
-			    </b-col>
-			  </b-row>
-        	</b-container>
-        </template>
+	<b-tabs pills card vertical nav-wrapper-class="w-20">
+	<template v-for="(this_cat, name_cat, index_cat) in traitsCat">
+		<b-tab :title="$t(this_cat)" @click="download_these_traits(this_cat)">
+			<b-card-text>
+				<TraitsCatTab :key="this_cat" :traitCat="this_cat" :sampleId="sample_id"></TraitsCatTab>
+			</b-card-text>
+		</b-tab>
+	</template>
+  	</b-tabs>
     </div>
 </template>
 
+
 <script>
 
-import TraitDensity from "./TraitDensity.vue"
+import TraitsCatTab from "./TraitsCatTab.vue"
 import _ from 'lodash';
 
 export default {
 	components:{
-		TraitDensity,
+		TraitsCatTab
 	},
     data() {
       return {
+      	traitsCat:['leaf_area_and_water_samples','leaf_chemistry_samples']
       }
     },
     computed: {
-    	traits () {
-    		return  _.pick(this.$store.state.current_traits[0], ["leaf_mass_per_area_g_m2", "leaf_dry_matter_content_mg_g","equivalent_water_thickness_cm", "leaf_relative_water_content_perc"]);
-	   	}
+    	sample_id () {
+    		return this.$attrs.sampleId
+    	},
     },
     methods: {
-    	shorten (val) {
-    		if(val.indexOf('.')>1){
-    			return val.substring(0,val.indexOf('.')+3)
-	    	}else{
-	    		return val.substring(0,6)
-	    	}
+    	download_these_traits(cat){
+	        let which={}
+	        which.cat=cat
+	        which.sample_id=this.sample_id
+	    	this.$store.commit('download_traits', which)
     	}
-    }
+    },
+    mounted: function() {
+
+    },
 }
 </script>
 
@@ -72,7 +58,6 @@ export default {
  }
 
  .traits{
- 	max-width:600px;
  	margin-right:auto !important;
  	margin-left:auto !important;
  }
