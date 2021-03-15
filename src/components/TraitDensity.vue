@@ -36,9 +36,6 @@ export default {
       }
     },
     computed: {
-    	traits () {
-    		return this.$store.state.current_traits
-    	}, 
     	trait_graph () {
     		return "trait-graph-"+this.which
     	},

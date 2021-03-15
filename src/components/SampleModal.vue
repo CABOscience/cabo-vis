@@ -104,6 +104,7 @@
 			    this.sampleModal.content = ''
 			    this.sampleModal.marker = ''
 			    this.modalUp = false
+			    this.$store.state.current_traits={}
 			    this.$bvModal.hide(this.modal_id)
 			    d3.selectAll(".sample-spectra-graph > *").remove()
 			    this.box=""

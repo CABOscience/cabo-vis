@@ -30,7 +30,8 @@ export default new Vuex.Store({
 			reBox: true,
 			showRange: "true",
 		},
-		current_traits: [],
+		current_traits: {},
+		traits_exists: {},
 		plants_sample_ids : [],
 		plants : [],
 		species_options: [],
@@ -160,6 +161,9 @@ export default new Vuex.Store({
 		download_traits(state,which){
 			this.dispatch('getTraits',which)
 		},
+		save_traits(state,which){
+			state.current_traits[which.cat]=which.data
+		},
 		show_sample_modal(state,modal_content){
 			state.sampleModal = modal_content
 		},
@@ -253,7 +257,8 @@ export default new Vuex.Store({
 					sample_id: which.sample_id
 				},
 			}).then(result => {
-				context.state.current_traits=result.data
+				which.data=result.data
+				context.commit('save_traits',which);
 			}).catch(error => {
 				console.log(error);
 			});
