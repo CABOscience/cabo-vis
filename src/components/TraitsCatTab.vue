@@ -55,9 +55,11 @@ export default {
             switch(mutation.type) {
             case 'save_traits':
                 if(this.$attrs.traitCat == 'leaf_area_and_water_samples' & typeof state.current_traits[this.$attrs.traitCat] !== "undefined"){
-                    this.traits = _.pick(state.current_traits[this.$attrs.traitCat][0],["leaf_mass_per_area_g_m2", "leaf_dry_matter_content_mg_g","equivalent_water_thickness_cm", "leaf_relative_water_content_perc"])
-                }else if(this.$attrs.traitCat == 'leaf_chemistry_samples' & typeof state.current_traits[this.$attrs.traitCat] !== "undefined"){
-                    this.traits =_.pick(state.current_traits[this.$attrs.traitCat][0].icp_leaf_element_concentrations[0],["al_mg_g","ca_mg_g","cu_mg_g","fe_mg_g","k_mg_g","mg_mg_g","mn_mg_g","na_mg_g","ni_mg_g","p_mg_g","zn_mg_g"])
+                    this.traits = _.pick(state.current_traits['leaf_area_and_water_samples'][0],["leaf_mass_per_area_g_m2", "leaf_dry_matter_content_mg_g","equivalent_water_thickness_cm", "leaf_relative_water_content_perc"])
+                }else if(this.$attrs.traitCat == 'icp_leaf_element_concentrations' & typeof state.current_traits['leaf_chemistry_samples'] !== "undefined"){
+                    this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["icp_leaf_element_concentrations"][0],["al_mg_g","ca_mg_g","cu_mg_g","fe_mg_g","k_mg_g","mg_mg_g","mn_mg_g","na_mg_g","ni_mg_g","p_mg_g","zn_mg_g"])
+                }else if(this.$attrs.traitCat == 'c_n_leaf_concentrations' & typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
+                    this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["c_n_leaf_concentrations"][0],["c_perc","n_perc"])
                 }
             break;
             } 

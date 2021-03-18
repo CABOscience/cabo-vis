@@ -159,6 +159,9 @@ export default new Vuex.Store({
 			this.dispatch('downloadSelectedPlantSpectraCSV')
 		},
 		download_traits(state,which){
+			if(which.cat == 'icp_leaf_element_concentrations' | which == 'c_n_leaf_concentrations'){
+				which.cat = 'leaf_chemistry_samples'
+			}
 			this.dispatch('getTraits',which)
 		},
 		save_traits(state,which){

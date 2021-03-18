@@ -32,6 +32,8 @@ export default {
       		"p_mg_g":"icp_leaf_element_concentrations",
       		"s_mg_g":"icp_leaf_element_concentrations",
       		"zn_mg_g":"icp_leaf_element_concentrations",
+      		"c_perc":"c_n_leaf_concentrations",
+      		"n_perc":"c_n_leaf_concentrations",
       	}
       }
     },

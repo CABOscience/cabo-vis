@@ -121,10 +121,14 @@
 		    	this.$store.commit('download_plant_spectra_csv', marker.sample_ids)
 		    },
 		    update_traits(sample_id){
-		        let which={}
-		        which.cat='leaf_area_and_water_samples'
-		        which.sample_id=sample_id
-		    	this.$store.commit('download_traits', which)
+		    	var self=this
+		        let which=['leaf_area_and_water_samples','icp_leaf_element_concentrations']
+		        which.forEach(function(w){
+		        	var wh={}
+		        	wh.cat=w
+			        wh.sample_id=sample_id
+			    	self.$store.commit('download_traits', wh)
+		        })
 		    },
 		    refresh_photos(){
 		    	var self = this

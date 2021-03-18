@@ -53,7 +53,7 @@ const messages = {'en': {
 	dry_matter_and_water: 'Dry matter and water',
 	leaf: 'Leaf',
 	leaf_area_and_water_samples: 'Dry matter and water',
-	leaf_chemistry_samples: 'P, cations and metals',
+	icp_leaf_element_concentrations: 'P, cations and metals',
 	al_mg_g: 'Aluminium (mg g<sup>-1</sup>)',
 	ca_mg_g: 'Calcium (mg g<sup>-1</sup>)',
 	cu_mg_g: 'Copper (mg g<sup>-1</sup>)',
@@ -67,6 +67,9 @@ const messages = {'en': {
 	p_mg_g: 'Phosphorous (mg g<sup>-1</sup>)',
 	s_mg_g: 'Sulfur (mg g<sup>-1</sup>)',
 	zn_mg_g: 'Zinc (mg g<sup>-1</sup>)',
+	c_n_leaf_concentrations: 'Carbon and Nitrogen',
+	c_perc: 'Percent Carbon',
+	n_perc: 'Percent Nitrogen',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -115,7 +118,7 @@ const messages = {'en': {
 	dry_matter_and_water: 'Matières sèches et eau',
 	leaf: 'Feuille',
 	leaf_area_and_water_samples: 'Matières sèches et eau',
-	leaf_chemistry_samples: 'P, cations et métaux',
+	icp_leaf_element_concentrations: 'P, cations et métaux',
 	al_mg_g: 'Aluminium (mg g<sup>-1</sup>)',
 	ca_mg_g: 'Calcium (mg g<sup>-1</sup>)',
 	cu_mg_g: 'Cuivre (mg g<sup>-1</sup>)',
@@ -129,6 +132,9 @@ const messages = {'en': {
 	p_mg_g: 'Phosphore (mg g<sup>-1</sup>)',
 	s_mg_g: 'Sulfure (mg g<sup>-1</sup>)',
 	zn_mg_g: 'Zinc (mg g<sup>-1</sup>)',
+	c_n_leaf_concentrations: 'Carbone et azote',
+	c_perc: 'Pourcentage de carbone',
+	n_perc: 'Pourcentage d\'azote',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

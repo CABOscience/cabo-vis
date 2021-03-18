@@ -2,7 +2,7 @@
     <div class="app-body row traits">
 	<b-tabs pills card vertical nav-wrapper-class="w-20">
 	<template v-for="(this_cat, name_cat, index_cat) in traitsCat">
-		<b-tab :title="$t(this_cat)" @click="download_these_traits(this_cat)" :class="has_traits(this_cat)">
+		<b-tab :title="$t(this_cat)" @click="download_these_traits(this_cat)" :title-link-class="has_traits[this_cat]">
 			<b-card-text>
 				<TraitsCatTab :key="this_cat" :traitCat="this_cat" :sampleId="sample_id"></TraitsCatTab>
 			</b-card-text>
@@ -24,7 +24,12 @@ export default {
 	},
     data() {
       return {
-      	traitsCat:['leaf_area_and_water_samples','leaf_chemistry_samples']
+      	traitsCat:['leaf_area_and_water_samples','icp_leaf_element_concentrations','c_n_leaf_concentrations'],
+      	has_traits:{
+      		'leaf_area_and_water_samples':'no_traits',
+      		'icp_leaf_element_concentrations':'no_traits',
+      		'c_n_leaf_concentrations':'no_traits',
+      	}
       }
     },
     computed: {
@@ -34,28 +39,28 @@ export default {
     },
     methods: {
     	download_these_traits(cat){
-	        let which={}
+	       /* let which={}
 	        which.cat=cat
 	        which.sample_id=this.sample_id
-	    	this.$store.commit('download_traits', which)
+	    	this.$store.commit('download_traits', which)*/
     	},
-		has_traits(cat) {
-			if(typeof this.$store.state.current_traits[cat] !== "undefined"){
-				if(cat =='leaf_area_and_water_samples'){
-					if(this.$store.state.current_traits[cat].length!==0){
-						return "has_traits"
-					}
-				}else if(cat =='leaf_chemistry_samples'){
-					if(this.$store.state.current_traits[cat].icp_leaf_element_concentrations.length!==0){
-						return "has_traits"
-					}
-				}
-			}
-			return "no_traits"
-		}
     },
     mounted: function() {
-
+        this.$store.subscribe((mutation,state) => {
+            switch(mutation.type) {
+            case 'save_traits':
+            	var self = this
+            	_.mapKeys(state.current_traits,function(value, key){
+            		if(key=="leaf_area_and_water_samples"){
+            			self.has_traits[key] = (value.length==0)?'no_traits':'has_traits'
+            		}else if(key=='leaf_chemistry_samples'){
+            			self.has_traits['icp_leaf_element_concentrations'] = (typeof value[0]['icp_leaf_element_concentrations']!=='undefined' && value[0]['icp_leaf_element_concentrations'].length!==0)?'has_traits':'no_traits'
+            			self.has_traits['c_n_leaf_concentrations'] = (typeof value[0]['c_n_leaf_concentrations']!=='undefined' && value[0]['c_n_leaf_concentrations'][0].length!==0)?'has_traits':'no_traits'
+            		}
+            	})
+            break;
+        }
+        })
     },
 }
 </script>
@@ -82,5 +87,9 @@ export default {
 	font-size: 18px;
 	font-weight: bold;
 	color: #006e70;
+ }
+
+ .no_traits{
+ 	display:none !important;
  }
 </style>
