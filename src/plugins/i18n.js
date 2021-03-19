@@ -67,9 +67,9 @@ const messages = {'en': {
 	p_mg_g: 'Phosphorous (mg g<sup>-1</sup>)',
 	s_mg_g: 'Sulfur (mg g<sup>-1</sup>)',
 	zn_mg_g: 'Zinc (mg g<sup>-1</sup>)',
-	c_n_leaf_concentrations: 'Carbon and Nitrogen',
-	c_perc: 'Percent Carbon',
-	n_perc: 'Percent Nitrogen',
+	c_n_leaf_concentrations: 'Carbon and nitrogen',
+	c_perc: 'Carbon (%)',
+	n_perc: 'Nitrogen (%)',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -133,8 +133,8 @@ const messages = {'en': {
 	s_mg_g: 'Sulfure (mg g<sup>-1</sup>)',
 	zn_mg_g: 'Zinc (mg g<sup>-1</sup>)',
 	c_n_leaf_concentrations: 'Carbone et azote',
-	c_perc: 'Pourcentage de carbone',
-	n_perc: 'Pourcentage d\'azote',
+	c_perc: 'Carbone (%)',
+	n_perc: 'Azote (%)',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 
