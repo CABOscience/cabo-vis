@@ -138,4 +138,8 @@ export default {
   color:white;
 } 
 
+
+a.disabled{
+  display:none;
+}
 </style>

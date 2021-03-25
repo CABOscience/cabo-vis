@@ -67,7 +67,22 @@ export default {
                 }else if(this.$attrs.traitCat == 'c_n_leaf_concentrations' & typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
                     this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["c_n_leaf_concentrations"][0],["c_perc","n_perc"])
                 }else if(this.$attrs.traitCat == 'carbon_fractions_bags' & typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
-                    this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["carbon_fractions_bags"][0],["soluble_perc","cellulose_perc","hemicellulose_perc","lignin_perc","soluble_perc","recalcitrants_perc"])
+                    var i=0;
+                    var ind=0
+                    if(state.current_traits["leaf_chemistry_samples"][0]["carbon_fractions_bags"].length>1){
+                        _state.current_traits["leaf_chemistry_samples"][0]["carbon_fractions_bags"].forEach(t => {
+                            var newd = new Date(t.carbon_fractions[0].date_started)
+                            if(i==0){
+                                var d = newd
+                            }
+                            if(i>0 && newd>d){
+                                ind = i
+                                d = newd
+                            }
+                            i++
+                        })
+                    }
+                    this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["carbon_fractions_bags"][ind],["soluble_perc","cellulose_perc","hemicellulose_perc","lignin_perc","soluble_perc","recalcitrants_perc"])
                 }
             break;
             } 
