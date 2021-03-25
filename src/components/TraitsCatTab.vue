@@ -8,7 +8,7 @@
 	  </b-row>
 	  <b-row>
 	    <b-col cols="8">
-	    	<TraitDensity :key="name" :traitVal="this_trait"></TraitDensity>
+	    	<TraitDensity :key="name" :trait_val="this_trait" :index_cat="index_cat"></TraitDensity>
 	    </b-col>
 	  </b-row>
 	</b-container>
@@ -33,18 +33,24 @@ export default {
     	trait_cat () {
     		return this.$attrs.traitCat
     	},
+        index_cat(){
+            return this.$attrs.index_cat
+        },
     	sample_id () {
     		return this.$attrs.sampleId
     	},
     },
     methods: {
         shorten (val) {
-            val=val.toString()
-            if(val.indexOf('.') > 1){
-                return val.substring(0,val.indexOf('.')+3)
-            }else{
-                return val.substring(0,6)
+            if(val!=null){
+                val=val.toString()
+                if(val.indexOf('.') > 1){
+                    return val.substring(0,val.indexOf('.')+3)
+                }else{
+                    return val.substring(0,6)
+                }
             }
+            return null
         },
         has_trait(trait){
             return trait !==0 && trait !== ''
@@ -60,6 +66,8 @@ export default {
                     this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["icp_leaf_element_concentrations"][0],["al_mg_g","ca_mg_g","cu_mg_g","fe_mg_g","k_mg_g","mg_mg_g","mn_mg_g","na_mg_g","ni_mg_g","p_mg_g","zn_mg_g"])
                 }else if(this.$attrs.traitCat == 'c_n_leaf_concentrations' & typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
                     this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["c_n_leaf_concentrations"][0],["c_perc","n_perc"])
+                }else if(this.$attrs.traitCat == 'carbon_fractions_bags' & typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
+                    this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["carbon_fractions_bags"][0],["soluble_perc","cellulose_perc","hemicellulose_perc","lignin_perc","soluble_perc","recalcitrants_perc"])
                 }
             break;
             } 

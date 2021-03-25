@@ -28,7 +28,7 @@
 </template>
 
 <script>
-	import { L, latLngBounds} from 'leaflet';
+	import { L, latLngBounds } from 'leaflet';
 	import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet';
 	import { Icon } from 'leaflet';
 	import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
@@ -66,7 +66,8 @@
 			},
 			markers: {
 				get () {
-					const s=this.$store.state.plants.filter(s => s.geometry!==null && s.geometry.coordinates[1]!==0)
+					var s={}
+					s=this.$store.state.plants.filter(s => typeof s !== 'undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0)
 					s.forEach(m => {
 						m.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
 						m.geometry.coordinates=[m.geometry.coordinates[1],m.geometry.coordinates[0]]
@@ -76,13 +77,13 @@
 				    	})
 						m.sample_ids = ids.join(',')
 					})
-					return s
+						return s
 				}
 			},
 			bounds: {
 				get() {
 					return this.$store.state.plants.map(s => {
-					 	if(s.geometry!==null && s.geometry.coordinates[1]!==0) {
+					 	if(typeof s !=='undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0) {
 					 		return [s.geometry.coordinates[0],s.geometry.coordinates[1]]
 					 	}
 					})

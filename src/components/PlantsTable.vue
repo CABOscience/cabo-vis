@@ -168,14 +168,16 @@
 				if(state.plants.length!==0){
 					this.items=state.plants.map(function(m) {
 						let ro = {}
-						let ids = []
-				    	m.bulk_leaf_samples.map(i=>{
-				    		ids.push(i.sample_id)
-				    	})
-						ro.sample_ids = ids.join(',')
-						ro.scientific_name = m.scientific_name
-						ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
-						ro.plant_photos=''
+						if(typeof m !== 'undefined'){
+							let ids = []
+					    	m.bulk_leaf_samples.map(i=>{
+					    		ids.push(i.sample_id)
+					    	})
+							ro.sample_ids = ids.join(',')
+							ro.scientific_name = m.scientific_name
+							ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
+							ro.plant_photos=''
+						}
 						return ro
 					})
 				}

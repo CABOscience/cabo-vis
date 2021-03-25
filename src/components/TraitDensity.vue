@@ -1,6 +1,6 @@
 <template>
 
-<div :id="trait_graph">
+<div :id="trait_graph" :class="index_cat">
 
 </div>
 
@@ -34,6 +34,11 @@ export default {
       		"zn_mg_g":"icp_leaf_element_concentrations",
       		"c_perc":"c_n_leaf_concentrations",
       		"n_perc":"c_n_leaf_concentrations",
+      		"soluble_perc":"carbon_fractions_bags",
+      		"cellulose_perc":"carbon_fractions_bags",
+      		"hemicellulose_perc":"carbon_fractions_bags",
+      		"lignin_perc":"carbon_fractions_bags",
+      		"recalcitrants_perc":"carbon_fractions_bags",
       	}
       }
     },
@@ -45,7 +50,10 @@ export default {
     		return this.$vnode.key
     	},
     	trait_value() {
-    		return this.$attrs.traitVal
+    		return this.$attrs.trait_val
+    	},
+    	index_cat(){
+    		return this.$attrs.index_cat
     	}
     },
     mounted: function() {
@@ -104,7 +112,8 @@ export default {
 			  svg.append("path")
 			      .attr("class", "mypath")
 			      .datum(density)
-			      .attr("fill", "#69b3a2")
+			      //.attr("fill", "#69b3a2")
+			      .attr("fill", this.$store.state.basic_colors[this.$attrs.index_cat])
 			      .attr("opacity", ".8")
 			      .attr("stroke", "#000")
 			      .attr("stroke-width", 1)

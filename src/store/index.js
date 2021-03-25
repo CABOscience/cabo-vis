@@ -31,6 +31,7 @@ export default new Vuex.Store({
 			showRange: "true",
 		},
 		current_traits: {},
+		basic_colors: ["#008bae","#65318c","#8bc442","#e7262b","#f59121","#b92587"],
 		traits_exists: {},
 		plants_sample_ids : [],
 		plants : [],

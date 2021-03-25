@@ -70,6 +70,12 @@ const messages = {'en': {
 	c_n_leaf_concentrations: 'Carbon and nitrogen',
 	c_perc: 'Carbon (%)',
 	n_perc: 'Nitrogen (%)',
+	carbon_fractions_bags: 'Carbon fractions',
+	soluble_perc: 'Soluble carbon (%)',
+	cellulose_perc: 'Cellulose (%)',
+	hemicellulose_perc: 'Hemicellulose (%)',
+	lignin_perc: 'Lignin (%)',
+	recalcitrants_perc: 'Recalcitrants (%)',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -135,6 +141,12 @@ const messages = {'en': {
 	c_n_leaf_concentrations: 'Carbone et azote',
 	c_perc: 'Carbone (%)',
 	n_perc: 'Azote (%)',
+	carbon_fractions_bags: 'Fractions de carbone',
+	soluble_perc: 'Carbone soluble (%)',
+	cellulose_perc: 'Cellulose (%)',
+	hemicellulose_perc: 'Hémicellulose (%)',
+	lignin_perc: 'Lignine (%)',
+	recalcitrants_perc: 'Récalcitrants (%)',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

@@ -1,10 +1,10 @@
 <template>
     <div class="app-body row traits">
 	<b-tabs pills card vertical nav-wrapper-class="w-20" v-model="active_trait">
-	<template v-for="(this_cat, name_cat, index_cat) in traitsCat">
-		<b-tab :title="$t(this_cat)" @click="download_these_traits(this_cat)" v-bind="has_trait(this_cat)" >
+	<template v-for="(this_cat, name_cat, index_cat) in traits_cat">
+		<b-tab :title="$t(this_cat)" @click="download_these_traits(this_cat)" v-bind="has_trait(this_cat)" class="test">
 			<b-card-text>
-				<TraitsCatTab :key="this_cat" :traitCat="this_cat" :sampleId="sample_id"></TraitsCatTab>
+				<TraitsCatTab :key="this_cat" :traitCat="this_cat" :sampleId="sample_id" :index_cat="name_cat"></TraitsCatTab>
 			</b-card-text>
 		</b-tab>
 	</template>
@@ -24,11 +24,12 @@ export default {
 	},
     data() {
       return {
-      	traitsCat:['leaf_area_and_water_samples','icp_leaf_element_concentrations','c_n_leaf_concentrations'],
+      	traits_cat:['leaf_area_and_water_samples','icp_leaf_element_concentrations','c_n_leaf_concentrations','carbon_fractions_bags'],
       	has_traits:{
       		'leaf_area_and_water_samples':false,
       		'icp_leaf_element_concentrations':false,
       		'c_n_leaf_concentrations':false,
+          'carbon_fractions_bags':false,
       	},
       	active_trait:0,
       }
@@ -52,7 +53,10 @@ export default {
     		}else{
     			return {}
     		}
-    	}
+    	},
+      traits_colors(index){
+        return this.$store.state.basic_colors[index]
+      }
     },
     mounted: function() {
         this.$store.subscribe((mutation,state) => {
@@ -65,6 +69,7 @@ export default {
             		}else if(key=='leaf_chemistry_samples'){
             			self.has_traits['icp_leaf_element_concentrations'] = (typeof value[0]['icp_leaf_element_concentrations']!=='undefined' && value[0]['icp_leaf_element_concentrations'].length!==0)
             			self.has_traits['c_n_leaf_concentrations'] = (typeof value[0]['c_n_leaf_concentrations']!=='undefined' && value[0]['c_n_leaf_concentrations'][0].length!==0)
+                  self.has_traits['carbon_fractions_bags'] = (typeof value[0]['carbon_fractions_bags']!=='undefined' && value[0]['carbon_fractions_bags'][0].length!==0)
             		}
             	})
             	self.active_trait=_.values(self.has_traits).length-_.values(self.has_traits).indexOf(true)
@@ -102,4 +107,35 @@ export default {
  .no_traits{
  	display:none !important;
  }
+
+
+.traits li:nth-child(1) a.active{
+  background-color:#008bae;
+  color:white;
+} 
+
+.traits li:nth-child(2) a.active{
+  background-color:#65318c;
+  color:white;
+} 
+
+.traits li:nth-child(3) a.active{
+  background-color:#8bc442;
+  color:white;
+} 
+
+.traits li:nth-child(4) a.active{
+  background-color:#e7262b;
+  color:white;
+} 
+
+.traits li:nth-child(1) a{
+  color:#008bae;
+} 
+
+.traits li:nth-child(5) a.active{
+  background-color:#f59121;
+  color:white;
+} 
+
 </style>

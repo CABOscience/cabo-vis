@@ -133,13 +133,15 @@
 		    refresh_photos(){
 		    	var self = this
 				let this_samp = this.$store.state.plants.filter(function(value, index){
-				    	var ids=[]
+					if(typeof value !== 'undefined'){
+						var ids=[]
 				    	value.bulk_leaf_samples.map(i=>{
 				    		ids.push(i.sample_id)
 				    	})
 						var sids = ids.join(',')
 						return sids == self.sampleModal.sample_ids
-					})
+					}
+				})
 				this.photos=this_samp.map(function(m) {
 					if(m.plant_photos!==null){
 						var plant_photos=[]
