@@ -6,7 +6,7 @@ import {i18n} from '../plugins/i18n';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
 import _ from 'lodash';
-
+import api from '../plugins/axios-interceptor';
 
 Vue.use(Vuex);
 
@@ -196,7 +196,7 @@ export default new Vuex.Store({
 				}else{
 					projects='';
 				}
-				Vue.axios.post('leaf_spectra/search/taxa', {
+				api.post('leaf_spectra/search/taxa', {
 						taxa: context.state.search_box.search_value,
 						start_date: context.state.search_box.startDate,
 						end_date: context.state.search_box.endDate,
@@ -222,14 +222,14 @@ export default new Vuex.Store({
 			//context.commit('save_spectra',[], false)
 		},
 		getProjects (context) {
-			Vue.axios.get('projects/'+context.state.search_box.projects).then(result => {
+			api.get('projects/'+context.state.search_box.projects).then(result => {
 				context.commit('save_projects', result.data);
 			}).catch(error => {
 				console.log(error)
 			});
 		},
 		getOneSpectra (context) {
-			Vue.axios.get('leaf_spectra/reflectance/'+context.state.current_spectra.spectra_ids[0].fulcrum_id).then(result => {
+			api.get('leaf_spectra/reflectance/'+context.state.current_spectra.spectra_ids[0].fulcrum_id).then(result => {
 				context.commit('save_spectra', result.data);
 			}).catch(error => {
 				context.state.current_spectra.spectra_ids.shift(); //There are no spectra associated with last id
@@ -238,14 +238,14 @@ export default new Vuex.Store({
 			});
 		},
 		getManySpectra (context) {
-			const gets = context.state.current_spectra.spectra_ids.map(sp => Vue.axios.get('leaf_spectra/reflectance/'+sp.fulcrum_id).catch(function(error){console.log(error);}));
+			const gets = context.state.current_spectra.spectra_ids.map(sp => api.get('leaf_spectra/reflectance/'+sp.fulcrum_id).catch(function(error){console.log(error);}));
 			Vue.axios.all(gets).then(responses => {
 				resp=responses.map(m => { return m.data })
 				context.commit('save_spectra',resp);
 			})
 		},
 		getManyPlants (context) {
-			const gets = context.state.current_spectra.spectra_ids.map(sp => Vue.axios.get('plants_samples',{
+			const gets = context.state.current_spectra.spectra_ids.map(sp => api.get('plants_samples',{
 				params: {
 					sample_id: sp.sample_id
 				}
@@ -256,7 +256,7 @@ export default new Vuex.Store({
 			})
 		},
 		getTraits (context, which) {
-			Vue.axios.get(which.cat,{
+			api.get(which.cat,{
 				params: {
 					sample_id: which.sample_id
 				},
@@ -273,7 +273,7 @@ export default new Vuex.Store({
 				return parseInt(i)
 			})
 			Vue.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-			Vue.axios.post('/leaf_spectra_raw/', {
+			api.post('/leaf_spectra_raw/', {
 			    ids: ids,
 			}).then(result => {
 				context.commit('save_sample_spectra',result.data);
@@ -282,7 +282,7 @@ export default new Vuex.Store({
 			});
 		},
 		getManySpectraMeanTaxa (context) {
-			const gets = context.state.species_selected.map(sp => Vue.axios.get('leaf_spectra_mean/search/',{
+			const gets = context.state.species_selected.map(sp => api.get('leaf_spectra_mean/search/',{
 				params: {
 					species: sp
 				}
@@ -300,7 +300,7 @@ export default new Vuex.Store({
 			context.state.current_spectra.spectra=[]
 		},
 		downloadTaxaMeanCSV(context){
-			Vue.axios.post('leaf_spectra/csv/', {
+			api.post('leaf_spectra/csv/', {
 			    taxa: context.state.species_selected,
 			    type: 'mean',
 			}).then(response => {
@@ -312,7 +312,7 @@ export default new Vuex.Store({
 			});
 		},
 		downloadPlantSpectraCSV(context, sample_ids){
-			Vue.axios.post('leaf_spectra/csv/', {
+			api.post('leaf_spectra/csv/', {
 			    ids: "'"+sample_ids+"'",
 			    type: 'raw',
 			}).then(response => {
@@ -330,7 +330,7 @@ export default new Vuex.Store({
 				ids.push("'"+s.sample_id+"'")
 			})
 			ids=ids.join(",");
-			Vue.axios.post('leaf_spectra/csv/', {
+			api.post('leaf_spectra/csv/', {
 			    ids: ids,
 			    type: 'raw',
 			}).then(response => {
@@ -351,7 +351,7 @@ export default new Vuex.Store({
 				})
 				ids=ids.join(",");
 			}
-			Vue.axios.post('leaf_spectra/csv/', {
+			api.post('leaf_spectra/csv/', {
 			    ids: ids,
 			    type: 'raw',
 			}).then(response => {

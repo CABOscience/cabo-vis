@@ -56,39 +56,17 @@
 				center: [45.5,-73.3],
 				slide: 0,
 				sliding: null,
+				markers:[],
+				bounds:latLngBounds([
+		          [44, -80],
+		          [62.5, -57]
+		        ]),
 			};
 		},
 		computed: {
 			header: {
 				get () {
 					return this.$i18n.t('sites');
-				}
-			},
-			markers: {
-				get () {
-					var s={}
-					s=this.$store.state.plants.filter(s => typeof s !== 'undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0)
-					s.forEach(m => {
-						m.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
-						m.geometry.coordinates=[m.geometry.coordinates[1],m.geometry.coordinates[0]]
-						let ids = []
-				    	m.bulk_leaf_samples.map(i=>{
-				    		ids.push(i.sample_id)
-				    	})
-						m.sample_ids = ids.join(',')
-					})
-						return s
-				}
-			},
-			bounds: {
-				get() {
-					return this.$store.state.plants.map(s => {
-					 	if(typeof s !=='undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0) {
-					 		return [s.geometry.coordinates[0],s.geometry.coordinates[1]]
-					 	}
-					})
-				},
-				set(){
 				}
 			},
 			showMap: {
@@ -122,8 +100,42 @@
 			onSlideEnd(slide) {
 				this.sliding = false
 			},
+			genMarkers(){
+				var s={}
+				s=this.$store.state.plants.filter(s => typeof s !== 'undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0)
+				s.forEach(m => {
+					if(m.sites !== null){
+						m.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
+						m.geometry.coordinates=[m.geometry.coordinates[1],m.geometry.coordinates[0]]
+						let ids = []
+				    	m.bulk_leaf_samples.map(i=>{
+				    		ids.push(i.sample_id)
+				    	})
+						m.sample_ids = ids.join(',')
+					}
+				})
+				this.markers=s
+			},
+			genBounds(){
+				var tt = this.$store.state.plants.map(s => {
+					if(typeof s !=='undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0) {
+						if(s.geometry.coordinates[0]> -90 & s.geometry.coordinates[0]< 90 &s.geometry.coordinates[1]> -180 & s.geometry.coordinates[0]< 180)
+						return [s.geometry.coordinates[0],s.geometry.coordinates[1]]
+					}
+				})
+				this.bounds=tt
+			}
 		},
 		mounted: function() {
+			var self=this
+			this.$store.subscribe((mutation,state) => {
+				switch(mutation.type) {
+				case 'save_plants':
+					self.genMarkers()
+					self.genBounds()
+				break;
+				} 
+			})
 		}
 	}
 </script>

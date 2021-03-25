@@ -217,7 +217,8 @@ export default {
 			this.$store.state.search_box.geomFilter=''
 			this.$store.state.search_box.startDate=''
 			this.$store.state.search_box.endDate=''
-			this.$store.state.search_box.projects_selected=''
+			this.$store.state.search_box.projects_selected=[]
+			this.projects_selected=[]
 			this.$store.state.species_options=[]
 			this.$store.state.search_box.announce=''
 			this.drawnItems=''
