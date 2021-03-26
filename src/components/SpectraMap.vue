@@ -102,11 +102,13 @@
 			},
 			genMarkers(){
 				var s={}
+				var b = []
 				s=this.$store.state.plants.filter(s => typeof s !== 'undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0)
 				s.forEach(m => {
 					if(m.sites !== null){
 						m.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
 						m.geometry.coordinates=[m.geometry.coordinates[1],m.geometry.coordinates[0]]
+						b.push([m.geometry.coordinates[0],m.geometry.coordinates[1]])
 						let ids = []
 				    	m.bulk_leaf_samples.map(i=>{
 				    		ids.push(i.sample_id)
@@ -115,16 +117,8 @@
 					}
 				})
 				this.markers=s
+				this.bounds=b
 			},
-			genBounds(){
-				var tt = this.$store.state.plants.map(s => {
-					if(typeof s !=='undefined' && s.geometry!==null && s.geometry.coordinates[1]!==0) {
-						if(s.geometry.coordinates[0]> -90 & s.geometry.coordinates[0]< 90 &s.geometry.coordinates[1]> -180 & s.geometry.coordinates[0]< 180)
-						return [s.geometry.coordinates[0],s.geometry.coordinates[1]]
-					}
-				})
-				this.bounds=tt
-			}
 		},
 		mounted: function() {
 			var self=this
@@ -132,7 +126,6 @@
 				switch(mutation.type) {
 				case 'save_plants':
 					self.genMarkers()
-					self.genBounds()
 				break;
 				} 
 			})
