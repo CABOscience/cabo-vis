@@ -147,12 +147,12 @@
 						var plant_photos=[]
 						var pf=m.plant_photos.split(',')
 						pf.map(p=>{
-							plant_photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
+							plant_photos.push('https://data.caboscience.org/photos/plants/'+p+'.jpg')
 						})
 						if(m.close_up_photos!==null){
 							pf=m.close_up_photos.split(',')
 							pf.map(p=>{
-								plant_photos.push('https://data.caboscience.org/vis/photos/plants/'+p+'.jpg')
+								plant_photos.push('https://data.caboscience.org/photos/plants/'+p+'.jpg')
 							})
 						}
 					}else{
