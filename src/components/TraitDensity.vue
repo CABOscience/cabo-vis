@@ -39,6 +39,13 @@ export default {
       		"hemicellulose_perc":"carbon_fractions_bags",
       		"lignin_perc":"carbon_fractions_bags",
       		"recalcitrants_perc":"carbon_fractions_bags",
+      		"chla_mg_g_disk_mass":"pigments_extracts", 
+      		"chlb_mg_g_disk_mass":"pigments_extracts", 
+      		"carot_mg_g_disk_mass":"pigments_extracts",
+      		"chl_a_chl_b_ratio":"pigments_extracts",
+      		"chla_mg_m2":"pigments_extracts", 
+      		"chlb_mg_m2":"pigments_extracts", 
+      		"carot_mg_m2":"pigments_extracts",
       	}
       }
     },

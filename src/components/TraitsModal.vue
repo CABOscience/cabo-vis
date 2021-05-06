@@ -24,12 +24,13 @@ export default {
 	},
     data() {
       return {
-      	traits_cat:['leaf_area_and_water_samples','icp_leaf_element_concentrations','c_n_leaf_concentrations','carbon_fractions_bags'],
+      	traits_cat:['leaf_area_and_water_samples','icp_leaf_element_concentrations','c_n_leaf_concentrations','carbon_fractions_bags','pigments_extracts'],
       	has_traits:{
       		'leaf_area_and_water_samples':false,
       		'icp_leaf_element_concentrations':false,
       		'c_n_leaf_concentrations':false,
           'carbon_fractions_bags':false,
+          'pigments_extracts':false,
       	},
       	active_trait:0,
       }
@@ -70,7 +71,9 @@ export default {
             			self.has_traits['icp_leaf_element_concentrations'] = (typeof value[0]['icp_leaf_element_concentrations']!=='undefined' && value[0]['icp_leaf_element_concentrations'].length!==0)
             			self.has_traits['c_n_leaf_concentrations'] = (typeof value[0]['c_n_leaf_concentrations']!=='undefined' && value[0]['c_n_leaf_concentrations'][0].length!==0)
                   self.has_traits['carbon_fractions_bags'] = (typeof value[0]['carbon_fractions_bags']!=='undefined' && value[0]['carbon_fractions_bags'][0].length!==0)
-            		}
+            		}else if (key=="pigments_extracts"){
+                  self.has_traits['pigments_extracts'] = (value[0].length!==0)
+                }
             	})
             	self.active_trait=_.values(self.has_traits).length-_.values(self.has_traits).indexOf(true)
             break;

@@ -60,13 +60,13 @@ export default {
         this.$store.subscribe((mutation,state) => {
             switch(mutation.type) {
             case 'save_traits':
-                if(this.$attrs.traitCat == 'leaf_area_and_water_samples' & typeof state.current_traits[this.$attrs.traitCat] !== "undefined"){
+                if(this.$attrs.traitCat == 'leaf_area_and_water_samples' && typeof state.current_traits[this.$attrs.traitCat] !== "undefined"){
                     this.traits = _.pick(state.current_traits['leaf_area_and_water_samples'][0],["leaf_mass_per_area_g_m2", "leaf_dry_matter_content_mg_g","equivalent_water_thickness_cm", "leaf_relative_water_content_perc"])
-                }else if(this.$attrs.traitCat == 'icp_leaf_element_concentrations' & typeof state.current_traits['leaf_chemistry_samples'] !== "undefined"){
+                }else if(this.$attrs.traitCat == 'icp_leaf_element_concentrations' && typeof state.current_traits['leaf_chemistry_samples'] !== "undefined"){
                     this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["icp_leaf_element_concentrations"][0],["al_mg_g","ca_mg_g","cu_mg_g","fe_mg_g","k_mg_g","mg_mg_g","mn_mg_g","na_mg_g","ni_mg_g","p_mg_g","zn_mg_g"])
-                }else if(this.$attrs.traitCat == 'c_n_leaf_concentrations' & typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
+                }else if(this.$attrs.traitCat == 'c_n_leaf_concentrations' && typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
                     this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["c_n_leaf_concentrations"][0],["c_perc","n_perc"])
-                }else if(this.$attrs.traitCat == 'carbon_fractions_bags' & typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
+                }else if(this.$attrs.traitCat == 'carbon_fractions_bags' && typeof state.current_traits["leaf_chemistry_samples"] !== "undefined"){
                     var i=0;
                     var ind=0
                     if(state.current_traits["leaf_chemistry_samples"][0]["carbon_fractions_bags"].length>1){
@@ -83,7 +83,9 @@ export default {
                         })
                     }
                     this.traits =_.pick(state.current_traits["leaf_chemistry_samples"][0]["carbon_fractions_bags"][ind],["soluble_perc","cellulose_perc","hemicellulose_perc","lignin_perc","soluble_perc","recalcitrants_perc"])
-                }
+                }else if(this.$attrs.traitCat == 'pigments_extracts' && typeof state.current_traits[this.$attrs.traitCat] !== "undefined" && state.current_traits[this.$attrs.traitCat].length!==0){
+                    this.traits = _.pick(state.current_traits['pigments_extracts'][0],["chla_mg_g_disk_mass", "chlb_mg_g_disk_mass","carot_mg_g_disk_mass", "chl_a_chl_b_ratio", "chla_mg_m2", "chlb_mg_m2", "carot_mg_m2"])
+                }  
             break;
             } 
         })

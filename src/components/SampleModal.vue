@@ -122,7 +122,7 @@
 		    },
 		    update_traits(sample_id){
 		    	var self=this
-		        let which=['leaf_area_and_water_samples','icp_leaf_element_concentrations']
+		        let which=['leaf_area_and_water_samples','icp_leaf_element_concentrations','pigments_extracts']
 		        which.forEach(function(w){
 		        	var wh={}
 		        	wh.cat=w
