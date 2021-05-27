@@ -56,7 +56,17 @@ export default new Vuex.Store({
 		showFiveWarning: false,
 		isAdmin:false,
 	},
-	getters: {},
+	getters: {
+		accessible_plants: (state) => {
+			if(!state.isAdmin){
+				return state.current_spectra.spectra_ids.filter(p => {
+					return p.permission == 1;
+				})
+			}else{
+				return state.current_spectra.spectra_ids
+			}
+		}
+	},
 	mutations: {
 		save_search_spectra_ids(state, spectra_ids) {
 			state.current_spectra.spectra_ids = spectra_ids;
@@ -254,9 +264,7 @@ export default new Vuex.Store({
 			})
 		},
 		getManyPlants (context) {
-			let plants = context.state.current_spectra.spectra_ids.filter(p => {
-				return p.permission == 1;
-			})
+			let plants = context.getters.accessible_plants;
 			const gets = plants.map(sp => api.get('plants_samples',{
 				params: {
 					sample_id: sp.sample_id
@@ -338,7 +346,8 @@ export default new Vuex.Store({
 		},
 		downloadAllPlantSpectraCSV(context){
 			let ids=[]
-			context.state.current_spectra.spectra_ids.map(s=>{
+			let plants = context.getters.accessible_plants;
+			plants.map(s=>{
 				ids.push("'"+s.sample_id+"'")
 			})
 			ids=ids.join(",");
