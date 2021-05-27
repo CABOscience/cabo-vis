@@ -35,6 +35,7 @@ export default new Vuex.Store({
 		traits_exists: {},
 		plants_sample_ids : [],
 		plants : [],
+		number_of_plants: 0,
 		species_options: [],
 		species_selected: [],
 		sampleModal: {},
@@ -51,8 +52,9 @@ export default new Vuex.Store({
 		showSelectedPlantSpectraDownloadButton: false,
 		showSelectedPlantSpectraDownloadSpinner: false,
 		showMarkerPlantSpectraDownloadSpinner: false,
-		showPassword: true,
+		showPassword: false,
 		showFiveWarning: false,
+		isAdmin:false,
 	},
 	getters: {},
 	mutations: {
@@ -66,12 +68,12 @@ export default new Vuex.Store({
 				})
 			}
 			state.species_options=state.species_options.concat(
-					_(state.current_spectra.spectra_ids)
-					  .countBy("scientific_name")
-					  .map(function(count, scientific_name) { return { count: count, scientific_name: scientific_name }})
-					  .value()
-					  .sort(function (a, b) { return b.count - a.count; })
-				);
+				_(state.current_spectra.spectra_ids)
+				  .countBy("scientific_name")
+				  .map(function(count, scientific_name) { return { count: count, scientific_name: scientific_name }})
+				  .value()
+				  .sort(function (a, b) { return b.count - a.count; })
+			);
 			if (state.species_options.length > 5){
 				state.species_options=state.species_options.slice(0, 5)
 				state.showFiveWarning=true
@@ -109,6 +111,7 @@ export default new Vuex.Store({
 			}
 		},
 		save_plants(state, plants) {
+			state.number_of_plants = plants.length
 			state.plants=plants;
 		},
 		species_select(state) {
@@ -125,6 +128,11 @@ export default new Vuex.Store({
 			this.dispatch('getProjects');
 		},
 		save_projects(state,projects) {
+			if(!state.isAdmin){
+				projects=projects.filter(function(value, index, self){
+					return value.permission == 1;
+				})
+			}
 			state.search_box.projects=projects;
 		},
 		reflectance_transmittance(state, which) {
@@ -178,6 +186,7 @@ export default new Vuex.Store({
 		updatePassword(state,password){
 			bcrypt.compare(password, process.env.VUE_APP_CABO_PASSWORD, function(err, res) {
 				if(res==true){
+					state.isAdmin=true
 					state.showPassword=false
 				}
 			});
@@ -245,7 +254,10 @@ export default new Vuex.Store({
 			})
 		},
 		getManyPlants (context) {
-			const gets = context.state.current_spectra.spectra_ids.map(sp => api.get('plants_samples',{
+			let plants = context.state.current_spectra.spectra_ids.filter(p => {
+				return p.permission == 1;
+			})
+			const gets = plants.map(sp => api.get('plants_samples',{
 				params: {
 					sample_id: sp.sample_id
 				}

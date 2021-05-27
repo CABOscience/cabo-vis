@@ -186,7 +186,7 @@ export default {
 			return this.$store.state.search_box.announce
 		},
 		showSearch (){
-			return !this.$store.state.showPassword
+			return true;
 		},
     	dateFilterActive(){
     		return this.$store.state.search_box.startDate!==''

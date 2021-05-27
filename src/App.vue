@@ -2,19 +2,21 @@
   <div id="app">
         <SideBar />
            <div id="content" v-bind:class="{ active: isActive }">
+              <PasswordPage />
               <LanguageSwitcher></LanguageSwitcher>
               <b-container>
               <div id="logo">
                 <img alt="CABO logo" src="./assets/CABO_color.png" class="main-logo">
               </div>
               </b-container>
-              <PasswordPage />
               <a name="search"></a><SearchBar></SearchBar>
               <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
               <Loader v-show="showLoader"></Loader>
               <a name="spectra"></a><LeafSpectra which="main-spectra"></LeafSpectra>
+              <PlantSummary></PlantSummary>
               <a name="map"></a><SpectraMap></SpectraMap>
-              <a name="plants"></a><PlantsTable></PlantsTable>
+              <a name="plants"></a>
+              <PlantsTable></PlantsTable>
               <SampleModal modalType="sampleModal"></SampleModal>
           </div>
   </div>
@@ -29,6 +31,7 @@ import SearchBar from "./components/SearchBar.vue"
 import SpeciesSelect from "./components/SpeciesSelect.vue"
 import SideBar from "./components/SideBar.vue"
 import SpectraMap from "./components/SpectraMap.vue"
+import PlantSummary from "./components/PlantSummary.vue"
 import PlantsTable from "./components/PlantsTable.vue"
 import SampleModal from "./components/SampleModal.vue"
 
@@ -45,6 +48,7 @@ export default {
     SpeciesSelect,
     SideBar,
     SpectraMap,
+    PlantSummary,
     PlantsTable,
     SampleModal,
   }, 

@@ -84,6 +84,7 @@ const messages = {'en': {
 	chla_mg_m2: 'Chlorophyll A (mg m<sup>-2</sup>)',
 	chlb_mg_m2: 'Chlorophyll B (mg m<sup>-2</sup>)',
 	carot_mg_m2: 'Carotenoids (mg m<sup>-2</sup>)',
+	plants_summary_desc: 'Number of samples that can be explored and downloaded: ',
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -163,6 +164,7 @@ const messages = {'en': {
 	chla_mg_m2: 'Chlorophylle A (mg m<sup>-2</sup>)',
 	chlb_mg_m2: 'Chlorophylle B (mg m<sup>-2</sup>)',
 	carot_mg_m2: 'Caroténoides (mg m<sup>-2</sup>)',
+	plants_summary_desc: 'Nombre d\'échantillons qui peuvent être examinés et téléchargés: ',
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

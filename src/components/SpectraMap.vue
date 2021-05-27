@@ -71,7 +71,7 @@
 			},
 			showMap: {
 				get() {
-					return this.$store.state.showAll	
+					return this.$store.state.showAll && this.$store.state.number_of_plants>0;
 				}
 			},
 			downloadMarkerPlantSpectraSpinner: {
