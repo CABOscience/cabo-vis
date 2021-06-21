@@ -127,6 +127,7 @@ import { LMap, LTileLayer } from 'vue2-leaflet';
 import LDrawToolbar from 'vue2-leaflet-draw-toolbar';
 import 'leaflet-fullscreen/dist/leaflet.fullscreen.css';
 import 'leaflet-fullscreen/dist/Leaflet.fullscreen';
+import api from '../plugins/axios-interceptor';
 
 
 export default {
@@ -229,7 +230,7 @@ export default {
 	    search_api (input) {
 	    	this.searchValue=input
 	    	if (input.length < 1) { return [] }
-			return this.axios.get('vascan/autocomplete',{
+			return api.get('vascan/autocomplete',{
 				params: {
 					q: input
 				}

@@ -52,6 +52,12 @@ export default new Vuex.Store({
 		showSelectedPlantSpectraDownloadButton: false,
 		showSelectedPlantSpectraDownloadSpinner: false,
 		showMarkerPlantSpectraDownloadSpinner: false,
+		showTraitsDownloadSpinner: false,
+		showTraitsSpectraDownloadSpinner: false,
+		showAllPlantTraitsDownloadSpinner: false,
+		showSelectedPlantTraitsDownloadButton: false,
+		showSelectedPlantTraitsDownloadSpinner: false,
+		showMarkerPlantTraitsDownloadSpinner: false,
 		showPassword: false,
 		showFiveWarning: false,
 		isAdmin:false,
@@ -177,11 +183,22 @@ export default new Vuex.Store({
 			state.showSelectedPlantSpectraDownloadSpinner=true
 			this.dispatch('downloadSelectedPlantSpectraCSV')
 		},
+		download_plant_traits_csv(state, record_id){
+			this.dispatch('downloadPlantTraitsCSV',record_id)
+		},
+		download_all_plant_traits_csv(state){
+			state.showAllPlantTraitsDownloadSpinner=true
+			this.dispatch('downloadAllPlantTraitsCSV')
+		},
+		download_selected_plant_traits_csv(state){
+			state.showSelectedPlantTraitsDownloadSpinner=true
+			this.dispatch('downloadSelectedPlantTraitsCSV')
+		},
 		download_traits(state,which){
 			if(which.cat == 'icp_leaf_element_concentrations' | which == 'c_n_leaf_concentrations'){
 				which.cat = 'leaf_chemistry_samples'
 			}
-			this.dispatch('getTraits',which)
+			this.dispatch('getTraits', which)
 		},
 		save_traits(state,which){
 			state.current_traits[which.cat]=which.data
@@ -198,6 +215,7 @@ export default new Vuex.Store({
 				if(res==true){
 					state.isAdmin=true
 					state.showPassword=false
+					Vue.axios.defaults.headers.common['Authorization'] = 'Bearer '+ process.env.VUE_APP_CABO_API_KEY_ADMIN;
 				}
 			});
 		},
@@ -379,6 +397,58 @@ export default new Vuex.Store({
 				const d = Date.now();
 				this.dispatch('processCSVResponse',{response:response,filename:'cabo_selected_plant_spectra_'+d+'.csv'})
 				context.state.showSelectedPlantSpectraDownloadSpinner=false
+			}).catch(error => {
+				console.log(error)
+			});
+		},
+		downloadPlantTraitsCSV(context, sample_ids){
+			api.post('traits/csv/', {
+			    ids: "'"+sample_ids+"'",
+			    type: 'raw',
+			}).then(response => {
+				const d = Date.now();
+				this.dispatch('processCSVResponse',{response:response,filename:'cabo_plant_traits_'+d+'.csv'})
+				context.state.showPlantTraitsDownloadSpinner=false
+				context.state.showMarkerPlantTraitsDownloadSpinner=false
+			}).catch(error => {
+				console.log(error)
+			});
+		},
+		downloadAllPlantTraitsCSV(context){
+			let ids=[]
+			let plants = context.getters.accessible_plants;
+			plants.map(s=>{
+				ids.push("'"+s.sample_id+"'")
+			})
+			ids=ids.join(",");
+			api.post('traits/csv/', {
+			    ids: ids,
+			    type: 'raw',
+			}).then(response => {
+				const d = Date.now();
+				this.dispatch('processCSVResponse',{response:response,filename:'cabo_all_plant_traits_'+d+'.csv'})
+				context.state.showAllPlantTraitsDownloadSpinner=false
+			}).catch(error => {
+				console.log(error)
+			});
+		},
+		downloadSelectedPlantTraitsCSV(context){
+			let ids=[]
+			if(context.state.current_spectra.selected_spectra_ids.length==1){
+				ids="'"+context.state.current_spectra.selected_spectra_ids[0].sample_ids+"'"
+			}else{
+				context.state.current_spectra.selected_spectra_ids.map(s=>{
+					ids.push("'"+s.sample_ids+"'")
+				})
+				ids=ids.join(",");
+			}
+			api.post('traits/csv/', {
+			    ids: ids,
+			    type: 'raw',
+			}).then(response => {
+				const d = Date.now();
+				this.dispatch('processCSVResponse',{response:response,filename:'cabo_selected_plant_traits_'+d+'.csv'})
+				context.state.showSelectedPlantTraitsDownloadSpinner=false
 			}).catch(error => {
 				console.log(error)
 			});

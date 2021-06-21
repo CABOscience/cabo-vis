@@ -14,6 +14,14 @@
 		        v-show="downloadSelectedPlantSpectraSpinner"
 		      ></b-spinner>
 	        </b-button>
+	        <b-button size="sm" @click="download_selected_plant_traits()" class="mr-1" variant="primary" v-show="rowsSelected">
+	          {{ $t('download_selected_traits') }} <b-icon-arrow-down-circle  v-show="!downloadSelectedPlantTraitsSpinner"></b-icon-arrow-down-circle>
+		      <b-spinner
+		      	small
+		        variant="light"
+		        v-show="downloadSelectedPlantTraitsSpinner"
+		      ></b-spinner>
+	        </b-button>
     	</b-button-group>
     	</b-container>
 </b-card-header>
@@ -49,11 +57,21 @@
 	          {{ row.detailsShowing ? $t('hide') : $t('show') }} {{ $t('details') }}
 	        </b-button>
 	        <b-button size="sm" @click="download_plant_spectra(row.item, row.index, $event.target)" class="mr-1" variant="primary">
+	        	{{ $t('download_spectra') }}
 	          <b-icon-arrow-down-circle  v-show="!downloadPlantSpectraSpinner(row.index)"></b-icon-arrow-down-circle>
 		      <b-spinner
 		      	small
 		        variant="light"
 		        v-show="downloadPlantSpectraSpinner(row.index)"
+		      ></b-spinner>
+	        </b-button>
+	        <b-button size="sm" @click="download_plant_traits(row.item, row.index, $event.target)" class="mr-1" variant="primary">
+	        	{{ $t('download_traits') }}
+	          <b-icon-arrow-down-circle  v-show="!downloadPlantTraitsSpinner(row.index)"></b-icon-arrow-down-circle>
+		      <b-spinner
+		      	small
+		        variant="light"
+		        v-show="downloadPlantTraitsSpinner(row.index)"
 		      ></b-spinner>
 	        </b-button>
     	</b-button-group>
@@ -105,9 +123,19 @@
 				return this.$store.state.showPlantSpectraDownloadSpinner===index
 			}
 		},
+		downloadPlantTraitsSpinner() {
+			return(index)=> {
+				return this.$store.state.showPlantTraitsDownloadSpinner===index
+			}
+		},
 		downloadSelectedPlantSpectraSpinner: {
 			get() {
 				return this.$store.state.showSelectedPlantSpectraDownloadSpinner
+			}
+		},
+		downloadSelectedPlantTraitsSpinner: {
+			get() {
+				return this.$store.state.showSelectedPlantTraitsDownloadSpinner
 			}
 		},
 		selected: {
@@ -132,6 +160,13 @@
 	    },
 	    download_selected_plant_spectra(){
 	    	this.$store.commit('download_selected_plant_spectra_csv')
+	    },
+	    download_plant_traits(item, index, button) {
+	    	this.$store.state.showPlantTraitsDownloadSpinner=index
+	    	this.$store.commit('download_plant_traits_csv', item.sample_ids)
+	    },
+	    download_selected_plant_traits(){
+	    	this.$store.commit('download_selected_plant_traits_csv')
 	    },
 		onSlideStart(slide) {
 			this.sliding = true
@@ -166,19 +201,19 @@
 			switch(mutation.type) {
 			case 'save_plants':
 				if(state.plants.length!==0){
-					this.items=state.plants.map(function(m) {
-						let ro = {}
-						if(typeof m !== 'undefined'){
-							let ids = []
-					    	m.bulk_leaf_samples.map(i=>{
-					    		ids.push(i.sample_id)
-					    	})
-							ro.sample_ids = ids.join(',')
-							ro.scientific_name = m.scientific_name
-							ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
-							ro.plant_photos=''
-						}
-						return ro
+				this.items=state.plants.filter(function(m) {
+				    return typeof m !== 'undefined'
+				  }).map(function(m) {
+					let ro = {}
+					let ids = []
+			    	m.bulk_leaf_samples.map(i=>{
+			    		ids.push(i.sample_id)
+			    	})
+					ro.sample_ids = ids.join(',')
+					ro.scientific_name = m.scientific_name
+					ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
+					ro.plant_photos=''
+					return ro
 					})
 				}
 			break;
