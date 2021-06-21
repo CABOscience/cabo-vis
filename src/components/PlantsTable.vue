@@ -29,6 +29,7 @@
 		<b-table
 	      id="plants-table"
 	      :items="items"
+	      :fields="fields"
 	      small
 	      sticky-header="600px"
 	      ref="selectableTable"
@@ -91,6 +92,28 @@
       return {
         perPage: 20,
         currentPage: 1,
+        fields: [
+          {
+            key: 'sample_ids',
+            label: 'Sample ID',
+            sortable: true
+          },
+          {
+            key: 'scientific_name',
+            label: 'Scientific Name',
+            sortable: true
+          },
+          {
+            key: 'site',
+            label: 'Site',
+            sortable: true
+          },
+          {
+            key: 'plant_photos',
+            label: '',
+            sortable: false
+          },
+        ],
         items: [],
         infoModal: {
           id: 'info-modal',
