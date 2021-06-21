@@ -1,6 +1,13 @@
 <template>
     <div class="app-body row traits">
-	<b-tabs pills card vertical nav-wrapper-class="w-20" v-model="active_trait">
+    <b-button v-on:click="download_plant_traits(sample_id)" class="mr-1" variant="primary" size="sm">{{ $t('download_csv') }}
+     <b-icon-arrow-down-circle  v-show="!downloadSpinner"></b-icon-arrow-down-circle>
+      <b-spinner
+        small
+        variant="light"
+        v-show="downloadSpinner"
+      ></b-spinner></b-button>
+  <b-tabs pills card vertical nav-wrapper-class="w-20" v-model="active_trait">
 	<template v-for="(this_cat, name_cat, index_cat) in traits_cat">
 		<b-tab :title="$t(this_cat)" @click="download_these_traits(this_cat)" v-bind="has_trait(this_cat)" class="test">
 			<b-card-text>
@@ -33,6 +40,7 @@ export default {
           'pigments_extracts':false,
       	},
       	active_trait:0,
+        downloadSpinner:false
       }
     },
     computed: {
@@ -55,6 +63,9 @@ export default {
     			return {}
     		}
     	},
+      download_plant_traits(sample_id) {
+        this.$store.commit('download_plant_traits_csv', sample_id)
+      },
       traits_colors(index){
         return this.$store.state.basic_colors[index]
       }
@@ -145,4 +156,5 @@ export default {
 a.disabled{
   display:none;
 }
+
 </style>

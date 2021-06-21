@@ -9,6 +9,7 @@
 <script>
 import * as d3 from 'd3'
 import Vue from 'vue';
+import api from '../plugins/axios-interceptor';
 
 export default {
     data() {
@@ -153,7 +154,7 @@ export default {
 		  };
 		},
 		getAllValuesForOneTrait(trait) {
-			this.axios.get('/traits/all/',{
+			api.get('/traits/all/',{
 				params: {
 					trait: trait,
 					table: this.trait_table[trait]
