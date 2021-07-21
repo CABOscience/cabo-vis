@@ -223,6 +223,7 @@ export default {
 			this.$store.state.species_options=[]
 			this.$store.state.search_box.announce=''
 			this.drawnItems=''
+			this.$store.state.all_current_traits = {}
 			this.$store.state.showOverallTraits = false
 		},
 	    getResultValue(result) {
