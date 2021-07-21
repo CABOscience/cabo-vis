@@ -48,7 +48,7 @@ export default {
       },
       showOverallTraits:{
         get(){
-          return this.$store.state.showOverallTraits;
+          return this.$store.state.showOverallTraits && this.$store.state.showAll;
         }
       }
     },
