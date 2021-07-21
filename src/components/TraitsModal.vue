@@ -33,11 +33,11 @@ export default {
       return {
       	traits_cat:['leaf_area_and_water_samples','icp_leaf_element_concentrations','c_n_leaf_concentrations','carbon_fractions_bags','pigments_extracts'],
       	has_traits:{
-      		'leaf_area_and_water_samples':false,
-      		'icp_leaf_element_concentrations':false,
-      		'c_n_leaf_concentrations':false,
-          'carbon_fractions_bags':false,
-          'pigments_extracts':false,
+      		'leaf_area_and_water_samples': false,
+      		'icp_leaf_element_concentrations': false,
+      		'c_n_leaf_concentrations': false,
+          'carbon_fractions_bags': false,
+          'pigments_extracts': false,
       	},
       	active_trait:0,
         downloadSpinner:false

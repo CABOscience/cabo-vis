@@ -13,6 +13,7 @@
               <a name="species-select"></a><SpeciesSelect></SpeciesSelect>
               <Loader v-show="showLoader"></Loader>
               <a name="spectra"></a><LeafSpectra which="main-spectra"></LeafSpectra>
+              <a name="traits"></a><TraitsOverall></TraitsOverall>
               <PlantSummary></PlantSummary>
               <a name="map"></a><SpectraMap></SpectraMap>
               <a name="plants"></a>
@@ -30,6 +31,7 @@ import LeafSpectra from "./components/LeafSpectra.vue"
 import SearchBar from "./components/SearchBar.vue"
 import SpeciesSelect from "./components/SpeciesSelect.vue"
 import SideBar from "./components/SideBar.vue"
+import TraitsOverall from "./components/TraitsOverall.vue"
 import SpectraMap from "./components/SpectraMap.vue"
 import PlantSummary from "./components/PlantSummary.vue"
 import PlantsTable from "./components/PlantsTable.vue"
@@ -47,6 +49,7 @@ export default {
     SearchBar,
     SpeciesSelect,
     SideBar,
+    TraitsOverall,
     SpectraMap,
     PlantSummary,
     PlantsTable,

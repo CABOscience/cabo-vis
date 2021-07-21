@@ -12,6 +12,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
+		all_current_traits: [],
 		password: '',
 		search_box: {
 			search_value: '',
@@ -58,9 +59,44 @@ export default new Vuex.Store({
 		showSelectedPlantTraitsDownloadButton: false,
 		showSelectedPlantTraitsDownloadSpinner: false,
 		showMarkerPlantTraitsDownloadSpinner: false,
+		showOverallTraits: false,
 		showPassword: false,
 		showFiveWarning: false,
 		isAdmin:false,
+		traits_table:{
+      		"leaf_mass_per_area_g_m2":"leaf_area_and_water_samples", 
+      		"leaf_dry_matter_content_mg_g":"leaf_area_and_water_samples",
+      		"equivalent_water_thickness_cm":"leaf_area_and_water_samples",
+      		"leaf_relative_water_content_perc":"leaf_area_and_water_samples",
+      		"al_mg_g":"icp_leaf_element_concentrations",
+      		"b_mg_g":"icp_leaf_element_concentrations",
+      		"ca_mg_g":"icp_leaf_element_concentrations",
+      		"cu_mg_g":"icp_leaf_element_concentrations",
+      		"fe_mg_g":"icp_leaf_element_concentrations",
+      		"k_mg_g":"icp_leaf_element_concentrations",
+      		"mg_mg_g":"icp_leaf_element_concentrations",
+      		"mn_mg_g":"icp_leaf_element_concentrations",
+      		"mo_mg_g":"icp_leaf_element_concentrations",
+      		"na_mg_g":"icp_leaf_element_concentrations",
+      		"ni_mg_g":"icp_leaf_element_concentrations",
+      		"p_mg_g":"icp_leaf_element_concentrations",
+      		"s_mg_g":"icp_leaf_element_concentrations",
+      		"zn_mg_g":"icp_leaf_element_concentrations",
+      		"c_perc":"c_n_leaf_concentrations",
+      		"n_perc":"c_n_leaf_concentrations",
+      		"soluble_perc":"carbon_fractions_bags",
+      		"cellulose_perc":"carbon_fractions_bags",
+      		"hemicellulose_perc":"carbon_fractions_bags",
+      		"lignin_perc":"carbon_fractions_bags",
+      		"recalcitrants_perc":"carbon_fractions_bags",
+      		"chla_mg_g_disk_mass":"pigments_extracts", 
+      		"chlb_mg_g_disk_mass":"pigments_extracts", 
+      		"carot_mg_g_disk_mass":"pigments_extracts",
+      		"chl_a_chl_b_ratio":"pigments_extracts",
+      		"chla_mg_m2":"pigments_extracts", 
+      		"chlb_mg_m2":"pigments_extracts", 
+      		"carot_mg_m2":"pigments_extracts",
+      	}
 	},
 	getters: {
 		accessible_plants: (state) => {
@@ -103,6 +139,7 @@ export default new Vuex.Store({
 				this.dispatch('getManySpectraMeanTaxa');
 				this.whichSpectra="main-spectra";
 				this.dispatch('getManyPlants');
+				this.dispatch('getAllTraits',state.current_spectra.spectra_ids);
 			}else{
 				this.dispatch('clearSpectra');
 				state.showAll = false
@@ -137,6 +174,7 @@ export default new Vuex.Store({
 		},
 		save_search(state) {
 			state.showLoader=true
+			state.showOverallTraits = false
 			this.dispatch('clearSpectra');
 			this.dispatch('searchTaxa');
 		},
@@ -202,6 +240,28 @@ export default new Vuex.Store({
 		},
 		save_traits(state,which){
 			state.current_traits[which.cat]=which.data
+		},
+		save_all_traits(state,data){
+			var traits=Object.keys(state.traits_table)
+			traits.push('scientific_name')
+			data = _.pickBy(data.map( i => {
+				return _.pickBy(_.pick( _.mapValues(i, j => {
+						if(j!==null && !isNaN(parseFloat(j))) {
+							return parseFloat(j).toFixed(4)
+						}else{
+							return j;
+						}
+					}), traits),k => {
+						return k !== null
+					})
+			}), l => {
+				return state.species_selected.indexOf(l.scientific_name) !== -1
+			})
+			state.all_current_traits={
+				...state.all_current_traits,
+				...data
+			}
+			state.showOverallTraits = true;
 		},
 		show_sample_modal(state,modal_content){
 			state.sampleModal = modal_content
@@ -301,6 +361,21 @@ export default new Vuex.Store({
 			}).then(result => {
 				which.data=result.data
 				context.commit('save_traits',which);
+			}).catch(error => {
+				console.log(error);
+			});
+		},
+		getAllTraits (context, sample_ids) {
+			let ids=[]
+			sample_ids.map(s=>{
+				ids.push("'"+s.sample_id+"'")
+			})
+			ids=ids.join(",");
+			api.post('/traits/',{
+				ids: ids,
+				type: 'raw',
+			}).then(result => {
+				context.commit('save_all_traits',result.data);
 			}).catch(error => {
 				console.log(error);
 			});

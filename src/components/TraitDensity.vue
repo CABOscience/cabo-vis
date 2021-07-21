@@ -14,55 +14,37 @@ import api from '../plugins/axios-interceptor';
 export default {
     data() {
       return {
-      	trait_table:{
-      		"leaf_mass_per_area_g_m2":"leaf_area_and_water_samples", 
-      		"leaf_dry_matter_content_mg_g":"leaf_area_and_water_samples",
-      		"equivalent_water_thickness_cm":"leaf_area_and_water_samples",
-      		"leaf_relative_water_content_perc":"leaf_area_and_water_samples",
-      		"al_mg_g":"icp_leaf_element_concentrations",
-      		"b_mg_g":"icp_leaf_element_concentrations",
-      		"ca_mg_g":"icp_leaf_element_concentrations",
-      		"cu_mg_g":"icp_leaf_element_concentrations",
-      		"fe_mg_g":"icp_leaf_element_concentrations",
-      		"k_mg_g":"icp_leaf_element_concentrations",
-      		"mg_mg_g":"icp_leaf_element_concentrations",
-      		"mn_mg_g":"icp_leaf_element_concentrations",
-      		"mo_mg_g":"icp_leaf_element_concentrations",
-      		"na_mg_g":"icp_leaf_element_concentrations",
-      		"ni_mg_g":"icp_leaf_element_concentrations",
-      		"p_mg_g":"icp_leaf_element_concentrations",
-      		"s_mg_g":"icp_leaf_element_concentrations",
-      		"zn_mg_g":"icp_leaf_element_concentrations",
-      		"c_perc":"c_n_leaf_concentrations",
-      		"n_perc":"c_n_leaf_concentrations",
-      		"soluble_perc":"carbon_fractions_bags",
-      		"cellulose_perc":"carbon_fractions_bags",
-      		"hemicellulose_perc":"carbon_fractions_bags",
-      		"lignin_perc":"carbon_fractions_bags",
-      		"recalcitrants_perc":"carbon_fractions_bags",
-      		"chla_mg_g_disk_mass":"pigments_extracts", 
-      		"chlb_mg_g_disk_mass":"pigments_extracts", 
-      		"carot_mg_g_disk_mass":"pigments_extracts",
-      		"chl_a_chl_b_ratio":"pigments_extracts",
-      		"chla_mg_m2":"pigments_extracts", 
-      		"chlb_mg_m2":"pigments_extracts", 
-      		"carot_mg_m2":"pigments_extracts",
-      	}
       }
     },
     computed: {
     	trait_graph () {
-    		return "trait-graph-"+this.which
+    		return "trait-graph-"+this.type+'-'+this.which
+    	},
+    	type(){
+    		return this.$vnode.key.split('-')[0]
     	},
     	which () {
-    		return this.$vnode.key
+    		return this.$vnode.key.split('-')[1]
     	},
     	trait_value() {
     		return this.$attrs.trait_val
     	},
     	index_cat(){
     		return this.$attrs.index_cat
-    	}
+    	},
+    	traits_table(){
+    		return this.$store.state.traits_table
+    	},
+        trait_selection() { //Values based on selection
+            return this.$store.state.all_current_traits
+        },
+		species_list(){
+			/*return this.$store.state.species_options.map(t => {
+				return t.scientific_name
+			})*/
+			return this.$store.state.species_selected
+		}
+
     },
     mounted: function() {
     	this.getAllValuesForOneTrait(this.which);
@@ -70,6 +52,7 @@ export default {
     methods: {
     	density(data) {
     		// set the dimensions and margins of the graph
+    		var self = this
 			data = data[0][this.which].split(',').map(function(item) {
 			    return parseFloat(item);
 			});
@@ -77,11 +60,16 @@ export default {
 			  return a - b;
 			});
 			var margin = {top: 15, right: 30, bottom: 30, left: 50},
-			    width = 450 - margin.left - margin.right,
-			    height = 75 - margin.top - margin.bottom;
-
+			    width = 450 - margin.left - margin.right;
+			if(this.trait_selection !== undefined){
+			    var height = 120 - margin.top - margin.bottom;
+			  	var plot_height = height - 40;
+			}else{
+				var height = 75 - margin.top - margin.bottom;
+			  	var plot_height = height;
+			}
 			// append the svg object to the body of the page
-			var svg = d3.select("#trait-graph-"+this.which)
+			var svg = d3.select("#"+this.trait_graph)
 			  .append("svg")
 			    .attr("width", width + margin.left + margin.right)
 			    .attr("height", height + margin.top + margin.bottom)
@@ -96,7 +84,7 @@ export default {
 			            .domain([tmin, tmax])
 			            .range([0, width]);
 			  svg.append("g")
-			      .attr("transform", "translate(0," + height + ")")
+			      .attr("transform", "translate(0," + plot_height + ")")
 			      .call(d3.axisBottom(x));
 
 
@@ -110,18 +98,23 @@ export default {
 			  	maxy = Math.max(item[1],maxy)
 			  })
 
-			  // add the y Axis
+
 			  var y = d3.scaleLinear()
-			            .range([height, 0])
+			            .range([plot_height, 0])
 			            .domain([0, maxy]);
 
+			 if(this.trait_value === true){
+			 	var densityColor = "#ececec"
+			 }else{
+			 	var densityColor = this.$store.state.basic_colors[this.$attrs.index_cat]
+			 }
 
 			  // Plot the area
 			  svg.append("path")
 			      .attr("class", "mypath")
 			      .datum(density)
 			      //.attr("fill", "#69b3a2")
-			      .attr("fill", this.$store.state.basic_colors[this.$attrs.index_cat])
+			      .attr("fill", densityColor)
 			      .attr("opacity", ".8")
 			      .attr("stroke", "#000")
 			      .attr("stroke-width", 1)
@@ -131,14 +124,35 @@ export default {
 			          .x(function(d) { return x(d[0]); })
 			          .y(function(d) { return y(d[1]); })
 			      );
-				svg.append("line")
-				.attr("x1", x(this.trait_value))
-				.attr("y1", height)
-				.attr("x2", x(this.trait_value))
-				.attr("y2", 0)
-				.style("stroke-width", 2)
-				.style("stroke", "black")
-				.style("fill", "none");
+			   if(this.trait_value !== true){
+					svg.append("line")
+					.attr("x1", x(this.trait_value))
+					.attr("y1", height)
+					.attr("x2", x(this.trait_value))
+					.attr("y2", 0)
+					.style("stroke-width", 2)
+					.style("stroke", "black")
+					.style("fill", "none");
+				}
+				if(this.trait_selection !== undefined){
+					 var jitterWidth = 10
+					 svg.selectAll("circle")
+					    .data(Object.values(this.trait_selection))
+					    .enter()
+					    .append("circle")
+					      .attr("cy", function(d){
+					      	return(65 + Math.random()*jitterWidth )}
+					       )
+					      .attr("cx", function(d){
+					      	return(x(parseFloat(d[self.which])))})
+					      .attr("r", 5)
+					      .style("fill", function(d){
+					      	return(self.$store.state.basic_colors[self.species_list.indexOf(d.scientific_name)])
+					      })
+					      .style("fill-opacity", 0.3)
+					      .style("stroke-opacity", 0)
+					      .attr("stroke-width",0 )
+				}
 
 		}, 
 		kernelDensityEstimator(kernel, X) {
@@ -157,7 +171,7 @@ export default {
 			api.get('/traits/all/',{
 				params: {
 					trait: trait,
-					table: this.trait_table[trait]
+					table: this.traits_table[trait]
 				},
 			}).then(result => {
 				this.density(result.data);

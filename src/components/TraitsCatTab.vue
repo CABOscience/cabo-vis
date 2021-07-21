@@ -8,7 +8,7 @@
 	  </b-row>
 	  <b-row>
 	    <b-col cols="8">
-	    	<TraitDensity :key="name" :trait_val="this_trait" :index_cat="index_cat"></TraitDensity>
+	    	<TraitDensity :key="key_name(name)" :trait_val="this_trait" :index_cat="index_cat"></TraitDensity>
 	    </b-col>
 	  </b-row>
 	</b-container>
@@ -54,6 +54,9 @@ export default {
         },
         has_trait(trait){
             return trait !==0 && trait !== ''
+        },
+        key_name(key){
+            return "plant-"+key
         }
     },
     mounted: function() {
