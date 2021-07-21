@@ -66,7 +66,7 @@
 		computed: {
 			header: {
 				get () {
-					return this.$i18n.t('sites');
+					return this.$i18n.t('map_of_observations');
 				}
 			},
 			showMap: {
