@@ -103,7 +103,7 @@ export default {
 			            .range([plot_height, 0])
 			            .domain([0, maxy]);
 
-			 if(this.trait_value === true){
+			 if(this.type === 'overall'){
 			 	var densityColor = "#ececec"
 			 }else{
 			 	var densityColor = this.$store.state.basic_colors[this.$attrs.index_cat]
@@ -127,14 +127,14 @@ export default {
 			   if(this.trait_value !== true){
 					svg.append("line")
 					.attr("x1", x(this.trait_value))
-					.attr("y1", height)
+					.attr("y1", plot_height)
 					.attr("x2", x(this.trait_value))
 					.attr("y2", 0)
 					.style("stroke-width", 2)
 					.style("stroke", "black")
 					.style("fill", "none");
 				}
-				if(this.trait_selection !== undefined){
+				if(this.type === 'overall'){
 					 var jitterWidth = 10
 					 svg.selectAll("circle")
 					    .data(Object.values(this.trait_selection))
