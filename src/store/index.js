@@ -39,7 +39,7 @@ export default new Vuex.Store({
 		number_of_plants: 0,
 		species_options: [],
 		species_selected: [],
-		sampleModal: {},
+		sampleModal: {bulk_leaf_samples:[]},
 		sampleSpectra: [],
 		sidebar: false,
 		whichSpectra: 'main-spectra',
@@ -63,6 +63,7 @@ export default new Vuex.Store({
 		showPassword: false,
 		showFiveWarning: false,
 		isAdmin:false,
+		showSampleSpectra: false,
 		traits_table:{
       		"leaf_mass_per_area_g_m2":"leaf_area_and_water_samples", 
       		"leaf_dry_matter_content_mg_g":"leaf_area_and_water_samples",
@@ -99,7 +100,7 @@ export default new Vuex.Store({
       	}
 	},
 	getters: {
-		accessible_plants: (state) => {
+		accessible_samples : (state) => {
 			if(!state.isAdmin){
 				return state.current_spectra.spectra_ids.filter(p => {
 					return p.permission == 1;
@@ -146,7 +147,7 @@ export default new Vuex.Store({
 				state.showLoader=false
 				state.showSpectra=false
 			}
-			state.search_box.announce = spectra_ids.length + i18n.t('_plants_found')
+			state.search_box.announce = spectra_ids.length + i18n.t('_samples_found')
 		},
 		save_main_spectra(state, spectra) {
 			state.showLoader=false;
@@ -164,8 +165,21 @@ export default new Vuex.Store({
 			}
 		},
 		save_plants(state, plants) {
-			state.number_of_plants = plants.length
-			state.plants=plants;
+			var pl = []
+			plants=plants.filter(s => typeof s !== 'undefined')
+			var ids = plants.map(p => {
+				return p.fulcrum_id
+			})
+			plants.map(p => {
+				var i = ids.indexOf(p.fulcrum_id);
+				if(typeof pl[i] === "undefined"){
+					pl[i]=p
+				}else{
+					pl[i].bulk_leaf_samples.push(p.bulk_leaf_samples[0])
+				}
+			})
+			state.number_of_plants = pl.length
+			state.plants=pl;
 		},
 		species_select(state) {
 			if(state.showLoader!=true){
@@ -342,7 +356,7 @@ export default new Vuex.Store({
 			})
 		},
 		getManyPlants (context) {
-			let plants = context.getters.accessible_plants;
+			let plants = context.getters.accessible_samples;
 			const gets = plants.map(sp => api.get('plants_samples',{
 				params: {
 					sample_id: sp.sample_id
@@ -439,7 +453,7 @@ export default new Vuex.Store({
 		},
 		downloadAllPlantSpectraCSV(context){
 			let ids=[]
-			let plants = context.getters.accessible_plants;
+			let plants = context.getters.accessible_samples;
 			plants.map(s=>{
 				ids.push("'"+s.sample_id+"'")
 			})
@@ -491,7 +505,7 @@ export default new Vuex.Store({
 		},
 		downloadAllPlantTraitsCSV(context){
 			let ids=[]
-			let plants = context.getters.accessible_plants;
+			let plants = context.getters.accessible_samples;
 			plants.map(s=>{
 				ids.push("'"+s.sample_id+"'")
 			})

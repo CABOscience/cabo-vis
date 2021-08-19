@@ -56,7 +56,6 @@ export default {
 			transmittance: 'false',
 			range: true,
 			showResetZoom: false,
-			showSampleSpectra: false,
 			options: [1,2,3,4,5,6],
 			selectedLeaf: [1,2,3,4,5,6],
 		}
@@ -104,6 +103,11 @@ export default {
 			get(){
 				return this.selectedLeaf;
 			}
+		},
+		showSampleSpectra:{
+			get(){
+				return this.$store.state.showSampleSpectra
+			}
 		}
 	},
 	created() {
@@ -116,7 +120,7 @@ export default {
 			case 'save_sample_spectra':
 				var self = this;
 				if(self.whichSpectra !== 'main-spectra' & typeof(self.whichSpectra) !== undefined ) {
-					this.showSampleSpectra=true;
+					this.$store.state.showSampleSpectra=true;
 					d3.selectAll(".sample-spectra-graph > *").remove()
 					this.drawBox(this.reflectance_transmittance, 'sample-spectra');
 					this.clearBox();

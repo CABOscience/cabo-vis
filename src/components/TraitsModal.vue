@@ -83,7 +83,7 @@ export default {
             			self.has_traits['c_n_leaf_concentrations'] = (typeof value[0]['c_n_leaf_concentrations']!=='undefined' && value[0]['c_n_leaf_concentrations'][0].length!==0)
                   self.has_traits['carbon_fractions_bags'] = (typeof value[0]['carbon_fractions_bags']!=='undefined' && value[0]['carbon_fractions_bags'][0].length!==0)
             		}else if (key=="pigments_extracts"){
-                  self.has_traits['pigments_extracts'] = (value[0].length!==0)
+                  self.has_traits['pigments_extracts'] = (typeof value[0]!=='undefined' && value[0].length!==0)
                 }
             	})
             	self.active_trait=_.values(self.has_traits).length-_.values(self.has_traits).indexOf(true)

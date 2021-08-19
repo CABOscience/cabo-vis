@@ -14,7 +14,7 @@ const messages = {'en': {
 	search: 'Search',
 	enter_species_name: 'Enter species name',
 	search_all_species: 'Search for all species',
-	_plants_found: ' plants found',
+	_samples_found: ' samples found',
 	site_id: 'Site ID',
 	plant_photos: 'Plant photos',
 	photo: 'Photo',
@@ -87,7 +87,8 @@ const messages = {'en': {
 	plants_summary_desc: 'Number of samples that can be explored and downloaded: ',
 	download_spectra: 'Download spectra',
 	download_traits: 'Download traits',
-	download_selected_traits: 'Download selected traits'
+	download_selected_traits: 'Download selected traits',
+	first_observed: 'First observed'
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -101,7 +102,7 @@ const messages = {'en': {
 	search: 'Recherche',
 	enter_species_name: 'Entrer un nom d\'espèce',
 	search_all_species: 'Chercher pour toutes les espèces',
-	_plants_found: ' plantes trouvées',
+	_plants_found: ' échantillons trouvés',
 	site_id: 'ID du site',
 	plant_photos: 'Photos des plantes',
 	photo: 'Photo',
@@ -170,7 +171,8 @@ const messages = {'en': {
 	plants_summary_desc: 'Nombre d\'échantillons qui peuvent être examinés et téléchargés: ',
 	download_spectra: 'Télécharger spectre',
 	download_traits: 'Télécharger traits',
-	download_selected_traits: 'Télécharger les traits sélectionnés'
+	download_selected_traits: 'Télécharger les traits sélectionnés',
+	first_observed : 'Première observation'
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

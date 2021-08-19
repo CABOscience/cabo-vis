@@ -1,10 +1,17 @@
 <template>
-  <b-modal :id="modal_id" :title="sampleModal.scientific_name" ok-only @hide="resetInfoModal" size="lg">
-  <b-tabs content-class="mt-3">
+  <b-modal v-if="sampleModal" :id="modal_id" :title="sampleModal.scientific_name" ok-only @hide="resetInfoModal" size="lg">
+  <b-form-select variant="primary" class="m-6" 
+  		v-model="selected_sample"
+        :options="sampleModal.bulk_leaf_samples"
+      	value-field="sample_id"
+      	text-field="date_sampled"
+    	>
+  </b-form-select>
+  <b-tabs content-class="mt-3" v-model="tabs">
     <b-tab :title="tab1_title" class="photos-tab" active>
-		{{sampleModal.site_id}} 
+		{{sampleModal.site_id}}
 		<br>{{sampleModal.first_observed_by}} 
-		<br>{{sampleModal.date_first_observed}} 
+		<br>{{ $t("first_observed") }} : {{sampleModal.date_first_observed}} 
 		<b-carousel
 		  id="carousel-1"
 		  v-model="slide"
@@ -20,9 +27,8 @@
 		<b-carousel-slide v-for="(value, key) in photos" :key="key" :img-src="value" img-height="800px" class="marker-slide">
 		</b-carousel-slide>
 		</b-carousel>
-		</b-tab>
-    	<b-tab :title="tab2_title" @click="get_sample_spectra(sampleModal.sample_ids)">
-			
+	</b-tab>
+    	<b-tab :title="tab2_title" @click="get_sample_spectra(selected_sample)">
           <b-button size="sm" @click="download_plant_spectra(sampleModal, $event.target)" class="mr-1" variant="primary">
           {{ $t('download_plant_spectra_data') }} <b-icon-arrow-down-circle v-show="!downloadMarkerPlantSpectraSpinner"></b-icon-arrow-down-circle>
 	      <b-spinner
@@ -33,8 +39,8 @@
         </b-button>
 		<LeafSampleSpectra :which="ids"></LeafSampleSpectra>
     </b-tab>
-    <b-tab :title="tab3_title" @click="update_traits(sampleModal.sample_ids)">
-    	<TraitsModal :sampleId="sampleModal.sample_ids"></TraitsModal>
+    <b-tab :title="tab3_title" @click="update_traits(selected_sample)">
+    	<TraitsModal :sampleId="selected_sample"></TraitsModal>
     </b-tab>
   </b-tabs>
   </b-modal>
@@ -58,6 +64,7 @@
 				sliding: null,
 				photos: [],
 				modalUp: false,
+				tabs: 0,
 			};
 		},
 		computed: {
@@ -93,10 +100,27 @@
 			},
 			ids: {
 				get() {
-					return 'sample'+this.$store.state.sampleModal.sample_ids
+					return 'sample'+this.selected_sample
+				}
+			},
+			selected_sample: {
+				get() {
+					if(typeof this.$store.state.sampleModal.bulk_leaf_samples[0] !== "undefined"){
+						return this.$store.state.sampleModal.bulk_leaf_samples[0].sample_id
+					}else{
+						return false;
+					}
+				},
+				set(value){
+					this.$store.state.selected_sample = value
+					this.$store.state.showSampleSpectra = false
+					if(this.tabs === 1){
+						this.get_sample_spectra(value)
+					}else if(this.tabs === 2){
+						this.update_traits(value)
+					}
 				}
 			}
-
 		},
 		methods: {
 		    resetInfoModal() {
@@ -132,7 +156,7 @@
 		    },
 		    refresh_photos(){
 		    	var self = this
-				let this_samp = this.$store.state.plants.filter(function(value, index){
+				/*let this_samp = this.$store.state.plants.filter(function(value, index){
 					if(typeof value !== 'undefined'){
 						var ids=[]
 				    	value.bulk_leaf_samples.map(i=>{
@@ -141,29 +165,27 @@
 						var sids = ids.join(',')
 						return sids == self.sampleModal.sample_ids
 					}
-				})
-				this.photos=this_samp.map(function(m) {
-					if(m.plant_photos!==null){
+				})*/
+				/*this.photos=this.sampleModal.map(function(m) {*/
+					if(this.sampleModal.plant_photos!==null){
 						var plant_photos=[]
-						var pf=m.plant_photos.split(',')
+						var pf=this.sampleModal.plant_photos.split(',')
 						pf.map(p=>{
 							plant_photos.push('https://data.caboscience.org/photos/plants/'+p+'.jpg')
 						})
-						if(m.close_up_photos!==null){
-							pf=m.close_up_photos.split(',')
+						if(this.sampleModal.close_up_photos!==null){
+							pf=this.sampleModal.close_up_photos.split(',')
 							pf.map(p=>{
 								plant_photos.push('https://data.caboscience.org/photos/plants/'+p+'.jpg')
 							})
 						}
-					}else{
-						return false;
 					}
-					return plant_photos;
-				})[0]
+					this.photos = plant_photos;
+				/*})[0]*/
 		    },
-		    get_sample_spectra(sample_ids){
+		    get_sample_spectra(selected_sample){
 			    d3.selectAll(".sample-spectra-graph > *").remove()
-		    	this.$store.commit('show_sample_spectra',sample_ids)
+		    	this.$store.commit('show_sample_spectra', selected_sample)
 		    }
 		},
 		mounted: function() {
