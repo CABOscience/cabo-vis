@@ -231,8 +231,10 @@ export default new Vuex.Store({
 			state.showAllPlantSpectraDownloadSpinner=true
 			this.dispatch('downloadAllPlantSpectraCSV')
 		},
-		download_selected_plant_spectra_csv(state){
-			state.showSelectedPlantSpectraDownloadSpinner=true
+		download_selected_plant_spectra_csv(state, click){
+			if(click === 'header'){
+	    		state.showSelectedPlantSpectraDownloadSpinner=true
+	    	}
 			this.dispatch('downloadSelectedPlantSpectraCSV')
 		},
 		download_plant_traits_csv(state, record_id){
@@ -242,8 +244,10 @@ export default new Vuex.Store({
 			state.showAllPlantTraitsDownloadSpinner=true
 			this.dispatch('downloadAllPlantTraitsCSV')
 		},
-		download_selected_plant_traits_csv(state){
-			state.showSelectedPlantTraitsDownloadSpinner=true
+		download_selected_plant_traits_csv(state, click){
+			if(click === 'header'){
+	    		state.downloadSelectedPlantTraitsSpinner=true
+	    	}
 			this.dispatch('downloadSelectedPlantTraitsCSV')
 		},
 		download_traits(state,which){
@@ -471,13 +475,13 @@ export default new Vuex.Store({
 		},
 		downloadSelectedPlantSpectraCSV(context){
 			let ids=[]
-			if(context.state.current_spectra.selected_spectra_ids.length==1){
-				ids="'"+context.state.current_spectra.selected_spectra_ids[0].sample_ids+"'"
+			let plant=context.state.current_spectra.selected_spectra_ids
+			if(plant.length==1){
+				ids=plant[0].sample_ids.split(',')
 			}else{
-				context.state.current_spectra.selected_spectra_ids.map(s=>{
-					ids.push("'"+s.sample_ids+"'")
+				plant.map(s=>{
+					ids.push(s.sample_ids)
 				})
-				ids=ids.join(",");
 			}
 			api.post('leaf_spectra/csv/', {
 			    ids: ids,
@@ -486,6 +490,7 @@ export default new Vuex.Store({
 				const d = Date.now();
 				this.dispatch('processCSVResponse',{response:response,filename:'cabo_selected_plant_spectra_'+d+'.csv'})
 				context.state.showSelectedPlantSpectraDownloadSpinner=false
+				context.state.showPlantSpectraDownloadSpinner=false
 			}).catch(error => {
 				console.log(error)
 			});
@@ -523,13 +528,13 @@ export default new Vuex.Store({
 		},
 		downloadSelectedPlantTraitsCSV(context){
 			let ids=[]
-			if(context.state.current_spectra.selected_spectra_ids.length==1){
-				ids="'"+context.state.current_spectra.selected_spectra_ids[0].sample_ids+"'"
+			let plant=context.state.current_spectra.selected_spectra_ids
+			if(plant.length==1){
+				ids=plant[0].sample_ids.split(',')
 			}else{
-				context.state.current_spectra.selected_spectra_ids.map(s=>{
-					ids.push("'"+s.sample_ids+"'")
+				plant.map(s=>{
+					ids.push(s.sample_ids)
 				})
-				ids=ids.join(",");
 			}
 			api.post('traits/csv/', {
 			    ids: ids,
@@ -538,6 +543,7 @@ export default new Vuex.Store({
 				const d = Date.now();
 				this.dispatch('processCSVResponse',{response:response,filename:'cabo_selected_plant_traits_'+d+'.csv'})
 				context.state.showSelectedPlantTraitsDownloadSpinner=false
+				context.state.showPlantTraitsDownloadSpinner=false
 			}).catch(error => {
 				console.log(error)
 			});

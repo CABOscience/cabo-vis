@@ -15,7 +15,7 @@ Vue.axios.defaults.headers.common['Authorization'] = 'Bearer '+ process.env.VUE_
 
 
 const MAX_REQUESTS_COUNT = 50
-const INTERVAL_MS = 10
+const INTERVAL_MS = 50
 let PENDING_REQUESTS = 0
 
 // create new axios instance

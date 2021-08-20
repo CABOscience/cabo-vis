@@ -88,7 +88,8 @@ const messages = {'en': {
 	download_spectra: 'Download spectra',
 	download_traits: 'Download traits',
 	download_selected_traits: 'Download selected traits',
-	first_observed: 'First observed'
+	first_observed: 'First observed',
+	tag: 'Tag'
 },'fr': {
 	results : 'Résultats',
 	mean_spectra: 'Spectres moyens',
@@ -172,7 +173,8 @@ const messages = {'en': {
 	download_spectra: 'Télécharger spectre',
 	download_traits: 'Télécharger traits',
 	download_selected_traits: 'Télécharger les traits sélectionnés',
-	first_observed : 'Première observation'
+	first_observed : 'Première observation',
+	tag: 'Étiquette'
 }};
 export const i18n = new VueI18n({
 	locale: 'en', 

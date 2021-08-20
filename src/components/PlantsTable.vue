@@ -179,17 +179,32 @@
 	    },
 	    download_plant_spectra(item, index, button) {
 	    	this.$store.state.showPlantSpectraDownloadSpinner=index
-	    	this.$store.commit('download_plant_spectra_csv', item.sample_ids)
+	    	if(!Array.isArray(item)){
+	    		item = [item]
+	    	}
+	    	this.onRowSelected(item)
+	    	this.rowsSelected=false
+	    	/*this.$store.commit('download_plant_spectra_csv', item.sample_ids)*/
+	    	this.$store.commit('download_selected_plant_spectra_csv','row')
 	    },
-	    download_selected_plant_spectra(){
-	    	this.$store.commit('download_selected_plant_spectra_csv')
+	    download_selected_plant_spectra(click){
+	    	this.$store.commit('download_selected_plant_spectra_csv','header')
 	    },
 	    download_plant_traits(item, index, button) {
 	    	this.$store.state.showPlantTraitsDownloadSpinner=index
-	    	this.$store.commit('download_plant_traits_csv', item.sample_ids)
+	    	if(!Array.isArray(item)){
+	    		item = [item]
+	    	}
+	    	this.onRowSelected(item)
+	    	this.rowsSelected=false
+	    	this.$store.commit('download_selected_plant_traits_csv','row')
+	    	/*this.$store.commit('download_plant_traits_csv', item.sample_ids)*/
 	    },
-	    download_selected_plant_traits(){
-	    	this.$store.commit('download_selected_plant_traits_csv')
+	    download_selected_plant_traits(click){
+	    	if(click === "header"){
+	    		this.$store.state.downloadSelectedPlantTraitsSpinner=true
+		   	}
+	    	this.$store.commit('download_selected_plant_traits_csv','header')
 	    },
 		onSlideStart(slide) {
 			this.sliding = true
@@ -198,15 +213,15 @@
 			this.sliding = false
 		},
 		onRowSelected(items) {
-			if(items.length!==0){
+			if(items.length !== 0){
 				this.rowsSelected=true
 			}else{
 				this.rowsSelected=false
 			}
-			if(items.length===this.rows){
-				this.selectAll=true
+			if(items.length === this.rows){
+				this.selectAll = true
 			}else{
-				this.selectAll=false
+				this.selectAll = false
 			}
 			this.$store.state.current_spectra.selected_spectra_ids = items
 		},
@@ -227,16 +242,15 @@
 				this.items=state.plants.filter(function(m) {
 				    return typeof m !== 'undefined'
 				  }).map(function(m) {
-					let ro = {}
-					let ids = []
-			    	m.bulk_leaf_samples.map(i=>{
-			    		ids.push(i.sample_id)
-			    	})
-					ro.sample_ids = ids.join(',')
-					ro.scientific_name = m.scientific_name
-					ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
-					ro.plant_photos=''
-					return ro
+						let ro = m
+						let ids = []
+				    	m.bulk_leaf_samples.map(i=>{
+				    		ids.push(i.sample_id)
+				    	})
+						ro.sample_ids = ids.join(',')
+						ro.scientific_name = m.scientific_name
+						ro.site = ((m.sites.verbatim_site==null)? m.sites.site_id : m.sites.verbatim_site)
+						return ro
 					})
 				}
 			break;

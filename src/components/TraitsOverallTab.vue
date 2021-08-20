@@ -31,7 +31,6 @@ export default {
 	},
     data() {
       return {
-        all_traits_selection:[]
       }
     },
     computed: {
@@ -66,26 +65,11 @@ export default {
         has_trait(trait) {
             return trait !==0 && trait !== ''
         },
-        _trait_selection(t) { //Values for this trait based on selection
-            return _.mapValues(this.all_traits_selection, c =>{
-                return _.pickBy(c, (v,k) => {
-                    return k==t || k=='scientific_name'
-                })
-            })
-        },
         key_name(key){
             return "overall-"+key
         }
     },
     mounted: function() {
-        var self = this
-        this.$store.subscribe((mutation,state) => {
-            switch(mutation.type) {
-            case 'save_all_traits':
-                self.all_traits_selection=state.all_current_traits
-            break;
-            } 
-        })
     },
 }
 </script>

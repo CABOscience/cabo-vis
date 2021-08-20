@@ -10,6 +10,11 @@
   <b-tabs content-class="mt-3" v-model="tabs">
     <b-tab :title="tab1_title" class="photos-tab" active>
 		{{sampleModal.site_id}}
+		<br>ID : {{ sampleModal.fulcrum_id}}
+		<span v-if="sampleModal.tag_id">
+		<br>
+		{{ $t("tag") }} : {{ sampleModal.tag_id}}
+		</span>
 		<br>{{sampleModal.first_observed_by}} 
 		<br>{{ $t("first_observed") }} : {{sampleModal.date_first_observed}} 
 		<b-carousel
