@@ -564,7 +564,7 @@ export default new Vuex.Store({
           const d = Date.now();
           this.dispatch("processCSVResponse", {
             response: response,
-            filename: "cabo_all_plant_spectra_" + d + ".csv.gz",
+            filename: "cabo_all_plant_spectra_" + d + ".csv",
           });
           context.state.showAllPlantSpectraDownloadSpinner = false;
         })
@@ -591,7 +591,7 @@ export default new Vuex.Store({
           const d = Date.now();
           this.dispatch("processCSVResponse", {
             response: response,
-            filename: "cabo_selected_plant_spectra_" + d + ".csv.gz",
+            filename: "cabo_selected_plant_spectra_" + d + ".csv",
           });
           context.state.showSelectedPlantSpectraDownloadSpinner = false;
           context.state.showPlantSpectraDownloadSpinner = false;
