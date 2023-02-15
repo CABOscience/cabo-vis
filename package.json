@@ -1,18 +1,21 @@
+GNU nano 4.8                                                                                   package.json                                                                                              
 {
   "name": "cabo-vis",
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service  serve",
     "build": "vue-cli-service build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@trevoreyre/autocomplete-vue": "^2.2.0",
+    "@vue/cli-service": "^4.5.19",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
+    "cache-loader": "^4.1.0",
     "core-js": "^3.9.1",
     "d3": "^5.16.0",
     "jquery": "^3.6.0",
@@ -20,6 +23,8 @@
     "leaflet-fullscreen": "^1.0.2",
     "lodash": "^4.17.21",
     "popper.js": "^1.16.1",
+    "sass": "^1.58.1",
+    "sass-loader": "^10.1.1",
     "vue": "^2.6.11",
     "vue-axios": "^3.2.1",
     "vue-i18n": "^8.24.2",
@@ -33,9 +38,6 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.12",
     "@vue/cli-plugin-vuex": "^4.5.12",
-    "@vue/cli-service": "^4.5.12",
-    "node-sass": "^4.14.1",
-    "sass-loader": "^10.1.1",
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
