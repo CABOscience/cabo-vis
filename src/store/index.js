@@ -674,9 +674,9 @@ export default new Vuex.Store({
     processCSVResponse(context, data) {
       //const url = window.URL.createObjectURL(new Blob([data.response.data]));
       const link = document.createElement("a");
-      link.href = "https://data.caboscience.org/download/" + data.response.data;
+      link.href = "/download/" + data.response.data;
       link.target = "_blank";
-      //link.setAttribute("download", data.filename);
+      link.setAttribute("download", "download");
       document.body.appendChild(link);
       link.click();
     },
