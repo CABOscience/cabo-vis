@@ -676,7 +676,7 @@ export default new Vuex.Store({
       const link = document.createElement("a");
       link.href = "/download/" + data.response.data;
       link.target = "_blank";
-      link.setAttribute("download", data.filename);
+      link.setAttribute("download", "");
       document.body.appendChild(link);
       link.click();
     },
