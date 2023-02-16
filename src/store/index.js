@@ -675,7 +675,7 @@ export default new Vuex.Store({
       //const url = window.URL.createObjectURL(new Blob([data.response.data]));
       const link = document.createElement("a");
       link.href = "https://data.caboscience.org/download/" + data.response.data;
-      ling.target = "_blank";
+      link.target = "_blank";
       //link.setAttribute("download", data.filename);
       document.body.appendChild(link);
       link.click();
