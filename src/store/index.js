@@ -3,7 +3,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { i18n } from "../plugins/i18n";
-import fs from "fs";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
 import api from "../plugins/axios-interceptor";
@@ -21,6 +20,7 @@ export default new Vuex.Store({
       startDate: "",
       endDate: "",
       projects: [],
+      species_list: [],
       projects_selected: "",
     },
     current_spectra: {
@@ -218,6 +218,12 @@ export default new Vuex.Store({
       }
       state.search_box.projects = projects;
     },
+    get_species_list(state) {
+      this.dispatch("getSpeciesList");
+    },
+    save_species_list(state, species_list) {
+      state.search_box.species_list = species_list;
+    },
     reflectance_transmittance(state, which) {
       state.current_spectra.which = which;
       //this.dispatch('saveSpectra',state.current_spectra.spectra, false);
@@ -380,6 +386,18 @@ export default new Vuex.Store({
         .get("projects/" + context.state.search_box.projects)
         .then((result) => {
           context.commit("save_projects", result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getSpeciesList(context) {
+      api
+        .get(
+          "scientific_names_in_spectra/" /* + context.state.search_box.projects*/
+        )
+        .then((result) => {
+          context.commit("save_species_list", result.data);
         })
         .catch((error) => {
           console.log(error);
