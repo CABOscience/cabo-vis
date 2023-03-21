@@ -21,6 +21,7 @@ export default new Vuex.Store({
       endDate: "",
       projects: [],
       species_list: [],
+      projects_species_list: [],
       projects_selected: "",
     },
     current_spectra: {
@@ -46,6 +47,7 @@ export default new Vuex.Store({
     number_of_plants: 0,
     species_options: [],
     species_selected: [],
+    species_list: [],
     sampleModal: { bulk_leaf_samples: [] },
     sampleSpectra: [],
     sidebar: false,
@@ -223,6 +225,17 @@ export default new Vuex.Store({
     },
     save_species_list(state, species_list) {
       state.search_box.species_list = species_list;
+      state.search_box.projects_species_list = species_list;
+    },
+    filter_species_list(state, projects_selected) {
+      if (projects_selected.length === 0) {
+        state.search_box.projects_species_list = state.search_box.species_list;
+      } else {
+        state.search_box.projects_species_list =
+          state.search_box.species_list.filter((f) =>
+            f.projects.some((s) => projects_selected.includes(s))
+          );
+      }
     },
     reflectance_transmittance(state, which) {
       state.current_spectra.which = which;
@@ -383,7 +396,7 @@ export default new Vuex.Store({
     },
     getProjects(context) {
       api
-        .get("projects/" + context.state.search_box.projects)
+        .get("projects/")
         .then((result) => {
           context.commit("save_projects", result.data);
         })

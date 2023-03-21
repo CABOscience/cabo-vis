@@ -53,8 +53,8 @@
               <b-dropdown-item
                 v-for="sp in species_list"
                 v-model="species_selected"
-                :key="sp"
-                :value="sp"
+                :key="sp.scientific_name"
+                :value="sp.scientific_name"
                 @click="speciesDropdownSelected"
                 >{{ sp.scientific_name }}</b-dropdown-item
               >
@@ -212,6 +212,7 @@ export default {
       endDate: "",
       projects: "",
       projects_selected: [],
+      species_selected: "",
       osm: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       satellite: "https://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}",
       zoom: 10,
@@ -253,7 +254,7 @@ export default {
       return this.$store.state.search_box.projects;
     },
     species_list() {
-      return this.$store.state.search_box.species_list;
+      return this.$store.state.search_box.projects_species_list;
     },
     authHeaders() {
       return this.$store.state.search_box.announce;
@@ -300,6 +301,10 @@ export default {
       this.drawnItems = "";
       this.$store.state.all_current_traits = {};
       this.$store.state.showOverallTraits = false;
+      this.$store.commit(
+        "save_species_list",
+        this.$store.state.search_box.species_list
+      );
     },
     getResultValue(result) {
       return result.name;
@@ -419,6 +424,7 @@ export default {
     },
     projectsModalHidden() {
       this.$store.state.search_box.projects_selected = this.projects_selected;
+      this.$store.commit("filter_species_list", this.projects_selected);
     },
     geoModalHidden() {
       var geo = this.drawnItems.toGeoJSON();
@@ -446,7 +452,6 @@ export default {
 .search-bar {
   /*max-width:500px;*/
   width: 100%;
-  pointer-events: none;
   z-index: 2;
   /*width:400px;
 	height:2.5em;
